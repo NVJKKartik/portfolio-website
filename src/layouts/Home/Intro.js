@@ -65,11 +65,7 @@ export function Intro({ id, sectionRef, disciplines, scrollIndicatorHidden, ...r
             <DisplacementSphere />
             <header className={styles.text}>
               <h1 className={styles.name} data-visible={visible} id={titleId}>
-<<<<<<< HEAD
                 <DecoderText text="NVJK Kartik" delay={300} />
-=======
-                <DecoderText text="Vinayak" delay={300} />
->>>>>>> origin
               </h1>
               <Heading level={0} as="h2" className={styles.title}>
                 <VisuallyHidden className={styles.label}>
