@@ -145,11 +145,7 @@ export const Navbar = () => {
         <a
           data-navbar-item
           className={styles.logo}
-<<<<<<< HEAD
           aria-label="NVJK Kartik, Designer"
-=======
-          aria-label="Vinayak, Designer"
->>>>>>> origin
           onClick={handleMobileNavClick}
         >
           <Monogram highlight />
