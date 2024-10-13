@@ -73,8 +73,8 @@ export const Home = () => {
     <div className={styles.home}>
       <Meta
         title="Designer + Developer"
-        description="Design portfolio of NVJK Kartik — a product designer working on web & mobile
-          apps with a focus on motion, experience design, and accessibility."
+        description="Portfolio of NVJK Kartik — a full-stack developer specializing in AI/ML,
+        building intelligent web and mobile applications. Focused on scalable solutions, seamless experiences, and data-driven innovations."
       />
       <Intro
         id="intro"
