@@ -1,8 +1,8 @@
 {
   "name": "portfolio",
   "version": "1.0.0",
-  "description": "Portfolio site for Mayank Jain",
-  "author": "Mayank Jain <jainmayank2509@gmail.com>",
+  "description": "Portfolio site for NVJK Kartik",
+  "author": "NVJK Kartik",
   "devDependencies": {
     "@mapbox/rehype-prism": "^0.8.0",
     "@storybook/addon-a11y": "^6.5.10",

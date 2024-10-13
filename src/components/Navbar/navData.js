@@ -29,12 +29,12 @@ export const navLinks = [
 export const socialLinks = [
   {
     label: 'Github',
-    url: 'https://github.com/VinayakRai5',
+    url: 'https://github.com/NVJKKartik',
     icon: 'github',
   },
   {
     label: 'Linkedin',
-    url: 'https://www.linkedin.com/in/vinayak-rai-44773b159',
+    url: 'https://www.linkedin.com/in/n-v-j-k-kartik-95283823b/',
     icon: 'linkedin',
   },
 ];

@@ -145,7 +145,7 @@ export const Navbar = () => {
         <a
           data-navbar-item
           className={styles.logo}
-          aria-label="Vinayak, Designer"
+          aria-label="NVJK Kartik, Designer"
           onClick={handleMobileNavClick}
         >
           <Monogram highlight />
