@@ -12,7 +12,7 @@ import { Transition } from 'components/Transition';
 import { Fragment, useState } from 'react';
 import { media } from 'utils/style';
 import styles from './Profile.module.css';
-import myImage from 'assets/profpic.jpg';
+import myImage from 'assets/profpic.png';
 
 const ProfileText = ({ visible, titleId }) => (
   <Fragment>
@@ -20,17 +20,14 @@ const ProfileText = ({ visible, titleId }) => (
       <DecoderText text="Hi there" start={visible} delay={500} />
     </Heading>
     <Text className={styles.description} data-visible={visible} size="l" as="p">
-  I&apos;m Vinayak, a versatile full stack web developer and designer pursuing a degree in Data Science and AI at{' '}
+  I&apos;m Kartik, a versatile full stack web developer and designer pursuing a degree in Data Science and AI at{' '}
   <Link href="https://iiitdwd.ac.in/">Indian Institute of Information Technology Dharwad</Link>. 
   With expertise in the MERN stack and a keen eye for design, I craft seamless web experiences. 
-  My passion extends to AI, specializing in machine learning, computer vision, and NLP.
+  My passion extends to AI, specializing in machine learning, computer vision, NLP, and speech processing.
 </Text>
 <Text className={styles.description} data-visible={visible} size="l" as="p">
-  I&apos;ve completed 4 internships, published 2 research papers, and was selected for the{' '}
-  <span style={{ fontWeight: 'bold' }}>Amazon Machine Learning Summer School &apos;24</span>. 
-  My research spans speaker diarization and metacognitive regulation in learning environments. 
-  As <span style={{ fontWeight: 'bold' }}>Tech Team Lead</span> for our DS&AI Society, 
-  I&apos;ve led projects from online platforms for the specially abled to AI-powered attention tracking systems.
+  I&apos;ve completed 4 internships, published 2 research papers in <span style={{fontWeight:'bold'}}> IEEE TALE 2024</span>  and <span style ={{fontWeight:'bold'}}> T4E 2024. </span>
+  My research work spans speaker diarization and metacognitive regulation in learning environments. 
 </Text>
 <Text className={styles.description} data-visible={visible} size="l" as="p">
   Proficient in Python, TensorFlow, and PyTorch, I&apos;m committed to solving real-world challenges 

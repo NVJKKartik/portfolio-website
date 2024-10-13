@@ -4,7 +4,8 @@
   "eslint.workingDirectories": ["./src", "./functions"],
   "files.exclude": {
     "**/.DS_Store": true,
-    "**/.git": true
+    "**/.git": true,
+    "**/.env": false
   },
   "html.format.enable": false,
   "search.exclude": {
