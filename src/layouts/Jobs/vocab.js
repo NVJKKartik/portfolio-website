@@ -3,7 +3,7 @@ import React from 'react';
 import { getTasksTextWithHighlightedKeyword } from 'layouts/Jobs/taskAndType';
 import styles from './IITB.module.css'; // Importing the module
 
-export default function EnsVision() {
+export default function Vocab() {
   const tasks = [
     {
       text: '• Developed RESTful APIs to automate data processing and analytics, increasing user engagement by 10%.',

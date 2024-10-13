@@ -3,17 +3,18 @@ import React from 'react';
 import { getTasksTextWithHighlightedKeyword } from 'layouts/Jobs/taskAndType';
 import styles from './IITB.module.css'; // Importing the module
 
-export default function IITM() {
-  const tasks = [
-    {
-      text: '• Developed a full-stack web application leveraging machine learning and live market data to generate real-time swing trade signals, improving efficiency and accuracy.',
-      keywords: ['Alchemy', 'Wagmi', 'Web3.js', 'Moralis', 'Ethers.js'],
-    },
-    {
-      text: '• Deployed machine learning models leveraging multimodal data (news, public, macro, market) for improved trading predictions (76% P/L Ratio) and integrated REST APIs and backend services for data aggregation, model deployment, and real-time analytics.',
-      keywords: ['quality', 'testing tasks', 'user base'],
-    },
-  ];
+export default function NITPY() {
+    const tasks = [
+      {
+        text: '• Designed 77% more energy-efficient deep learning models for lung nodule classification and segmentation on the LIDC-IDRI dataset, achieving an 86% reduction in computational resource usage without compromising accuracy.',
+        keywords: ['deep learning', 'lung nodule classification', 'LIDC-IDRI', 'energy efficiency'],
+      },
+      {
+        text: '• Enhanced lung nodule analysis models through model pruning, quantization, and architectural optimizations, reducing memory and compute requirements by 95%, enabling real-time analysis and improving diagnostic efficiency.',
+        keywords: ['model pruning', 'quantization', 'architectural optimization', 'real-time analysis'],
+      },
+    ];
+  
 
   return (
     <>
@@ -21,10 +22,10 @@ export default function IITM() {
         <div className={styles.titleContainer}>
           {/* Title */}
           <span className={styles.title}>
-          Research Intern <span className={styles.company}>- Robert Bosch Centre for Data Science and AI (IIT Madras)</span>
+          Research Intern <span className={styles.company}>-Dept of CSE, NIT Puducherry</span>
           </span>
           {/* Date */}
-          <span className={styles.date}>Jun 2024 - Present</span>
+          <span className={styles.date}>Dec 2023 - Jan 2024</span>
         </div>
         <div className={styles.taskList}>
           {/* Tasks Description 1 */}

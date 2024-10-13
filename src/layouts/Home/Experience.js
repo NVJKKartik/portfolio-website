@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import IITB from "layouts/Jobs/IITB";
-import NITPY from "layouts/Jobs/vocab";
+import Vocab from "layouts/Jobs/vocab";
 import IITM from "layouts/Jobs/IITM";
+import NITPY from "layouts/Jobs/NITPY";
 import ArrowDown from 'assets/arrow-down.svg';
 import RouterLink from 'next/link';
 import styles from './Experience.module.css'; // Import the CSS module
@@ -23,10 +24,12 @@ export function Experience({ id, sectionRef, scrollIndicatorHidden, ...rest }) {
     switch (DescriptionJob) {
       case "IITB":
         return <IITB />;
-      case "NITPY":
-        return <NITPY />;
+      case "Vocab":
+        return <Vocab />;
       case "IITM":
         return <IITM />;
+      case "NITPY":
+        return <NITPY />;
       default:
         return null;
     }
@@ -83,7 +86,7 @@ const CompaniesBar = (props) => {
   // Set initial positions for the bar and selection
   const [barPosition, setBarPosition] = React.useState(-10);
   const [barAbovePosition, setBarAbovePosition] = React.useState(1);
-  const [companyNameBackgroundColorGreen, setCompanyNameBackgroundColorGreen] = React.useState([true, false, false]);
+  const [companyNameBackgroundColorGreen, setCompanyNameBackgroundColorGreen] = React.useState([true, false, false, false]);
 
   const CompanyButton = (props) => (
     <button
@@ -114,10 +117,10 @@ const CompaniesBar = (props) => {
         <CompanyButton
           ButtonOrderOfcompanyNameBackgroundColorGreen={0}
           CompanyName="IIT Bombay"
-          BarPosition={-10}
+          BarPosition={-15}
           BarAbovePosition={1}
           DescriptionJob="IITB"
-          CompanyNameBackgroundColorGreen={[true, false, false]} // IITB selected by default
+          CompanyNameBackgroundColorGreen={[true, false, false, false]} // IITB selected by default
           setDescriptionJob={props.setDescriptionJob}
         />
         <CompanyButton
@@ -125,17 +128,26 @@ const CompaniesBar = (props) => {
           CompanyName="Vocab.AI"
           BarPosition={40}
           BarAbovePosition={2}
-          DescriptionJob="NITPY"
-          CompanyNameBackgroundColorGreen={[false, true, false]} // NITPY unselected
+          DescriptionJob="Vocab"
+          CompanyNameBackgroundColorGreen={[false, true, false, false]} // NITPY unselected
           setDescriptionJob={props.setDescriptionJob}
         />
         <CompanyButton
           ButtonOrderOfcompanyNameBackgroundColorGreen={2}
           CompanyName="IIT Madras - RBC"
-          BarPosition={80} // Adjust the position as needed
+          BarPosition={100} // Adjust the position as needed
           BarAbovePosition={3}
           DescriptionJob="IITM"
-          CompanyNameBackgroundColorGreen={[false, false, true]} // IITM unselected by default
+          CompanyNameBackgroundColorGreen={[false, false, true, false]} // IITM unselected by default
+          setDescriptionJob={props.setDescriptionJob}
+        />
+          <CompanyButton
+          ButtonOrderOfcompanyNameBackgroundColorGreen={3}
+          CompanyName="NIT Puducherry"
+          BarPosition={155} // Adjust the position as needed
+          BarAbovePosition={4}
+          DescriptionJob="NITPY"
+          CompanyNameBackgroundColorGreen={[false, false, false, true]} // IITM unselected by default
           setDescriptionJob={props.setDescriptionJob}
         />
       </div>
