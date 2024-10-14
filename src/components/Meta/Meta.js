@@ -3,7 +3,7 @@ import Head from 'next/head';
 const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://nvjkkartik.netlify.app';
 const name = 'NVJK Kartik';
 const twitterHandle = '@10kkkartikkk01';
-const defaultOgImage = `https://i.postimg.cc/50vK3SLk/social-image1.png`; // Use CDN
+const defaultOgImage = `https://i.postimg.cc/50vK3SLk/social-image1.png?1`; // Use CDN
 const defaultDescription = "This is the portfolio site of NVJK Kartik, showcasing projects, experiences, and more.";
 
 export const Meta = ({ description = defaultDescription, ogImage = defaultOgImage }) => {
