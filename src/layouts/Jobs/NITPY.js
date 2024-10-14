@@ -22,7 +22,7 @@ export default function NITPY() {
         <div className={styles.titleContainer}>
           {/* Title */}
           <span className={styles.title}>
-          Research Intern <span className={styles.company}>-Dept of CSE, NIT Puducherry</span>
+          MLOps Intern <span className={styles.company}>-Dept of CSE, NIT Puducherry</span>
           </span>
           {/* Date */}
           <span className={styles.date}>Dec 2023 - Jan 2024</span>
