@@ -3,7 +3,7 @@ import Head from 'next/head';
 const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL;
 const name = 'NVJK Kartik';
 const twitterHandle = '';
-const defaultOgImage = `https://i.postimg.cc/50vK3SLk/social-image1.png?v=2`;
+const defaultOgImage = `https://i.postimg.cc/50vK3SLk/social-image1.png`;
 
 export const Meta = ({ title, description, prefix = name, ogImage = defaultOgImage }) => {
   const titleText = [prefix, title].filter(Boolean).join(' | ');
