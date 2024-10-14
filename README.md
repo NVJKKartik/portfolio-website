@@ -1,6 +1,6 @@
 # Personal portfolio
 
-[![Site preview](/public/site-preview.png)](https://nvjkkartik.netlify.app)
+[![Site preview](https://i.postimg.cc/50vK3SLk/social-image1.png)](https://nvjkkartik.netlify.app)
 
 This is my personal portfolio website to showcase some of my projects as well as my interests.
 
