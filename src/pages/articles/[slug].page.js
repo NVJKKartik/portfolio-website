@@ -5,7 +5,8 @@ import { useEffect } from 'react';
 
 const externalLinks = {
   'TALE Conference': 'https://2024.tale-conference.org/',
-  'ccp': 'https://2024.tale-conference.org/' // Example
+  'e2mip': 'https://e2mip.org/',
+  'T4E Conference': 'https://etsociety.org/t4e2024/'
   // ... other articles
 };
 

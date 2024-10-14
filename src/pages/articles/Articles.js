@@ -83,7 +83,7 @@ const ArticlesPost = ({
         </Text>
         <div className={styles.postFooter}>
           <Button secondary iconHoverShift icon="chevronRight" as="div">
-            Read article
+            Read here
           </Button>
         </div>
       </div>

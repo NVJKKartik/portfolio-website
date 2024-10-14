@@ -64,10 +64,10 @@ export const Contact = () => {
       
       <Text className={styles.emailText} size="l" align="center">
   <a 
-    href="mailto:vinayakmr2003@gmail.com" 
+    href="mailto:n.v.j.kkartik@gmail.com" 
     className={`${styles.emailLink} ${styles.customColor}`} // Add the customColor class here
   >
-    vinayakmr2003@gmail.com
+    n.v.j.kkartik@gmail.com
   </a>
 </Text>
 

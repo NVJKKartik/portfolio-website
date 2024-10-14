@@ -6,12 +6,19 @@ import styles from './IITB.module.css'; // Importing the module
 export default function IITM() {
   const tasks = [
     {
-      text: '• Developed a full-stack web application leveraging machine learning and live market data to generate real-time swing trade signals, improving efficiency and accuracy.',
+      text: '• Employing advanced sentiment analysis with transformer-based models to enhance swing trading strategies in the Indian stock market.',
       keywords: ['Alchemy', 'Wagmi', 'Web3.js', 'Moralis', 'Ethers.js'],
     },
     {
-      text: '• Deployed machine learning models leveraging multimodal data (news, public, macro, market) for improved trading predictions (76% P/L Ratio) and integrated REST APIs and backend services for data aggregation, model deployment, and real-time analytics.',
+      text: '• Integrating multimodal data (social media sentiment, financial news, technical indicators, and fundamental analysis) for a comprehensive stock prediction system.',
       keywords: ['quality', 'testing tasks', 'user base'],
+    },
+    {
+      text: '• Investigating the impact of optimized time series prediction models and robust feature selection on swing trading prediction accuracy.',
+      keywords: ['quality', 'testing tasks', 'user base'],
+    },
+    {
+      text: '• Preliminary results indicate the multimodal approach may significantly improve accuracy and reliability of swing trading predictions compared to traditional methods.',      keywords: ['quality', 'testing tasks', 'user base'],
     },
   ];
 
@@ -24,7 +31,7 @@ export default function IITM() {
           Research Intern <span className={styles.company}>- Robert Bosch Centre for Data Science and AI (IIT Madras)</span>
           </span>
           {/* Date */}
-          <span className={styles.date}>Jun 2024 - Present</span>
+          <span className={styles.date}>June 2024 - Present</span>
         </div>
         <div className={styles.taskList}>
           {/* Tasks Description 1 */}

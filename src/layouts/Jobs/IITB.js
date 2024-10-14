@@ -5,11 +5,11 @@ import styles from './IITB.module.css'; // Importing the module
 export default function IITB() {
   const tasks = [
     {
-      text: '• Developed AffectBots: A scalable, multimodal tutoring system utilizing audio, video, and text data for real-time emotion recognition with 88% accuracy. (Paper Accepted at IEEE-TALE 2024).',
+      text: '• Developed AffectBots: A scalable, multimodal tutoring system utilizing audio, video, and text data for real-time emotion recognition with 88% accuracy. ',
       keywords: ['PyTorch', 'TensorFlow', 'Emotion Recognition'],
     },
     {
-      text: '• Implemented speaker diarization using PyAnnote and Whisper Speech Recognition, improving diarization performance by 65% on a 200-hour classroom dataset.',
+      text: '• Implemented speaker diarization using PyAnnote and Whisper Speech Recognition, improving diarization performance by 65% on a 200-hour classroom dataset. (Paper Accepted at IEEE-TALE 2024).',
       keywords: ['PyAnnote', 'Whisper', 'Speaker Diarization'],
     },
     {
