@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://nvjkkartik.netlify.app';
+const siteUrl = 'https://nvjkkartik.netlify.app';
 const name = 'NVJK Kartik';
 const twitterHandle = '@10kkkartikkk01';
 const defaultOgImage = `https://i.postimg.cc/50vK3SLk/social-image1.png?1`; // Use CDN
