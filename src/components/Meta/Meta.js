@@ -2,7 +2,7 @@ import Head from 'next/head';
 
 const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL;
 const name = 'NVJK Kartik';
-const twitterHandle = '@hamishMW';
+// const twitterHandle = '';
 const defaultOgImage = `https://i.postimg.cc/DwK1GXqN/social-image1.png`;
 
 export const Meta = ({ title, description, prefix = name, ogImage = defaultOgImage }) => {
@@ -26,12 +26,12 @@ export const Meta = ({ title, description, prefix = name, ogImage = defaultOgIma
       <meta property="og:url" content={siteUrl} />
       <meta property="og:description" content={description} />
 
-      <meta name="twitter:card" content="summary_large_image" />
+      {/* <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:title" content={titleText} />
       <meta name="twitter:site" content={twitterHandle} />
       <meta name="twitter:creator" content={twitterHandle} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={ogImage} /> */}
     </Head>
   );
 };

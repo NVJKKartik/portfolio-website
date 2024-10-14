@@ -117,7 +117,7 @@ const CompaniesBar = (props) => {
         <CompanyButton
           ButtonOrderOfcompanyNameBackgroundColorGreen={0}
           CompanyName="IIT Bombay"
-          BarPosition={-15}
+          BarPosition={-20}
           BarAbovePosition={1}
           DescriptionJob="IITB"
           CompanyNameBackgroundColorGreen={[true, false, false, false]} // IITB selected by default
@@ -134,19 +134,19 @@ const CompaniesBar = (props) => {
         />
         <CompanyButton
           ButtonOrderOfcompanyNameBackgroundColorGreen={2}
-          CompanyName="IIT Madras - RBC"
+          CompanyName="NIT Puducherry"
           BarPosition={100} // Adjust the position as needed
           BarAbovePosition={3}
-          DescriptionJob="IITM"
+          DescriptionJob="NITPY"
           CompanyNameBackgroundColorGreen={[false, false, true, false]} // IITM unselected by default
           setDescriptionJob={props.setDescriptionJob}
         />
           <CompanyButton
           ButtonOrderOfcompanyNameBackgroundColorGreen={3}
-          CompanyName="NIT Puducherry"
+          CompanyName="IIT Madras"
           BarPosition={155} // Adjust the position as needed
           BarAbovePosition={4}
-          DescriptionJob="NITPY"
+          DescriptionJob="IITM"
           CompanyNameBackgroundColorGreen={[false, false, false, true]} // IITM unselected by default
           setDescriptionJob={props.setDescriptionJob}
         />

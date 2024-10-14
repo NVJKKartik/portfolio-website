@@ -5,18 +5,24 @@ import styles from './IITB.module.css'; // Importing the module
 export default function IITB() {
   const tasks = [
     {
-      text: '• Developed scalable multimodal data analytics solutions for speaker diarization, audio/text processing, emotion recognition, and insight extraction. (Paper Accepted in IEEE-TALE 2024 Conference).',
-      keywords: ['TensorFlow'],
+      text: '• Developed AffectBots: A scalable, multimodal tutoring system utilizing audio, video, and text data for real-time emotion recognition with 88% accuracy. (Paper Accepted at IEEE-TALE 2024).',
+      keywords: ['PyTorch', 'TensorFlow', 'Emotion Recognition'],
     },
     {
-      text: '• Collaborated on designing and implementing AffectBots, an Affect-Aware Tutoring System using Computer Vision and machine learning for real-time affect detection.',
-      keywords: ['PyTorch, PyAnnote, OpenCV'],
+      text: '• Implemented speaker diarization using PyAnnote and Whisper Speech Recognition, improving diarization performance by 65% on a 200-hour classroom dataset.',
+      keywords: ['PyAnnote', 'Whisper', 'Speaker Diarization'],
     },
     {
-      text: '• Optimized and quantized deep learning models, reducing size by 70% while maintaining accuracy, enabling efficient deployment and scaling of AffectBots.',
-      keywords: ['Django'],
+      text: '• Applied Conditional Random Fields (CRFs) and machine learning to detect triggers of Socially Shared Metacognitive Regulation (SSMR) in collaborative learning environments.',
+      keywords: ['CRFs', 'Machine Learning', 'Collaborative Learning'],
+    },
+    {
+      text: '• Developed automated analysis systems for large-scale collaborative learning datasets, with findings accepted for publication at EdTech Society T4E 2024.',
+      keywords: ['Data Analysis', 'Collaborative Learning', 'EdTech'],
     },
   ];
+
+
 
   return (
     <div className={styles.container}>
