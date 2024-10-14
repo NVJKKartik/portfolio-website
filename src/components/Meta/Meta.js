@@ -1,16 +1,16 @@
 import Head from 'next/head';
 
 const siteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL;
-const name = 'Mayank Jain';
-const twitterHandle = '@hamishMW';
-const defaultOgImage = `https://i.postimg.cc/DwK1GXqN/site-preview.png`;
+const name = 'NVJK Kartik';
+const twitterHandle = '';
+const defaultOgImage = `https://i.postimg.cc/50vK3SLk/social-image1.png`;
 
 export const Meta = ({ title, description, prefix = name, ogImage = defaultOgImage }) => {
   const titleText = [prefix, title].filter(Boolean).join(' | ');
 
   return (
     <Head>
-      <title key="title">Mayank Jain - Portfolio</title>
+      <title key="title">NVJK Kartik - Portfolio</title>
       <meta key="description" name="description" content={description} />
       <meta name="author" content={name} />
 
