@@ -6,7 +6,7 @@ import Strike from '@/components/home/Strike';
 import Holes from '@/components/home/Holes';
 import { rows, rowYears } from '@/content/hall';
 import { profile } from '@/content/profile';
-import { holes } from '@/content/holes';
+import { holes, offClock } from '@/content/holes';
 import { posts, splitTitle } from '@/content/writing';
 import s from './home.module.css';
 
@@ -35,6 +35,7 @@ export default function Home() {
           </section>
 
           <section id="writing" className={s.section} aria-labelledby="writing-h">
+            <p className={s.kick}>Technical writing</p>
             <h2 id="writing-h" className={s.h} aria-label="Posts about what broke.">
               Posts about what <Strike>worked</Strike> broke.
             </h2>
@@ -65,16 +66,27 @@ export default function Home() {
             <h2 id="about-h" className={s.h}>
               Rabbit holes, not hobbies.
             </h2>
-            <p className={s.sub}>When something gets my attention I go all the way down. So far:</p>
+            <p className={s.sub}>
+              An agent, a classroom, a lung scan, a market, a brain: I open the black box and poke at the mechanism until it makes sense. At work, so
+              far:
+            </p>
             <div className={s.about}>
               <div className={s.words}>
                 {profile.about.map((t, i) => (
                   <p key={i}>{t}</p>
                 ))}
-                <p className={s.aside}>Off the clock: {new Intl.ListFormat('en-GB').format(profile.fun)}.</p>
               </div>
               <Holes holes={holes} />
             </div>
+            <h3 className={s.offHead}>Off the clock, currently</h3>
+            <ul className={s.off}>
+              {offClock.map(o => (
+                <li key={o.field}>
+                  <b>{o.field}</b>
+                  <span>{o.poke}</span>
+                </li>
+              ))}
+            </ul>
           </section>
 
           <section id="contact" className={`${s.section} ${s.contact}`} aria-labelledby="contact-h">

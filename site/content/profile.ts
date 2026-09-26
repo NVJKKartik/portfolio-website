@@ -20,8 +20,6 @@ export const profile = {
     'In December 2023 I was three of these deep at once, plus the degree.',
     'The thread through all of it: build the thing, then check that it actually works. The posts are about the times it didn’t.',
   ],
-  /** What he goes down off the clock. Only what he has said; ask before adding. */
-  fun: ['F1', 'Markets', 'Economics'],
   links: [
     { label: 'GitHub', href: 'https://github.com/NVJKKartik', handle: 'NVJKKartik' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/n-v-j-k-kartik-95283823b/', handle: 'in/n-v-j-k-kartik' },

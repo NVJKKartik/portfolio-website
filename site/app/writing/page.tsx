@@ -18,7 +18,7 @@ export default function WritingIndex() {
   return (
     <Paper current="/#writing">
       <header className={w.head}>
-        <p className={w.kick}>Writing · {posts.length} posts on DEV and Medium</p>
+        <p className={w.kick}>Technical writing · {posts.length} posts on DEV and Medium</p>
         <h1>Most of them start with the bug.</h1>
       </header>
       {Object.entries(groups).map(([m, items], k) => (

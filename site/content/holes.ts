@@ -63,3 +63,16 @@ export const holes: Hole[] = entries.map(e => {
   if (!j) throw new Error(`holes: no journey stop "${e.stop}"`);
   return { ...e, when: j.when, place: j.place, path: j.did };
 });
+
+/**
+ * Off the clock: what he's poking at outside work, from his own list (2026-09-26), cut to what belongs
+ * on a public page. No depth claimed; the specifics are the depth.
+ */
+export const offClock: { field: string; poke: string }[] = [
+  { field: 'Neuroscience', poke: 'Currently reading Behave; the “okay, but why does this happen?” side of biology and psychology.' },
+  { field: 'Markets', poke: 'Valuations, market mechanics, and the history of financial scams.' },
+  { field: 'Startups', poke: 'Business models, unit economics, and “could this actually be a company?”' },
+  { field: 'Hardware', poke: 'GPUs, chips and compute economics. Adult LEGO, except one brick costs ₹3 lakh.' },
+  { field: 'F1', poke: 'Ferrari and Leclerc, and the strategy calls more than the zoom. Cricket and football too.' },
+  { field: 'Philosophy', poke: 'Free will, consciousness, and why people do what they do.' },
+];
