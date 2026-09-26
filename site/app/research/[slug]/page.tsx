@@ -7,7 +7,7 @@ import { exhibitById } from '@/content/hall';
 import Paper from '@/components/page/Paper';
 import SourceList from '@/components/page/SourceList';
 import { placeInHall } from '@/components/record/place';
-import { Hands, Hard, NextUp, RecordTop, Sec } from '@/components/record/Record';
+import { Call, Hands, Hard, NextUp, RecordTop, Sec } from '@/components/record/Record';
 import { tintOf } from '@/lib/tint';
 import r from '@/components/record/record.module.css';
 
@@ -79,6 +79,8 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
             </>
           }
         />
+
+        {x.decision && <Call d={x.decision} />}
 
         <div className={r.paper}>
           <Sec title="Full title">

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { CSSProperties, ReactNode } from 'react';
+import type { Decision, Step } from '@/content/decision';
 import type { Exhibit } from '@/content/hall';
 import type { Tint } from '@/lib/tint';
 import r from './record.module.css';
@@ -86,5 +87,34 @@ export function NextUp({ next, wrapped }: { next: Exhibit; wrapped?: boolean }) 
         <b>{next.title} →</b>
       </span>
     </Link>
+  );
+}
+
+/** The call I made on this work, drawn as the path it takes; the path it replaced above it, when there was one. */
+export function Call({ d }: { d: Decision }) {
+  return (
+    <section className={r.call} aria-labelledby="call-h">
+      <p className={r.callKick}>The call I made</p>
+      <h2 id="call-h">{d.title}</h2>
+      <p className={r.callWhy}>{d.call}</p>
+      {d.before && <Flow steps={d.before} label="Before" />}
+      <Flow steps={d.flow} label={d.before ? 'After' : undefined} />
+    </section>
+  );
+}
+
+function Flow({ steps, label }: { steps: Step[]; label?: string }) {
+  return (
+    <div className={r.flowRow}>
+      {label && <span className={r.flowLabel}>{label}</span>}
+      <ol className={r.flow}>
+        {steps.map(s => (
+          <li key={s.label} data-tone={s.tone}>
+            <b>{s.label}</b>
+            {s.note && <span>{s.note}</span>}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }

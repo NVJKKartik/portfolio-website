@@ -1,4 +1,5 @@
 import type { SourceId } from './sources';
+import type { Decision } from './decision';
 
 export type ResearchKind = 'Preprint' | 'Peer-reviewed paper' | 'Book chapter' | 'Granted patent';
 
@@ -20,6 +21,8 @@ export type Research = {
   role: string;
   /** What Kartik did, when the role alone doesn't say. Self-reported on his old portfolio. */
   did?: string;
+  /** The call I made, drawn on the record. */
+  decision?: Decision;
   authors: { name: string; me?: boolean }[];
   plain: string[];
   technical: string[];
@@ -104,6 +107,17 @@ export const research: Research[] = [
     question: 'Who said what, in a classroom where people switch between English and local languages mid-sentence?',
     role: 'Co-author, second of seven. My part was the diarization pipeline work.',
     did: 'I implemented speaker diarization for code-switched classroom audio, with pyannote and Whisper.',
+    decision: {
+      title: 'Don’t trust one system with mixed-language speech',
+      call: 'Off-the-shelf diarization struggles when a class moves between English and local languages mid-sentence. Combine a diarizer with Whisper’s transcription, a custom voice-activity detector and a clustering step, and measure it against the commercial options.',
+      flow: [
+        { label: 'Classroom audio', note: 'English and local languages, mid-sentence' },
+        { label: 'Custom voice-activity detection' },
+        { label: 'pyannote diarization + Whisper transcription', tone: 'mine' },
+        { label: 'Embedding clustering', note: 'who is who' },
+        { label: 'DER 0.26', note: 'the lowest of the systems compared' },
+      ],
+    },
     authors: [
       { name: 'Aarsh Desai' },
       { name: 'N.V.J.K Kartik', me: true },

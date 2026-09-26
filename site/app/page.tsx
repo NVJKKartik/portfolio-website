@@ -7,6 +7,7 @@ import Holes from '@/components/home/Holes';
 import { rows, rowYears } from '@/content/hall';
 import { profile } from '@/content/profile';
 import { holes, offClock } from '@/content/holes';
+import { startHere } from '@/content/start';
 import { posts, splitTitle } from '@/content/writing';
 import s from './home.module.css';
 
@@ -29,8 +30,21 @@ export default function Home() {
         <div className={s.lit}>
           <section id="work" className={s.section} aria-labelledby="work-h">
             <h2 id="work-h" className={s.kick}>
-              Everything I’ve worked on, newest first
+              Start here
             </h2>
+            <ol className={s.start}>
+              {startHere.map(x => (
+                <li key={x.id}>
+                  <Link href={x.href} transitionTypes={['nav-forward']}>
+                    <img src={x.image.src} alt="" />
+                    <span className={s.side}>{x.side}</span>
+                    <b>{x.title}</b>
+                    <span className={s.callLine}>{x.call}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+            <h3 className={s.kick}>Everything I’ve worked on, newest first</h3>
             <WorkIndex rows={rows} years={years} />
           </section>
 

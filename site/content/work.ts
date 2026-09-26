@@ -1,4 +1,5 @@
 import type { SourceId } from './sources';
+import type { Decision } from './decision';
 
 export type Kind = 'AI engineering' | 'Platform engineering' | 'Open source' | 'Research system' | 'Full-stack' | 'Hackathon' | 'Applied research';
 
@@ -33,6 +34,8 @@ export type Work = {
   links: { label: string; href: string }[];
   sources: SourceId[];
   relatedResearch?: string;
+  /** The call I made, drawn on the record. */
+  decision?: Decision;
   /** Deeper interactive on the case study page. */
   demo?: 'break-the-agent';
   /** A 2026 redesigned interface study replaces the dated screenshot; `original` keeps the real one. */
@@ -476,6 +479,22 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       alt: 'Plate: one request fanning out to several model providers, with a server tool kept byte for byte.',
     },
     facts: [],
+    decision: {
+      title: 'Keep the bytes you can’t translate',
+      call: 'A translator shouldn’t drop what it doesn’t understand. Tools that aren’t plain functions keep the caller’s original bytes and are replayed as they came.',
+      before: [
+        { label: 'Caller sends tools', note: 'a function and a web search' },
+        { label: 'Translator keeps type “function”', note: 'no error, no drop header' },
+        { label: 'Web search is gone', tone: 'lost' },
+        { label: 'The model answers from memory', note: 'it looks like a worse model' },
+      ],
+      flow: [
+        { label: 'Caller sends tools', note: 'a function and a web search' },
+        { label: 'Anything that isn’t a function', note: 'keeps its original bytes', tone: 'mine' },
+        { label: 'Replayed to the provider', note: 'as the caller sent it' },
+        { label: 'Round-trips on every provider path' },
+      ],
+    },
     sections: [
       {
         heading: 'The bug that looked like a model problem',
@@ -519,6 +538,17 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       { value: '65–92%', label: 'lower feed API latencies after the performance pass', source: 'prErrorFeed' },
       { value: '2,077', label: 'GitHub stars on the open-source platform it ships in (Sep 2026)', source: 'ghPlatform' },
     ],
+    decision: {
+      title: 'Cheap reads, one careful thought',
+      call: 'Never read thousands of failing traces with an expensive model. Summarise each one cheaply, reason once over the summaries, and cache the answer.',
+      flow: [
+        { label: 'A cluster of failing traces', note: 'from ClickHouse' },
+        { label: 'One summary per trace', note: 'a cheap model' },
+        { label: 'One pass over the summaries', note: 'across version, model and region', tone: 'mine' },
+        { label: 'Cause, fix, confidence, evidence', note: 'streamed into the Fix tab' },
+        { label: 'Cached', note: 'later visits are instant' },
+      ],
+    },
     sections: [],
     links: [{ label: 'PR #853', href: 'https://github.com/future-agi/future-agi/pull/853' }],
     sources: ['prErrorFeed', 'ghPlatform'],

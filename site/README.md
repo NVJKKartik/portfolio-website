@@ -27,23 +27,24 @@ npx serve out        # preview the exact files that get deployed
 
 ## Where things live
 
-| Want to change…                                                      | Edit                                                                                 |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Name, role, wall text, bio, links                                    | `content/profile.ts`                                                                 |
-| A work (its easel, label and record)                                 | `content/work.ts` — the label is derived from it, so it can’t disagree with the page |
-| Papers and the patent                                                | `content/research.ts`                                                                |
-| Talks, experiments                                                   | `content/more.ts`                                                                    |
-| What hangs in the hall, and row sizes                                | `content/hall.ts` (derived from the files above; newest first)                       |
-| Easel positions and the plan's on-screen box (shared by 3D and plan) | `components/hall/layout.ts`                                                          |
-| The room itself (light, glass, camera)                               | `components/hall/engine.ts`                                                          |
-| Wall text, labels, controls, crane                                   | `components/hall/Hall.tsx`                                                           |
-| The home page below the hall (work index, tabs, the one strike)      | `app/page.tsx`, `components/home/*`                                                  |
-| The painted walls (credits at the exit, places on the back wall)     | `components/hall/walls.ts`, data in `content/hall.ts`                                |
-| Record pages                                                         | `app/work/[slug]`, `app/research/[slug]`, styles in `components/record/`             |
-| Interface studies (Nexus, Centio.AI, Alumni Connect)                 | `components/studies/*.js`, wrapped by `Study.tsx`                                    |
-| Journey (roles, dates)                                               | `content/journey.ts`, shown on About                                                 |
-| Writing                                                              | `npm run snapshot:writing` (pulls DEV + Medium into `content/writing/posts.json`)    |
-| Every factual source                                                 | `content/sources.ts` (rendered at `/receipts/`) and `docs/SOURCES.md`                |
+| Want to change…                                                                    | Edit                                                                                 |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Name, role, wall text, bio, links                                                  | `content/profile.ts`                                                                 |
+| A work (its easel, label and record)                                               | `content/work.ts` — the label is derived from it, so it can’t disagree with the page |
+| Papers and the patent                                                              | `content/research.ts`                                                                |
+| Talks, experiments                                                                 | `content/more.ts`                                                                    |
+| What hangs in the hall, and row sizes                                              | `content/hall.ts` (derived from the files above; newest first)                       |
+| Easel positions and the plan's on-screen box (shared by 3D and plan)               | `components/hall/layout.ts`                                                          |
+| The room itself (light, glass, camera)                                             | `components/hall/engine.ts`                                                          |
+| Wall text, labels, controls, crane                                                 | `components/hall/Hall.tsx`                                                           |
+| The home page below the hall (work index, tabs, the one strike)                    | `app/page.tsx`, `components/home/*`                                                  |
+| A record's "call I made" flow (content/decision.ts, `decision` on a work or paper) | `components/record/Record.tsx`                                                       |
+| The painted walls (credits at the exit, places on the back wall)                   | `components/hall/walls.ts`, data in `content/hall.ts`                                |
+| Record pages                                                                       | `app/work/[slug]`, `app/research/[slug]`, styles in `components/record/`             |
+| Interface studies (Nexus, Centio.AI, Alumni Connect)                               | `components/studies/*.js`, wrapped by `Study.tsx`                                    |
+| Journey (roles, dates)                                                             | `content/journey.ts`, shown on About                                                 |
+| Writing                                                                            | `npm run snapshot:writing` (pulls DEV + Medium into `content/writing/posts.json`)    |
+| Every factual source                                                               | `content/sources.ts` (rendered at `/receipts/`) and `docs/SOURCES.md`                |
 
 ## Media
 

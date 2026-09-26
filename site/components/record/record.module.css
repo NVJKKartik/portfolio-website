@@ -124,6 +124,106 @@
   text-decoration: underline;
 }
 
+/* The call I made: a flow of steps, my step in my colour, a lost step struck. */
+.call {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 64px var(--gutter) 0;
+}
+.callKick {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  color: var(--accent-ink);
+}
+.call h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.2vw, 46px);
+  line-height: 1.05;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.callWhy {
+  max-width: 62ch;
+  margin: 14px 0 28px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.flowRow {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 0 16px;
+  align-items: stretch;
+  margin-top: 14px;
+}
+.flowRow:not(:has(.flowLabel)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.flowLabel {
+  align-self: center;
+  font: 700 12.5px var(--f-mono);
+  color: var(--ink-3);
+}
+.flow {
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.flow li {
+  position: relative;
+  flex: 1 1 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  background: #fffaf1;
+}
+/* The arrow between steps. */
+.flow li + li::before {
+  content: '→';
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--ink-3);
+}
+.flow b {
+  font-size: 15.5px;
+  line-height: 1.3;
+  font-weight: 750;
+}
+.flow span {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+.flow li[data-tone='mine'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, #fffaf1);
+}
+.flow li[data-tone='mine'] b {
+  color: var(--accent-ink);
+}
+.flow li[data-tone='lost'] {
+  border-style: dashed;
+  border-color: var(--ink-3);
+  background: transparent;
+}
+.flow li[data-tone='lost'] b {
+  color: var(--ink-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
 .paper {
   max-width: 1360px;
   margin: 0 auto;
@@ -359,6 +459,20 @@
 }
 
 @media (max-width: 800px) {
+  .flowRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .flow {
+    flex-direction: column;
+    gap: 22px;
+  }
+  .flow li + li::before {
+    content: '↓';
+    left: 18px;
+    top: -21px;
+    transform: none;
+  }
   .top {
     padding: 84px var(--gutter) 40px;
   }

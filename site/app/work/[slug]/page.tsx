@@ -10,7 +10,7 @@ import Study from '@/components/studies/Study';
 import { studyFonts } from '@/components/studies/fonts';
 import TraceDemo from '@/components/work/TraceDemo';
 import { placeInHall } from '@/components/record/place';
-import { Hands, Hard, NextUp, RecordTop, Sec } from '@/components/record/Record';
+import { Call, Hands, Hard, NextUp, RecordTop, Sec } from '@/components/record/Record';
 import { tintOf } from '@/lib/tint';
 import r from '@/components/record/record.module.css';
 
@@ -65,6 +65,8 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
             )
           }
         />
+
+        {w.decision && <Call d={w.decision} />}
 
         <div className={r.paper}>
           <Sec title="What it’s for">
