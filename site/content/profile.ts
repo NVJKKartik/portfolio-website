@@ -14,11 +14,11 @@ export const profile = {
   // The first thing people read. Short on purpose.
   intro:
     'Engineer and researcher. I’m a senior engineer and tech lead at Future AGI, working across evaluation, simulation, the gateway and the open-source SDKs. Before that: classroom AI research, conversation analytics, medical imaging, markets, and college builds with friends.',
+  // About, beside the browser window of places (which carries the Future AGI detail).
   about: [
     'I’m Kartik. I build things across research and product, and I like the stretch where they meet: a model that has to survive real users, or an app that needs real ML underneath it.',
-    'Right now that’s Future AGI, where I’m a senior engineer and tech lead across most of the platform and its open-source SDKs: evaluation, Agent Optimizer, simulation, the Agent Command Center gateway, Error Feed, and the data and annotation systems underneath. I first-authored the AgentCompass paper on evaluating agents after they ship, co-invented a patented approach to synthetic data, and write about what breaks in production.',
-    'Before that: classroom AI research at IIT Bombay, including a Best Student Paper at IEEE TALE 2024 for speaker diarization. Conversation analytics at Vocab.AI. Energy-efficient medical imaging models at NIT Puducherry. Market-sentiment research at IIT Madras. And a run of college builds (Hivemind, Alumni Connect, Nexus, Centio.AI) with the same small group of collaborators, from my time studying Data Science & AI at IIIT Dharwad.',
-    'The thread through all of it: build the thing, then measure whether it actually works.',
+    'Before Future AGI: classroom AI research at IIT Bombay (Best Student Paper, IEEE TALE 2024), conversation analytics at Vocab.AI, energy-efficient medical imaging at NIT Puducherry, market-sentiment research at IIT Madras, and a run of college builds at IIIT Dharwad with the same small group of friends. In December 2023 I was doing three of those at once, plus the degree.',
+    'The thread through all of it: build the thing, then check that it actually works. The posts are about the times it didn’t.',
   ],
   links: [
     { label: 'GitHub', href: 'https://github.com/NVJKKartik', handle: 'NVJKKartik' },

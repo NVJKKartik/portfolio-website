@@ -1,100 +1,106 @@
 import Link from 'next/link';
 import SiteHeader from '@/components/SiteHeader';
 import Hall from '@/components/hall/Hall';
-import Catalogue from '@/components/hall/Catalogue';
+import WorkIndex from '@/components/home/WorkIndex';
+import Strike from '@/components/home/Strike';
+import PlaceTabs from '@/components/home/PlaceTabs';
 import { places, rows, rowYears } from '@/content/hall';
 import { profile } from '@/content/profile';
 import { journey } from '@/content/journey';
-import { posts } from '@/content/writing';
+import { posts, splitTitle } from '@/content/writing';
 import s from './home.module.css';
 
-// One page, walked in the order you'd leave a museum: the room, the list of what's in it, the writing,
-// the wall text about the person, and the front desk.
+const day = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+// One page: the room, then the lights come on for everything I've worked on, the writing, the places,
+// and how to reach me.
 export default function Home() {
   const years = rows.map(rowYears);
+  const [user, domain] = profile.email.split('@');
+  const tabs = [...journey].reverse().map(({ id, when, place, role, summary, did }) => ({ id, when, place, role, summary, did }));
   return (
-    <div className="dark">
+    <>
       <SiteHeader tone="light" hideName />
       <main id="main">
-        <Hall rows={rows} years={years} places={places} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
+        <div className="dark">
+          <Hall rows={rows} years={years} places={places} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
+        </div>
 
-        <section id="work" className={s.section} aria-labelledby="work-h">
-          <div className={s.head}>
-            <h2 id="work-h">Work</h2>
-            <p>Every work in the room, newest first. Each one opens its full record: what it is, what I did, and who I made it with.</p>
-          </div>
-          <Catalogue rows={rows} years={years} />
-        </section>
+        <div className={s.lit}>
+          <section id="work" className={s.section} aria-labelledby="work-h">
+            <h2 id="work-h" className={s.kick}>
+              Everything I’ve worked on, newest first
+            </h2>
+            <WorkIndex rows={rows} years={years} />
+          </section>
 
-        <section id="writing" className={s.section} aria-labelledby="writing-h">
-          <div className={s.head}>
-            <h2 id="writing-h">Writing</h2>
-            <p>Mostly about the gap between a green check and a working system.</p>
-          </div>
-          <ol className={s.posts}>
-            {posts.slice(0, 4).map(x => (
-              <li key={x.slug}>
-                <Link href={`/writing/${x.slug}/`}>
-                  <b>{x.title}</b>
-                  <span>
-                    {x.source} · {x.readingMinutes} min · {x.date}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-          <p className={s.more}>
-            <Link href="/writing/">All {posts.length} posts</Link>
-          </p>
-        </section>
-
-        <section id="about" className={s.section} aria-labelledby="about-h">
-          <div className={s.head}>
-            <h2 id="about-h">About</h2>
-            <p>{profile.role}.</p>
-          </div>
-          <div className={s.about}>
-            <div className={s.words}>
-              {profile.about.map((t, i) => (
-                <p key={i}>{t}</p>
-              ))}
-            </div>
-            <ol className={s.chrono} aria-label="Chronology">
-              {[...journey].reverse().map(stop => (
-                <li key={stop.id} id={stop.id}>
-                  <span>{stop.when}</span>
-                  <b>{stop.place}</b>
-                  {stop.role && <em>{stop.role}</em>}
-                </li>
-              ))}
+          <section id="writing" className={s.section} aria-labelledby="writing-h">
+            <h2 id="writing-h" className={s.h} aria-label="Posts about what broke.">
+              Posts about what <Strike>worked</Strike> broke.
+            </h2>
+            <ol className={s.titles}>
+              {posts.slice(0, 4).map(p => {
+                const [setup, turn] = splitTitle(p.title);
+                return (
+                  <li key={p.slug}>
+                    <Link href={`/writing/${p.slug}/`} transitionTypes={['nav-forward']}>
+                      <span className={s.ti}>
+                        {setup && <span className={s.setup}>{setup} </span>}
+                        <span className={s.turn}>{turn}</span>
+                      </span>
+                      <small>
+                        {p.source} · {p.readingMinutes} min · {day(p.date)}
+                      </small>
+                    </Link>
+                  </li>
+                );
+              })}
             </ol>
-          </div>
-        </section>
+            <Link className={s.more} href="/writing/">
+              All {posts.length} posts →
+            </Link>
+          </section>
 
-        <section id="contact" className={`${s.section} ${s.contact}`} aria-labelledby="contact-h">
-          <div className={s.head}>
-            <h2 id="contact-h">Contact</h2>
-            <p>
-              <a className={s.mail} href={`mailto:${profile.email}`}>
-                {profile.email}
-              </a>
+          <section id="about" className={s.section} aria-labelledby="about-h">
+            <h2 id="about-h" className={s.h}>
+              One job. Too many tabs.
+            </h2>
+            <p className={s.sub}>
+              Senior engineer and tech lead at Future AGI, where I started as an intern in December 2024. <b>That’s one tab.</b> Here are the rest.
             </p>
-          </div>
-          <ul className={s.links}>
-            {profile.links.map(l => (
-              <li key={l.label}>
-                <a href={l.href} target="_blank" rel="noreferrer me">
-                  {l.label}
+            <div className={s.about}>
+              <div className={s.words}>
+                {profile.about.map((t, i) => (
+                  <p key={i}>{t}</p>
+                ))}
+                <p className={s.aside}>Pinned: F1, markets and economics.</p>
+              </div>
+              <PlaceTabs places={tabs} />
+            </div>
+          </section>
+
+          <section id="contact" className={`${s.section} ${s.contact}`} aria-labelledby="contact-h">
+            <h2 id="contact-h" className={s.kick}>
+              One more tab won’t hurt.
+            </h2>
+            <a className={s.mail} href={`mailto:${profile.email}`}>
+              {user}
+              <wbr />@{domain}
+            </a>
+            <p className={s.links}>
+              {profile.links.map(l => (
+                <a key={l.label} href={l.href} target="_blank" rel="noreferrer me">
+                  {l.label} ↗
                 </a>
-                <span>{l.handle}</span>
-              </li>
-            ))}
-          </ul>
-          <p className={s.more}>
-            <Link href="/receipts/">Where every fact on this site comes from</Link>
-          </p>
-        </section>
+              ))}
+            </p>
+            <p className={s.receipts}>
+              <Link href="/receipts/">Receipts</Link> for every fact on this site.
+            </p>
+          </section>
+        </div>
       </main>
-    </div>
+    </>
   );
 }

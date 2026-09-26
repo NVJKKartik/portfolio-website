@@ -1,0 +1,49 @@
+.strike {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.word {
+  opacity: 0.38;
+}
+.strike svg {
+  position: absolute;
+  left: -3%;
+  top: 36%;
+  width: 106%;
+  height: 38%;
+  overflow: visible;
+  pointer-events: none;
+}
+.strike path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+}
+.strike path + path {
+  stroke-width: 4;
+  opacity: 0.85;
+}
+.strike[data-drawn] path {
+  animation: draw 0.45s var(--ease-out) forwards;
+}
+.strike[data-drawn] path + path {
+  animation-delay: 0.22s;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .strike path {
+    stroke-dashoffset: 0;
+  }
+  .strike[data-drawn] path {
+    animation: none;
+  }
+}
