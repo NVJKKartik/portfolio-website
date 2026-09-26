@@ -7,10 +7,10 @@ import s from './Holes.module.css';
 
 /**
  * Rabbit holes, newest first: the field, then what came out of it. Opening one shows the way down,
- * with links to the records. One open at a time; the first is open to begin with.
+ * with links to the records. All closed to begin with, so the outcomes read as one list; one open at a time.
  */
 export default function Holes({ holes }: { holes: Hole[] }) {
-  const [open, setOpen] = useState<string | null>(holes[0]?.stop ?? null);
+  const [open, setOpen] = useState<string | null>(null);
   return (
     <ol className={s.holes}>
       {holes.map(h => {
