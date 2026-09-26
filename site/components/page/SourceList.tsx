@@ -5,7 +5,7 @@ import s from './SourceList.module.css';
 export default function SourceList({ ids }: { ids: SourceId[] }) {
   return (
     <section className={s.sources} aria-labelledby="sources-h">
-      <h2 id="sources-h">Sources for this page</h2>
+      <h2 id="sources-h">Receipts</h2>
       <ol>
         {[...new Set(ids)].map(id => (
           <li key={id}>

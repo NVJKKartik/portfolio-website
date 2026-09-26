@@ -27,7 +27,7 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
 
   return (
     <Paper>
-      <nav className={r.crumbs} aria-label="Where this hangs">
+      <nav className={r.crumbs} aria-label="Back to the hall">
         <Link href={hall.back} transitionTypes={['nav-back']}>
           ← Back to the hall
         </Link>
@@ -54,11 +54,11 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
             <p className={r.medium}>{w.medium}</p>
             <p className={r.lede}>{w.oneLiner}</p>
             <hr className={r.rule} />
-            <h2 className={r.h}>Kartik’s part</h2>
+            <h2 className={r.h}>What I did</h2>
             {w.contribution.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
-            <h2 className={r.h}>Credit</h2>
+            <h2 className={r.h}>Who I made it with</h2>
             <p className={r.credit}>{w.collaborators}</p>
             {w.links.length > 0 && (
               <p className={r.links}>
@@ -166,8 +166,8 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
 
         <SourceList ids={w.sources} />
 
-        <nav className={r.next} aria-label="Next in the room">
-          <span>Next in the room, further back in time</span>
+        <nav className={r.next} aria-label="Next, further back in time">
+          <span>Next, a little further back in time</span>
           <Link href={hall.next.href} transitionTypes={['nav-forward']}>
             {hall.next.title} →
           </Link>

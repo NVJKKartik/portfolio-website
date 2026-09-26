@@ -331,16 +331,16 @@ export default function Hall({ rows, years, places, name, intro, proof }: Props)
 
         {current && (
           <aside className={s.label} data-on={(back && !craned) || undefined} inert={!back || craned} aria-label="Label on the back of the easel">
-            <div className={s.k}>Back of the easel</div>
+            <div className={s.k}>Turned around</div>
             <h2>{current.title}</h2>
             <div className={s.d}>
               {current.when} · {current.place}
             </div>
             <div className={s.m}>{current.medium}</div>
             <hr />
-            <h3>Kartik’s part</h3>
+            <h3>What I did</h3>
             <p>{current.part}</p>
-            <h3>Credit</h3>
+            <h3>Who I made it with</h3>
             <p className={s.credit}>{current.credit}</p>
           </aside>
         )}

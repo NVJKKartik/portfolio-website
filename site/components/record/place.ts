@@ -6,7 +6,7 @@ export function placeInHall(id: string) {
   const inside = exhibits.filter(e => !e.external);
   const i = inside.findIndex(e => e.id === id);
   return {
-    where: row >= 0 ? `In the hall with ${rowYears(rows[row])}` : '',
+    where: row >= 0 ? rowYears(rows[row]) : '',
     back: row >= 0 ? `/#${id}` : '/',
     next: i >= 0 ? inside[(i + 1) % inside.length] : inside[0],
   };

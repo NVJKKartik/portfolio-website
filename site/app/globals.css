@@ -6,15 +6,17 @@
   --glass: #8fb7a6;
   --glass-deep: #3d5a50;
   --daylight: #eef1ec;
-  --paper: #f6f4ef; /* label paper: every reading page */
-  --paper-2: #ece9e1;
-  --ink: #1b1c1c;
-  --ink-2: #4d4a44;
-  --ink-3: #6f6b63;
-  --line-paper: #d8d4cb;
+  --paper: #f8f1e4; /* warm cream: every reading page, and the lights-on half of the home page */
+  --paper-2: #efe5d2;
+  --ink: #1e1b17;
+  --ink-2: #4f483e;
+  --ink-3: #7b7266;
+  --line-paper: #e0d5c1;
   --on-dark: #f3f1ec;
   --on-dark-2: #bdb9b0;
-  --accent: #9a3b1e; /* oxide, used only for "you are here" and the active item */
+  --accent: #e2552b; /* tomato: my hand (what I did), links, "you are here" */
+  --team: #3d7a64; /* glass green, deepened: the people I made it with */
+  --wide: 122%; /* Archivo's width axis for display type: chunky and friendly, not a poster */
 
   /* Surface-relative tokens; dark sections override them. */
   --line: var(--line-paper);

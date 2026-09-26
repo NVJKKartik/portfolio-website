@@ -33,7 +33,7 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
 
   return (
     <Paper>
-      <nav className={r.crumbs} aria-label="Where this hangs">
+      <nav className={r.crumbs} aria-label="Back to the hall">
         <Link href={hall.back} transitionTypes={['nav-back']}>
           ← Back to the hall
         </Link>
@@ -58,7 +58,7 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
             {x.badge && <p className={r.badge}>{x.badge}</p>}
             <p className={r.lede}>{x.question}</p>
             <hr className={r.rule} />
-            <h2 className={r.h}>Kartik’s part</h2>
+            <h2 className={r.h}>What I did</h2>
             <p>{x.role}</p>
             <h2 className={r.h}>{x.kind === 'Granted patent' ? 'Inventors' : 'Authors'}</h2>
             <p className={r.credit}>
@@ -154,8 +154,8 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
 
         <SourceList ids={x.sources} />
 
-        <nav className={r.next} aria-label="Next in the room">
-          <span>Next in the room, further back in time</span>
+        <nav className={r.next} aria-label="Next, further back in time">
+          <span>Next, a little further back in time</span>
           <Link href={hall.next.href} transitionTypes={['nav-forward']}>
             {hall.next.title} →
           </Link>
