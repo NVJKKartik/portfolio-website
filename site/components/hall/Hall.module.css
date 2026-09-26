@@ -31,10 +31,22 @@
 }
 .poster {
   object-fit: cover;
+}
+/* The room fades in over the poster: the canvas is opaque, so until the first frame with the front row
+   is drawn it stays out of sight (and out of reach), or it would cover the poster with blank easels.
+   The poster goes once the room is fully in front of it. */
+.gl {
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 0.8s var(--ease-out);
 }
+.stage[data-live] .gl {
+  opacity: 1;
+  pointer-events: auto;
+}
 .poster[data-hidden] {
-  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s 0.8s;
 }
 .gl canvas {
   display: block;

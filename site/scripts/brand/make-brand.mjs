@@ -10,9 +10,10 @@ const root = new URL('../../', import.meta.url);
 const at = p => new URL(p, root).pathname;
 const browser = await chromium.launch({ channel: 'chrome' });
 
-/** Opens the hall, waits for the front rows to load and the opening dolly to finish. */
+/** Opens the hall with motion paused, so it holds the opening view (where the live room starts), and waits for the plates. */
 async function hall(viewport, dpr, css) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: dpr });
+  await page.addInitScript(() => localStorage.setItem('kartik:paused', '1'));
   await page.goto(base + '/', { waitUntil: 'networkidle' });
   await page.addStyleTag({ content: `nextjs-portal,.skip-link{display:none!important}${css}` });
   await page.waitForSelector('[data-live]', { timeout: 30000 });
@@ -20,7 +21,7 @@ async function hall(viewport, dpr, css) {
   return page;
 }
 
-// Posters: the room alone, no text. The first frame, and what reduced-motion visitors see.
+// Posters: the room alone, no text. The live room's first frame, and what reduced-motion visitors see.
 const hide = (...parts) => `${parts.map(p => `section[aria-label="The hall"] [class*="${p}"]`).join(',')}{visibility:hidden!important}`;
 const bare = `header{visibility:hidden!important}${hide('wall', 'hint', 'mini', 'caption', 'controls')}`;
 for (const [file, vp, dpr] of [
