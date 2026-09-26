@@ -251,7 +251,7 @@ const DRAW = {
       txt(g, a, 64, 760 + k * 62, { size: 20, font: MONO, color: '#ff8a6e' });
       txt(g, b, 250, 760 + k * 62, { size: 28, color: '#f5e6e1' });
     });
-    caption(g, W, H, 'Error Feed: cluster root cause', 'An agent that investigates a cluster · 2026', '#f5e6e1', '#c49a90');
+    caption(g, W, H, 'Error Feed', 'A harness that watches the product · 2026', '#f5e6e1', '#c49a90');
   },
   'annotations-clickhouse'(g, W, H) {
     g.fillStyle = '#d9d6ce';
