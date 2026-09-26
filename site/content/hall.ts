@@ -2,7 +2,7 @@ import { work } from './work';
 import { research } from './research';
 import { speaking } from './more';
 import { posts } from './writing';
-import { journey } from './journey';
+import { holes } from './holes';
 import { profile } from './profile';
 
 // Everything in the hall is derived from the content files, so a label can never disagree with its page.
@@ -147,10 +147,10 @@ export const exhibitById = (id: string) => exhibits.find(e => e.id === id);
 
 // ——— the painted end walls ———
 
-/** The back wall is a browser window with a tab per place (newest first) and the pinned interests; the exit wall says thanks. */
-export type Walls = { places: string[]; fun: string[]; email: string };
+/** The back wall paints the rabbit holes (field, then what came out of it); the exit wall says thanks. */
+export type Walls = { holes: [string, string][]; fun: string[]; email: string };
 export const walls: Walls = {
-  places: [...journey].reverse().map(j => j.place.split(' · ')[0]),
+  holes: holes.map(h => [h.field, h.depth]),
   fun: profile.fun,
   email: profile.email,
 };

@@ -3,22 +3,21 @@ import SiteHeader from '@/components/SiteHeader';
 import Hall from '@/components/hall/Hall';
 import WorkIndex from '@/components/home/WorkIndex';
 import Strike from '@/components/home/Strike';
-import PlaceTabs from '@/components/home/PlaceTabs';
+import Holes from '@/components/home/Holes';
 import { rows, rowYears, walls } from '@/content/hall';
 import { profile } from '@/content/profile';
-import { journey } from '@/content/journey';
+import { holes } from '@/content/holes';
 import { posts, splitTitle } from '@/content/writing';
 import s from './home.module.css';
 
 const day = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
-// One page: the room, then the lights come on for everything I've worked on, the writing, the places,
-// and how to reach me.
+// One page: the room, then the lights come on for everything I've worked on, the writing, the rabbit
+// holes, and how to reach me.
 export default function Home() {
   const years = rows.map(rowYears);
   const [user, domain] = profile.email.split('@');
-  const tabs = [...journey].reverse().map(({ id, when, place, role, summary, did }) => ({ id, when, place, role, summary, did }));
   return (
     <>
       <SiteHeader tone="light" hideName />
@@ -64,26 +63,23 @@ export default function Home() {
 
           <section id="about" className={s.section} aria-labelledby="about-h">
             <h2 id="about-h" className={s.h}>
-              One job. Too many tabs.
+              Rabbit holes, not hobbies.
             </h2>
-            <p className={s.sub}>
-              Senior engineer and tech lead at Future AGI, where I started as an intern in December 2024. <b>That’s one tab.</b> Click through the
-              rest.
-            </p>
+            <p className={s.sub}>When something gets my attention I go all the way down. So far:</p>
             <div className={s.about}>
               <div className={s.words}>
                 {profile.about.map((t, i) => (
                   <p key={i}>{t}</p>
                 ))}
-                <p className={s.aside}>Pinned: {new Intl.ListFormat('en-GB').format(profile.fun)}.</p>
+                <p className={s.aside}>Off the clock: {new Intl.ListFormat('en-GB').format(profile.fun)}.</p>
               </div>
-              <PlaceTabs places={tabs} fun={profile.fun} />
+              <Holes holes={holes} />
             </div>
           </section>
 
           <section id="contact" className={`${s.section} ${s.contact}`} aria-labelledby="contact-h">
             <h2 id="contact-h" className={s.kick}>
-              One more tab won’t hurt.
+              Got a rabbit hole for me?
             </h2>
             <a className={s.mail} href={`mailto:${profile.email}`}>
               {user}

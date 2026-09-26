@@ -1,0 +1,103 @@
+.holes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--ink);
+}
+.holes > li {
+  border-bottom: 1px solid var(--line-paper);
+}
+.holes button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 24px;
+  align-items: baseline;
+  width: 100%;
+  padding: 18px 0 16px;
+  text-align: left;
+}
+.field {
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.1;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.02em;
+  transition: color 0.2s;
+}
+/* What came out of it: my colour. */
+.depth {
+  grid-column: 1;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--accent);
+}
+.meta {
+  grid-column: 2;
+  grid-row: 1;
+  font: 12.5px/1.5 var(--f-mono);
+  color: var(--ink-3);
+  text-align: right;
+}
+.holes button::after {
+  content: '+';
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink-3);
+  transition: transform 0.25s var(--ease-out);
+}
+.holes li[data-open] button::after {
+  transform: rotate(45deg);
+}
+.holes button:hover .field,
+.holes button:focus-visible .field {
+  color: var(--accent);
+}
+.down {
+  padding: 0 0 22px;
+}
+.down ul {
+  display: grid;
+  gap: 8px;
+  max-width: 66ch;
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.down li::marker {
+  color: var(--accent);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin: 14px 0 0;
+  font-size: 14.5px;
+  font-weight: 800;
+}
+.links a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.links a:hover,
+.links a:focus-visible {
+  color: var(--accent);
+}
+@media (max-width: 700px) {
+  .holes button {
+    grid-template-columns: minmax(0, 1fr) 20px;
+  }
+  .meta {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: left;
+  }
+  .holes button::after {
+    grid-row: 1;
+  }
+}

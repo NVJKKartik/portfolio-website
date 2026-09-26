@@ -10,7 +10,7 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import type { Exhibit, Walls } from '@/content/hall';
 import { AISLE, EYE, ROW, layout, planFrame } from './layout';
-import { drawTabs, drawThanks } from './walls';
+import { drawHoles, drawThanks } from './walls';
 
 export type HallEvents = {
   hover: (id: string | null, x: number, y: number) => void;
@@ -358,7 +358,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     if (turned) mesh.rotation.y = Math.PI;
     scene.add(mesh);
   };
-  paint(g => drawTabs(g, pw, o.walls, o.font), plan.z1 + 0.01, false);
+  paint(g => drawHoles(g, pw, o.walls, o.font), plan.z1 + 0.01, false);
   paint(g => drawThanks(g, pw, o.walls.email, o.font), plan.z0 - 0.01, true);
 
   const skyMat = keep(new THREE.MeshBasicMaterial({ map: keep(skyTexture()), fog: false }));
