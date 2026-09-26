@@ -198,11 +198,14 @@ function halfSize(img: HTMLImageElement) {
   c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
   return c;
 }
-function textTexture(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void) {
+/** Drawn in w×h units at `scale` pixels per unit: phones get labels at half size, a quarter of the memory. */
+function textTexture(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void, scale = 1) {
   const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  draw(c.getContext('2d')!);
+  c.width = Math.round(w * scale);
+  c.height = Math.round(h * scale);
+  const g = c.getContext('2d')!;
+  g.scale(scale, scale);
+  draw(g);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 8;
@@ -213,6 +216,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   const exhibits = o.rows.flat();
   const plan = layout(o.rows);
   const high = o.quality === 'high';
+  const textScale = high ? 1 : 0.5;
+  // The boot runs in a few tasks, not one: between steps the page can scroll and paint.
+  const breathe = () => new Promise<void>(r => setTimeout(r, 0));
+  // Declared before anything async: the plate loader's callbacks set it.
+  let dirty = true;
   const disposables: { dispose: () => void }[] = [];
   const keep = <T extends { dispose: () => void }>(x: T) => (disposables.push(x), x);
 
@@ -246,6 +254,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   pmrem.dispose();
   scene.environment = env;
   scene.environmentIntensity = 0.55;
+  await breathe();
   const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 90);
 
   // ——— architecture ———
@@ -302,9 +311,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     upper.add(b);
   }
 
+  await breathe();
   const cm = concreteMaps();
   keep(cm.albedo);
   keep(cm.normal);
+  await breathe();
   const wallAlbedo = cm.albedo.clone();
   wallAlbedo.repeat.set(8, 2);
   keep(wallAlbedo);
@@ -523,28 +534,33 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         new THREE.MeshStandardMaterial({
           roughness: 0.8,
           map: keep(
-            textTexture(680, 380, g => {
-              g.fillStyle = '#f3f1ea';
-              g.fillRect(0, 0, 680, 380);
-              g.fillStyle = '#1b1c1c';
-              g.font = `650 40px ${o.font}`;
-              let line = '',
-                y = 74;
-              for (const w of e.title.split(' ')) {
-                const t = line ? `${line} ${w}` : w;
-                if (g.measureText(t).width > 600 && line) {
-                  g.fillText(line, 40, y);
-                  line = w;
-                  y += 48;
-                } else line = t;
-              }
-              g.fillText(line, 40, y);
-              g.font = `400 28px ${o.font}`;
-              g.fillStyle = '#4d4a44';
-              g.fillText(e.when, 40, y + 52);
-              g.fillStyle = '#77736b';
-              g.fillText(e.medium.length > 44 ? `${e.medium.slice(0, 42)}…` : e.medium, 40, y + 92);
-            }),
+            textTexture(
+              680,
+              380,
+              g => {
+                g.fillStyle = '#f3f1ea';
+                g.fillRect(0, 0, 680, 380);
+                g.fillStyle = '#1b1c1c';
+                g.font = `650 40px ${o.font}`;
+                let line = '',
+                  y = 74;
+                for (const w of e.title.split(' ')) {
+                  const t = line ? `${line} ${w}` : w;
+                  if (g.measureText(t).width > 600 && line) {
+                    g.fillText(line, 40, y);
+                    line = w;
+                    y += 48;
+                  } else line = t;
+                }
+                g.fillText(line, 40, y);
+                g.font = `400 28px ${o.font}`;
+                g.fillStyle = '#4d4a44';
+                g.fillText(e.when, 40, y + 52);
+                g.fillStyle = '#77736b';
+                g.fillText(e.medium.length > 44 ? `${e.medium.slice(0, 42)}…` : e.medium, 40, y + 92);
+              },
+              textScale,
+            ),
           ),
         }),
       ),
@@ -564,12 +580,17 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
           depthWrite: false,
           roughness: 0.95,
           map: keep(
-            textTexture(1100, 230, g => {
-              g.font = `600 108px ${o.font}`;
-              g.fillStyle = 'rgba(38,37,35,.82)';
-              g.textBaseline = 'middle';
-              g.fillText(o.years[k], 8, 118);
-            }),
+            textTexture(
+              1100,
+              230,
+              g => {
+                g.font = `600 108px ${o.font}`;
+                g.fillStyle = 'rgba(38,37,35,.82)';
+                g.textBaseline = 'middle';
+                g.fillText(o.years[k], 8, 118);
+              },
+              textScale,
+            ),
           ),
         }),
       ),
@@ -615,6 +636,8 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   });
   scene.add(mirror);
 
+  // Before the plates start loading: the first one can't land (and call ready) mid-boot.
+  await breathe();
   // Works load front row first; the room is usable before the back wall arrives.
   const loader = new THREE.TextureLoader();
   let alive = true,
@@ -791,7 +814,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   let paused = o.reduced;
   /** Paused or reduced motion: every camera move becomes a cut. */
   const cut = () => paused || o.reduced;
-  let dirty = true;
   const byId = (id: string) => easels.find(ez => ez.e.id === id) ?? null;
 
   function finishTween() {

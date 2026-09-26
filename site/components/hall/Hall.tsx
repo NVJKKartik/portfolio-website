@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { preload } from 'react-dom';
 import type { Exhibit } from '@/content/hall';
 import { useMotion } from '@/lib/motion';
 import type { HallController } from './engine';
@@ -32,6 +33,8 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   const ctl = useRef<HallController | null>(null);
   const halfTurn = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { reduced, paused, togglePaused } = useMotion();
+  // The front row is what the room waits for before it goes live: fetch it with the page, not after the engine.
+  rows[0]?.forEach(e => preload(e.image.src, { as: 'image' }));
   // Reduced motion, or a browser that couldn't run the engine: the still poster, no crane.
   const [failed, setFailed] = useState(false);
   const still = reduced || failed;
