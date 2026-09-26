@@ -2,6 +2,7 @@ import { work } from './work';
 import { research } from './research';
 import { speaking } from './more';
 import { posts } from './writing';
+import { journey } from './journey';
 
 // Everything in the hall is derived from the content files, so a label can never disagree with its page.
 // Order is time: the front row is the newest work, the back wall the oldest.
@@ -141,3 +142,64 @@ export const rowYears = (row: Exhibit[]) => {
 };
 
 export const exhibitById = (id: string) => exhibits.find(e => e.id === id);
+
+// ——— the two painted walls ———
+
+/**
+ * The exit wall: everyone the easel labels credit, grouped by where the work was made, oldest first,
+ * spelled exactly as credited. A group's last line names the team when the credit does.
+ */
+export type CreditGroup = { place: string; names: string[] };
+export const madeWith: CreditGroup[] = [
+  { place: 'IIIT Dharwad', names: ['AryanTN05', 'Ashxsh1', 'PlatJack', 'Priyesh Gupta', 'Rohith Yadav', 'Vinayak Rai', 'Vivaan Sharma'] },
+  {
+    place: 'IIT Bombay',
+    names: [
+      'Aarsh Desai',
+      'Ashwin T S',
+      'Manjunath K. Vanahalli',
+      'Priyesh Gupta',
+      'Ramkumar Rajendran',
+      'Vinayak',
+      'Vishwas Badhe',
+      'the Educational Technology group',
+    ],
+  },
+  { place: 'Vocab.AI', names: ['the Vocab.AI team'] },
+  { place: 'NIT Puducherry', names: ['the Department of CSE'] },
+  { place: 'IIT Madras', names: ['RBCDSAI'] },
+  {
+    place: 'Future AGI',
+    names: [
+      'azain-commits',
+      'cdileep23',
+      'commitPirate',
+      'Garvit Sapra',
+      'JayaSurya-27',
+      'KarthikAvinashFI',
+      'nik13',
+      'Nikhil Pareek',
+      'Rishav Hada',
+      'sarthakFuture',
+      'Srikanth Malyala',
+      'velalagan-pixel',
+      'Arvind Narayanamurthy (The Gen Academy)',
+      'and the Future AGI team',
+    ],
+  },
+];
+// A name on the wall must be one an easel label actually credits: this fails the build on a typo or an invention.
+{
+  const credited = exhibits.map(e => e.credit).join(' ');
+  for (const g of madeWith)
+    for (const n of g.names) {
+      const core = n.replace(/^(and )?the /, '');
+      if (!credited.includes(core)) throw new Error(`madeWith: "${n}" (${g.place}) isn't credited on any easel`);
+    }
+}
+
+/** The back wall: where the work was made, as painted bars on a time axis. From the journey's dated stops. */
+export type Place = { place: string; from: string; to: string; shift?: { at: string; before: string; after: string } };
+export const places: Place[] = journey
+  .filter(j => j.span)
+  .map(j => ({ place: j.place.split(' · ')[0], from: j.span![0], to: j.span![1], shift: j.shift }));

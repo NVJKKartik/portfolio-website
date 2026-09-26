@@ -37,6 +37,7 @@ npx serve out        # preview the exact files that get deployed
 | Easel positions and the plan's on-screen box (shared by 3D and plan) | `components/hall/layout.ts`                                                          |
 | The room itself (light, glass, camera)                               | `components/hall/engine.ts`                                                          |
 | Wall text, labels, controls, crane                                   | `components/hall/Hall.tsx`                                                           |
+| The painted walls (credits at the exit, places on the back wall)     | `components/hall/walls.ts`, data in `content/hall.ts`                                |
 | Record pages                                                         | `app/work/[slug]`, `app/research/[slug]`, styles in `components/record/`             |
 | Interface studies (Nexus, Centio.AI, Alumni Connect)                 | `components/studies/*.js`, wrapped by `Study.tsx`                                    |
 | Journey (roles, dates)                                               | `content/journey.ts`, shown on About                                                 |

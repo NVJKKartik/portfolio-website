@@ -26,7 +26,7 @@ export default function Plan({ rows, mini, active, onHover, youRef }: Props) {
   for (let z = h.z0; z > h.z1; z -= 1.9) mullions.push(z);
   return (
     <svg className={`${s.plan} ${mini ? s.mini : ''}`} viewBox={vb.join(' ')} aria-hidden>
-      <path className={s.walls} d={`M${h.x0} ${h.z0} V${h.z1} H${h.x1} V${h.z0}`} />
+      <path className={s.walls} d={`M${h.x0} ${h.z0} V${h.z1} H${h.x1} V${h.z0} Z`} />
       <line className={s.glass} x1={h.x0} x2={h.x0} y1={h.z0} y2={h.z1} />
       {!mini && mullions.map(z => <line key={z} className={s.mull} x1={h.x0 - 0.14} x2={h.x0 + 0.14} y1={z} y2={z} />)}
       {h.placed.map(p => {
