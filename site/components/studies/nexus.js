@@ -125,7 +125,7 @@ export async function mount(el, opts = {}) {
     <div><h2>Trading paused.</h2><p>Your open orders stay open. The market will still be there in ten minutes, and so will your plan.</p>
       <div class="nx-learn"><i></i><div><b>Reading volatility</b><span>What a 4% hourly range means, and what it doesn’t. 3 min.</span></div></div>
       <button class="back" type="button">End pause early</button></div></div></div>
-  <footer class="nx-foot"><span><b>Interface study, 2026</b> · Redesign of Nexus (Hackfest ’24). Sample data.</span><span>Built in 2024 with Vinayak Rai, Priyesh Gupta and PlatJack</span></footer>`;
+  <footer class="nx-foot"><span><b>Interface study, 2026</b> · Redesign of Nexus (Hackfest ’24). Sample data.</span><span>Built in 2024 with Vinayak Rai, Priyesh Gupta and Aarsh Desai</span></footer>`;
 
   // sample session: a drop, then a run of trades chasing it
   const rand = rnd(7),

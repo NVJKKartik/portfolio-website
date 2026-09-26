@@ -62,14 +62,14 @@ export const sources = {
     label: 'github.com/NVJKKartik/Hivemind',
     url: 'https://github.com/NVJKKartik/Hivemind',
     supports:
-      'Hivemind (2023, EJS; began as a course project). Kartik’s commits: Firebase PDF upload and rendering, authenticated book reader, discussion forum messaging, notepad, image upload, WebGazer in the book finder. With priyeshgupta14, PlatJack, VinayakRai5.',
+      'Hivemind (2023, EJS; began as a course project). Kartik’s commits: Firebase PDF upload and rendering, authenticated book reader, discussion forum messaging, notepad, image upload, WebGazer in the book finder. With priyeshgupta14, PlatJack (Aarsh Desai), VinayakRai5.',
   },
   repoAlumni: {
     id: 'repoAlumni',
     label: 'github.com/NVJKKartik/Alumni_connect',
     url: 'https://github.com/NVJKKartik/Alumni_connect',
     supports:
-      'Alumni Connect Flutter app (profiles, search, chat, posts, job listings). Contributors: Ashxsh1 (lead), NVJKKartik, VinayakRai5, priyeshgupta14.',
+      'Alumni Connect Flutter app (profiles, search, chat, posts, job listings). Contributors: Ashxsh1 (Aarsh Desai, lead), NVJKKartik, VinayakRai5, priyeshgupta14.',
   },
   repoCentio: {
     id: 'repoCentio',

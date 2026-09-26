@@ -151,7 +151,7 @@ export const exhibitById = (id: string) => exhibits.find(e => e.id === id);
  */
 export type CreditGroup = { place: string; names: string[] };
 export const madeWith: CreditGroup[] = [
-  { place: 'IIIT Dharwad', names: ['AryanTN05', 'Ashxsh1', 'PlatJack', 'Priyesh Gupta', 'Rohith Yadav', 'Vinayak Rai', 'Vivaan Sharma'] },
+  { place: 'IIIT Dharwad', names: ['Aarsh Desai', 'AryanTN05', 'Priyesh Gupta', 'Rohith Yadav', 'Vinayak Rai', 'Vivaan Sharma'] },
   {
     place: 'IIT Bombay',
     names: [
@@ -160,7 +160,7 @@ export const madeWith: CreditGroup[] = [
       'Manjunath K. Vanahalli',
       'Priyesh Gupta',
       'Ramkumar Rajendran',
-      'Vinayak',
+      'Vinayak Rai',
       'Vishwas Badhe',
       'the Educational Technology group',
     ],
@@ -168,25 +168,8 @@ export const madeWith: CreditGroup[] = [
   { place: 'Vocab.AI', names: ['the Vocab.AI team'] },
   { place: 'NIT Puducherry', names: ['the Department of CSE'] },
   { place: 'IIT Madras', names: ['RBCDSAI'] },
-  {
-    place: 'Future AGI',
-    names: [
-      'azain-commits',
-      'cdileep23',
-      'commitPirate',
-      'Garvit Sapra',
-      'JayaSurya-27',
-      'KarthikAvinashFI',
-      'nik13',
-      'Nikhil Pareek',
-      'Rishav Hada',
-      'sarthakFuture',
-      'Srikanth Malyala',
-      'velalagan-pixel',
-      'Arvind Narayanamurthy (The Gen Academy)',
-      'and the Future AGI team',
-    ],
-  },
+  // Too many people to name fairly here; each Future AGI easel carries its own credit.
+  { place: 'Future AGI', names: ['the Future AGI team'] },
 ];
 // A name on the wall must be one an easel label actually credits: this fails the build on a typo or an invention.
 {

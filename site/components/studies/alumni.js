@@ -130,7 +130,7 @@ export async function mount(el, opts = {}) {
   r.className = 'al-board';
   fit.appendChild(r);
   el.appendChild(fit);
-  r.innerHTML = `${people()}${profile()}${jobs()}<div class="al-cap"><b>Interface study, 2026</b>Redesign of Alumni Connect (2023, led by Ashxsh1). Sample profiles and companies.</div>`;
+  r.innerHTML = `${people()}${profile()}${jobs()}<div class="al-cap"><b>Interface study, 2026</b>Redesign of Alumni Connect (2023, led by Aarsh Desai). Sample profiles and companies.</div>`;
   const chips = [...r.querySelectorAll('.al-chips button')],
     rows = [...r.querySelectorAll('.al-p')],
     count = r.querySelector('.al-count');
