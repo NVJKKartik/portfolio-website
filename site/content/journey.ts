@@ -7,8 +7,10 @@ export type Stop = {
   id: string;
   when: string; // display
   sort: string; // ISO-ish for ordering
-  /** Months on the timeline ribbon: [start, end] as YYYY-MM, or 'now'. Omitted when undated. */
+  /** [start, end] for the chronology wall: YYYY-MM, YYYY when only the year is known, or 'now'. Omitted when undated. */
   span?: [string, string];
+  /** A change of role partway through the span, e.g. intern to full-time. */
+  shift?: { at: string; before: string; after: string };
   place: string;
   role?: string;
   kind: 'study' | 'research' | 'industry' | 'milestone';
@@ -22,7 +24,8 @@ export type Stop = {
 export const journey: Stop[] = [
   {
     id: 'iiit-dharwad',
-    when: 'Undergrad',
+    span: ['2021', '2025'],
+    when: '2021 — 2025',
     sort: '2021',
     place: 'IIIT Dharwad',
     role: 'Data Science & AI',
@@ -102,11 +105,13 @@ export const journey: Stop[] = [
   },
   {
     id: 'future-agi',
-    span: ['2025-04', 'now'],
-    when: '2025 — now',
-    sort: '2025-04',
+    span: ['2024-12', 'now'],
+    // From Kartik, 2026-09-26: joined as an intern in December 2024, full-time from July 2025.
+    shift: { at: '2025-07', before: 'intern', after: 'full-time' },
+    when: 'Dec 2024 — now',
+    sort: '2024-12',
     place: 'Future AGI',
-    role: 'Senior engineer and tech lead',
+    role: 'Intern, then full-time from Jul 2025. Now senior engineer and tech lead',
     kind: 'industry',
     summary:
       'Most of the platform and its open-source SDKs: evaluation, Agent Optimizer, simulation, the gateway, Error Feed, and the data and annotation systems underneath.',
