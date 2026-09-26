@@ -693,6 +693,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     lifted = false,
     lastPlace = 0;
   const FOG = (scene.fog as THREE.FogExp2).density;
+  // Rising, the ground outside the room goes to the page's own dark (--basalt): the model sits on the
+  // page, not in a field of flat grey, and the plan's ground matches the section around it.
+  const ground = (scene.background as THREE.Color).clone(),
+    haze = (scene.fog as THREE.FogExp2).color.clone(),
+    night = new THREE.Color(0x1c1c1b);
   camera.rotation.order = 'YXZ';
   /** Straight down over the middle of the room, high enough that the floor fills planFrame's box. */
   function topView() {
@@ -727,6 +732,9 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     canvases.forEach(a => (a.visible = roof > 0.001));
     upper.visible = sky.visible = roof > 0.001;
     (scene.fog as THREE.FogExp2).density = FOG * (1 - sstep(0.1, 0.6, u));
+    const dusk = sstep(0.05, 0.5, u);
+    (scene.background as THREE.Color).lerpColors(ground, night, dusk);
+    (scene.fog as THREE.FogExp2).color.lerpColors(haze, night, dusk);
   }
 
   // ——— camera choreography ———
