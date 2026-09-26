@@ -54,7 +54,7 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
             </p>
             <h1>{x.shortTitle}</h1>
             <p className={r.when}>{x.dateLabel}</p>
-            <p className={r.medium}>{x.venue}</p>
+            {x.venue !== x.dateLabel && <p className={r.medium}>{x.venue}</p>}
             {x.badge && <p className={r.badge}>{x.badge}</p>}
             <p className={r.lede}>{x.question}</p>
             <hr className={r.rule} />

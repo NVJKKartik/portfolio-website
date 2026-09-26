@@ -35,20 +35,24 @@
   grid-template-columns: minmax(160px, 240px) minmax(0, 68ch);
   gap: 0 clamp(24px, 4vw, 64px);
 }
-.cols > h2 {
+/* Rows are direct children, or wrapped in a display: contents section per group (the writing index). */
+.cols > h2,
+.cols > section > h2 {
   margin: 0;
   padding-top: 24px;
   border-top: 1px solid var(--line-paper);
   font-size: 15px;
   font-weight: 650;
 }
-.cols > div {
+.cols > div,
+.cols > section > div {
   padding: 20px 0 34px;
   border-top: 1px solid var(--line-paper);
   font-size: 17.5px;
   line-height: 1.62;
 }
-.cols > div > :first-child {
+.cols > div > :first-child,
+.cols > section > div > :first-child {
   margin-top: 0;
 }
 .sheet {
@@ -88,7 +92,8 @@
   .kicker {
     padding-top: 0;
   }
-  .cols > div {
+  .cols > div,
+  .cols > section > div {
     border-top: 0;
     padding-top: 6px;
   }
