@@ -67,7 +67,8 @@ export default function Home() {
               One job. Too many tabs.
             </h2>
             <p className={s.sub}>
-              Senior engineer and tech lead at Future AGI, where I started as an intern in December 2024. <b>That’s one tab.</b> Here are the rest.
+              Senior engineer and tech lead at Future AGI, where I started as an intern in December 2024. <b>That’s one tab.</b> Click through the
+              rest.
             </p>
             <div className={s.about}>
               <div className={s.words}>

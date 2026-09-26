@@ -42,11 +42,14 @@
   padding: 0 12px;
   border-radius: 9px 9px 0 0;
   font-size: 13px;
-  color: #6e6456;
+  color: #574d40;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 .tab + .tab::before {
   content: '';
@@ -58,7 +61,15 @@
   background: #cbbda5;
 }
 .tab:hover {
+  background: rgba(255, 250, 241, 0.6);
   color: var(--ink);
+}
+.tab:hover::before,
+.tab:hover + .tab::before {
+  display: none;
+}
+.tab:active {
+  background: #fffaf1;
 }
 .tab[aria-selected='true'] {
   flex: 0 0 auto;
