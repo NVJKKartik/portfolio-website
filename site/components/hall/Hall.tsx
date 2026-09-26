@@ -13,6 +13,9 @@ import s from './Hall.module.css';
 // The crane takes this much of the stage's scroll; the rest holds on the plan before the catalogue.
 const CRANE_END = 0.85;
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+// The stage is the viewport; below this shape the engine frames the room for a phone (its `mobile`),
+// so the poster switches with it. By shape, not width: a 3× phone would otherwise take the wide one.
+const TALL = '(max-aspect-ratio: 4/5)';
 
 type Props = { rows: Exhibit[][]; years: string[]; name: string; intro: string; proof: string };
 
@@ -35,10 +38,15 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   const { reduced, paused, togglePaused } = useMotion();
   // The front row is what the room waits for before it goes live: fetch it with the page, not after the engine.
   rows[0]?.forEach(e => preload(e.image.src, { as: 'image' }));
+  preload('/media/hall/poster-tall.webp', { as: 'image', media: TALL, fetchPriority: 'high' });
+  preload('/media/hall/poster-wide.webp', { as: 'image', media: `not all and ${TALL}`, fetchPriority: 'high' });
   // Reduced motion, or a browser that couldn't run the engine: the still poster, no crane.
   const [failed, setFailed] = useState(false);
   const still = reduced || failed;
   const [live, setLive] = useState(false);
+  // The hint and the mini plan wait for the opening step to end.
+  const [opened, setOpened] = useState(false);
+  const isPaused = useEffectEvent(() => paused);
   const [at, setAt] = useState<string | null>(null);
   const [back, setBack] = useState(false);
   const [moving, setMoving] = useState(false);
@@ -78,11 +86,13 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
             years,
             font,
             reduced: false,
+            paused: isPaused(),
             mobile,
             quality: mobile || (navigator.hardwareConcurrency ?? 8) < 6 ? 'low' : 'high',
             start: exhibits.some(e => e.id === hash) ? hash : undefined,
             on: {
               ready: () => setLive(true),
+              opened: () => setOpened(true),
               hover: (id, x, y) => setTip(id ? { id, x, y } : null),
               roam: () => {
                 setRoaming(true);
@@ -236,14 +246,10 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   return (
     <section ref={section} className={s.hall} aria-label="The hall" data-crane={!still || undefined}>
       <div ref={stage} className={s.stage} data-live={live || undefined}>
-        <img
-          className={s.poster}
-          src="/media/hall/poster-wide.webp"
-          srcSet="/media/hall/poster-tall.webp 900w, /media/hall/poster-wide.webp 1800w"
-          sizes="100vw"
-          alt=""
-          data-hidden={live || undefined}
-        />
+        <picture>
+          <source media={TALL} srcSet="/media/hall/poster-tall.webp" />
+          <img className={s.poster} src="/media/hall/poster-wide.webp" alt="" data-hidden={live || undefined} />
+        </picture>
         <div ref={gl} className={s.gl} />
         <div className={s.grade} aria-hidden />
 
@@ -257,7 +263,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
         </div>
 
         {!still && (
-          <div className={s.hint} {...off(!!current || !live || craned)}>
+          <div className={s.hint} {...off(!!current || !opened || craned)}>
             <p>
               <span className={s.forMouse}>
                 Drag to look around. Click the floor to walk there, or a work to go to it.
@@ -283,7 +289,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
           <button
             type="button"
             className={s.mini}
-            {...off(!live || !!current || craned)}
+            {...off(!opened || !!current || craned)}
             onClick={() => rise(true)}
             aria-label="Rise to the plan of the room"
           >

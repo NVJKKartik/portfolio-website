@@ -21,7 +21,10 @@ export type HallEvents = {
   arrive: (id: string | null) => void;
   turned: (id: string, back: boolean) => void;
   pose: (x: number, z: number, yaw: number) => void;
+  /** The first frame with the front row drawn is on screen: the poster can go. */
   ready: () => void;
+  /** The opening step into the room has ended, or was skipped. */
+  opened: () => void;
 };
 
 export type HallOptions = {
@@ -29,6 +32,8 @@ export type HallOptions = {
   years: string[];
   font: string;
   reduced: boolean;
+  /** Motion paused by the visitor: the room holds the opening view instead of stepping in. */
+  paused: boolean;
   mobile: boolean;
   quality: 'high' | 'low';
   start?: string;
@@ -461,6 +466,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   // Glass and daylight shouldn't take ambient occlusion; they're hidden while AO reads depth and normals.
   const glassMeshes: THREE.Object3D[] = [windowPane, sky];
   const blank = new THREE.Color(0xe9e6df);
+  // Works start on a 1×1 white stand-in, so their material is compiled with a map from the first
+  // frame and each plate swaps in without a recompile.
+  const standIn = keep(new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1));
+  standIn.colorSpace = THREE.SRGBColorSpace;
+  standIn.needsUpdate = true;
   // Every easel's block, pane, edges, wedge and contact shadow are identical, so each part is one
   // instanced draw for the whole room. Only the work, its back and its label are per easel.
   const n = plan.placed.length;
@@ -508,7 +518,16 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
       ah = aw / r,
       cy = 1.52;
     const artGeo = keep(new THREE.PlaneGeometry(aw, ah));
-    const artMat = keep(new THREE.MeshStandardMaterial({ color: blank, roughness: 0.55, emissive: 0xffffff, emissiveIntensity: 0.0 }));
+    const artMat = keep(
+      new THREE.MeshStandardMaterial({
+        color: blank,
+        map: standIn,
+        emissiveMap: standIn,
+        roughness: 0.55,
+        emissive: 0xffffff,
+        emissiveIntensity: 0.0,
+      }),
+    );
     const art = new THREE.Mesh(artGeo, artMat);
     art.position.set(0, cy, 0.009);
     art.castShadow = true;
@@ -606,6 +625,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   // Works load front row first; the room is usable before the back wall arrives.
   const loader = new THREE.TextureLoader();
   let alive = true,
+    frontIn = false,
     readyAt = 0;
   (async () => {
     for (let k = 0; k < o.rows.length && alive; k++) {
@@ -625,7 +645,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
                     ez.artMat.map = ez.artMat.emissiveMap = t;
                     ez.artMat.color.set(0xffffff);
                     ez.artMat.emissiveIntensity = 0.06;
-                    ez.artMat.needsUpdate = true;
                     dirty = true;
                     res();
                   },
@@ -636,8 +655,9 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
           ),
       );
       if (k === 0) {
-        o.on.ready();
-        readyAt = performance.now();
+        // Ready waits for the next frame to draw them (loop), not just for the files.
+        frontIn = true;
+        dirty = true;
       }
     }
   })();
@@ -718,7 +738,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   // ——— camera choreography ———
   const cam: Pose = { pos: V(0, EYE, 6), look: V(0, 1.4, -8) };
   const ENTRY: Pose = o.mobile ? { pos: V(0.6, EYE, 5.4), look: V(-0.2, 1.45, -8) } : { pos: V(1.35, EYE, 5.1), look: V(-0.7, 1.42, -8) };
-  const START: Pose = { pos: ENTRY.pos.clone().add(V(0.55, 0, 1.8)), look: ENTRY.look.clone().add(V(-0.2, 0, -1)) };
+  const START: Pose = { pos: ENTRY.pos.clone().add(V(0.3, 0, 0.9)), look: ENTRY.look.clone().add(V(-0.1, 0, -0.5)) };
   const frontPose = (ez: Easel, dist = o.mobile ? 2.35 : 2.15): Pose => {
     const n = V(0, 0, 1).applyQuaternion(ez.group.quaternion);
     return {
@@ -763,10 +783,12 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   }
 
   let tween: Tween | null = null;
+  /** The opening step, while it runs. */
+  let opener: Tween | null = null;
   let at: Easel | null = null;
   let back = false;
   let hover: Easel | null = null;
-  let paused = o.reduced;
+  let paused = o.reduced || o.paused;
   /** Paused or reduced motion: every camera move becomes a cut. */
   const cut = () => paused || o.reduced;
   const byId = (id: string) => easels.find(ez => ez.e.id === id) ?? null;
@@ -775,6 +797,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     if (!tween) return;
     const t = tween;
     tween = null;
+    if (t === opener) settle();
     if (t.kind === 'turn') Object.assign(cam, turnPose(t.easel, t.dir > 0 ? 1 : 0));
     else Object.assign(cam, { pos: t.to.pos.clone(), look: t.to.look.clone() });
   }
@@ -1100,6 +1123,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         if (done.kind === 'walk') o.on.arrive(at?.e.id ?? null);
         if (done.kind === 'turn') o.on.turned(done.easel.e.id, done.dir > 0);
         if (done.kind === 'go') o.on.arrive(null);
+        if (done === opener) settle();
       }
     }
     const pos = cam.pos,
@@ -1176,6 +1200,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     place(now);
     if (composer) composer.render();
     else renderer.render(scene, camera);
+    if (frontIn && !readyAt) open(now);
     if (hover && !tween && !lift) report();
   }
 
@@ -1201,13 +1226,21 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   io.observe(container);
   resize();
 
-  // Opening: already lit, a 3.2 s dolly forward. Arriving at an easel (from a hash) skips it.
+  // Opening: the room waits at START, where the poster was taken. Once the front row is drawn the poster
+  // crossfades out (0.8 s, .poster in Hall.module.css), then the camera takes one step in. Arriving at
+  // an easel from a hash, or with motion paused, there's no step.
   const first = o.start ? byId(o.start) : null;
   if (first) ctl.select(first.e.id);
-  else if (o.reduced) Object.assign(cam, { pos: ENTRY.pos.clone(), look: ENTRY.look.clone() });
-  else {
-    Object.assign(cam, { pos: START.pos.clone(), look: START.look.clone() });
-    tween = { kind: 'go', t0: performance.now(), dur: 3.2, from: { pos: START.pos.clone(), look: START.look.clone() }, to: ENTRY };
+  else Object.assign(cam, { pos: START.pos.clone(), look: START.look.clone() });
+  function open(now: number) {
+    readyAt = now;
+    o.on.ready();
+    if (first || paused) return o.on.opened();
+    opener = tween = { kind: 'go', t0: now + 800, dur: 1.6, from: { pos: START.pos.clone(), look: START.look.clone() }, to: ENTRY };
+  }
+  function settle() {
+    opener = null;
+    o.on.opened();
   }
   raf = requestAnimationFrame(loop);
   return ctl;
