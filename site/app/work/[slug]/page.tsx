@@ -10,6 +10,8 @@ import Study from '@/components/studies/Study';
 import { studyFonts } from '@/components/studies/fonts';
 import TraceDemo from '@/components/work/TraceDemo';
 import { placeInHall } from '@/components/record/place';
+import { Hands, Hard, NextUp, RecordTop, Sec } from '@/components/record/Record';
+import { tintOf } from '@/lib/tint';
 import r from '@/components/record/record.module.css';
 
 export const dynamicParams = false;
@@ -24,154 +26,117 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
   const w = workBySlug((await params).slug);
   if (!w) notFound();
   const hall = placeInHall(w.slug);
+  const tint = await tintOf(w.cover.src);
 
   return (
-    <Paper>
-      <nav className={r.crumbs} aria-label="Back to the hall">
-        <Link href={hall.back} transitionTypes={['nav-back']}>
-          ← Back to the hall
-        </Link>
-        <span>{hall.where}</span>
-      </nav>
+    <Paper bleed tone={tint.light ? 'dark' : 'light'}>
       <article>
-        <div className={r.top}>
-          <div className={r.work}>
-            {w.study ? (
-              <Study kind={w.study} poster={w.cover.src} alt={w.cover.alt} fonts={studyFonts} />
-            ) : (
-              <figure className={r.mount}>
-                <img src={w.cover.src} alt={w.cover.alt} />
-                {w.cover.caption && <figcaption>{w.cover.caption}</figcaption>}
-              </figure>
-            )}
+        <RecordTop
+          back={hall.back}
+          where={hall.where}
+          kicker={`${w.kind} · ${w.place} · ${w.years} · ${w.medium}`}
+          title={w.name}
+          lede={w.oneLiner}
+          image={w.study ? undefined : w.cover}
+          tint={tint}
+        />
+        {w.study && (
+          <div className={r.study}>
+            <Study kind={w.study} poster={w.cover.src} alt={w.cover.alt} fonts={studyFonts} />
           </div>
-          <header className={r.tomb}>
-            <p className={r.kicker}>
-              {w.kind} · {w.place}
-            </p>
-            <h1>{w.name}</h1>
-            <p className={r.when}>{w.years}</p>
-            <p className={r.medium}>{w.medium}</p>
-            <p className={r.lede}>{w.oneLiner}</p>
-            <hr className={r.rule} />
-            <h2 className={r.h}>What I did</h2>
-            {w.contribution.map((p, i) => (
+        )}
+        <Hands
+          did={w.contribution.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+          withTitle="Who I made it with"
+          credit={<p>{w.collaborators}</p>}
+          links={
+            w.links.length > 0 &&
+            w.links.map(l =>
+              l.href.startsWith('/') ? (
+                <Link key={l.href} href={l.href} transitionTypes={['nav-forward']}>
+                  {l.label}
+                </Link>
+              ) : (
+                <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
+                  {l.label} ↗
+                </a>
+              ),
+            )
+          }
+        />
+
+        <div className={r.paper}>
+          <Sec title="What it’s for">
+            {w.purpose.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
-            <h2 className={r.h}>Who I made it with</h2>
-            <p className={r.credit}>{w.collaborators}</p>
-            {w.links.length > 0 && (
-              <p className={r.links}>
-                {w.links.map(l =>
-                  l.href.startsWith('/') ? (
-                    <Link key={l.href} href={l.href} transitionTypes={['nav-forward']}>
-                      {l.label}
-                    </Link>
-                  ) : (
-                    <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
-                      {l.label} ↗
-                    </a>
-                  ),
-                )}
-              </p>
-            )}
-          </header>
-        </div>
-
-        <div className={r.body}>
-          <section>
-            <h2>What it’s for</h2>
-            <div>
-              {w.purpose.map((p, i) => (
+          </Sec>
+          <Hard title="Why it was hard">
+            <p>{w.hard}</p>
+          </Hard>
+          {w.sections.map(sec => (
+            <Sec key={sec.heading} title={sec.heading}>
+              {sec.body.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
-            </div>
-          </section>
-          <section>
-            <h2>Why it was hard</h2>
-            <div>
-              <p>{w.hard}</p>
-            </div>
-          </section>
-          {w.sections.map(sec => (
-            <section key={sec.heading}>
-              <h2>{sec.heading}</h2>
-              <div>
-                {sec.body.map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
-              </div>
-            </section>
+            </Sec>
           ))}
           {w.facts.length > 0 && (
-            <section>
-              <h2>In numbers</h2>
-              <div>
-                <dl className={r.facts}>
-                  {w.facts.map(f => (
-                    <div key={f.label}>
-                      <dt>{f.value}</dt>
-                      <dd>
-                        {f.label}.{' '}
-                        <a href={sources[f.source].url} target="_blank" rel="noreferrer">
-                          Source
-                        </a>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            </section>
+            <Sec title="In numbers">
+              <dl className={r.facts}>
+                {w.facts.map(f => (
+                  <div key={f.label}>
+                    <dt>{f.value}</dt>
+                    <dd>
+                      {f.label}.{' '}
+                      <a href={sources[f.source].url} target="_blank" rel="noreferrer">
+                        Source
+                      </a>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Sec>
           )}
           {w.code && (
-            <section>
-              <h2>Getting started</h2>
-              <div>
-                <figure className={r.code}>
-                  <pre>
-                    <code>{w.code.source}</code>
-                  </pre>
-                  <figcaption>{w.code.caption}</figcaption>
-                </figure>
-              </div>
-            </section>
+            <Sec title="Getting started">
+              <figure className={r.code}>
+                <pre>
+                  <code>{w.code.source}</code>
+                </pre>
+                <figcaption>{w.code.caption}</figcaption>
+              </figure>
+            </Sec>
           )}
           {(w.original || w.gallery?.length) && (
-            <section>
-              <h2>{w.original ? 'The original' : 'More from the project'}</h2>
-              <div>
-                <div className={r.originals}>
-                  {[...(w.original ? [w.original] : []), ...(w.gallery ?? [])].map(g => (
-                    <figure key={g.src} data-tall={g.tall || undefined}>
-                      <img src={g.src} alt={g.alt} loading="lazy" />
-                      {g.caption && <figcaption>{g.caption}</figcaption>}
-                    </figure>
-                  ))}
-                </div>
-                {w.original && (
-                  <p>The screens above are the project as it was built. The study at the top of this page is a 2026 redesign made for this site.</p>
-                )}
+            <Sec title={w.original ? 'The original' : 'More from the project'}>
+              <div className={r.originals}>
+                {[...(w.original ? [w.original] : []), ...(w.gallery ?? [])].map(g => (
+                  <figure key={g.src} data-tall={g.tall || undefined}>
+                    <img src={g.src} alt={g.alt} loading="lazy" />
+                    {g.caption && <figcaption>{g.caption}</figcaption>}
+                  </figure>
+                ))}
               </div>
+              {w.original && (
+                <p>The screens above are the project as it was built. The study at the top of this page is a 2026 redesign made for this site.</p>
+              )}
+            </Sec>
+          )}
+
+          {w.demo === 'break-the-agent' && (
+            <section className={r.demo} aria-labelledby="demo-h">
+              <h2 id="demo-h">Try it: break the agent</h2>
+              <p>Pick a scenario, click any span to inspect it, then run the evaluation. Watch what the dashboard says while the answer is wrong.</p>
+              <TraceDemo />
             </section>
           )}
+
+          <SourceList ids={w.sources} />
+          <NextUp next={hall.next} />
         </div>
-
-        {w.demo === 'break-the-agent' && (
-          <section className={r.demo} aria-labelledby="demo-h">
-            <h2 id="demo-h">Try it: break the agent</h2>
-            <p>Pick a scenario, click any span to inspect it, then run the evaluation. Watch what the dashboard says while the answer is wrong.</p>
-            <TraceDemo />
-          </section>
-        )}
-
-        <SourceList ids={w.sources} />
-
-        <nav className={r.next} aria-label="Next, further back in time">
-          <span>Next, a little further back in time</span>
-          <Link href={hall.next.href} transitionTypes={['nav-forward']}>
-            {hall.next.title} →
-          </Link>
-        </nav>
       </article>
     </Paper>
   );

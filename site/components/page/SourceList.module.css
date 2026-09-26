@@ -1,31 +1,53 @@
 .sources {
-  border-top: 1px solid var(--line-paper);
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 0 56px;
+  margin-top: 40px;
   padding-top: 22px;
-  margin-top: 56px;
-  max-width: 900px;
+  border-top: 1px solid var(--line-paper);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-3);
 }
 .sources h2 {
-  margin: 0 0 14px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  color: var(--ink);
 }
 .sources ol {
   margin: 0;
-  padding-left: 1.2em;
-  display: grid;
-  gap: 12px;
-  font-size: 15px;
+  padding-left: 1.3em;
+  columns: 2;
+  column-gap: 40px;
+}
+.sources li {
+  break-inside: avoid;
+  margin-bottom: 10px;
+}
+.sources a {
+  color: var(--ink);
 }
 .sources small {
   display: block;
-  color: var(--ink-3);
-  font-size: 13.5px;
   margin-top: 2px;
+  font-size: 13.5px;
   line-height: 1.45;
 }
 .sources p {
-  font-size: 14px;
+  grid-column: 2;
+  margin: 8px 0 0;
+}
+@media (max-width: 800px) {
+  .sources {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .sources ol {
+    columns: 1;
+  }
+  .sources p {
+    grid-column: 1;
+  }
 }

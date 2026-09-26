@@ -7,6 +7,8 @@ import { exhibitById } from '@/content/hall';
 import Paper from '@/components/page/Paper';
 import SourceList from '@/components/page/SourceList';
 import { placeInHall } from '@/components/record/place';
+import { Hands, Hard, NextUp, RecordTop, Sec } from '@/components/record/Record';
+import { tintOf } from '@/lib/tint';
 import r from '@/components/record/record.module.css';
 
 export const dynamicParams = false;
@@ -22,6 +24,7 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
   if (!x) notFound();
   const hall = placeInHall(x.slug);
   const image = exhibitById(x.slug)?.image;
+  const tint = image ? await tintOf(image.src) : { bg: 'var(--paper-2)', ink: 'var(--ink)', light: true };
   const max = x.figure ? Math.max(...x.figure.rows.flatMap(row => [row.mine, row.other])) : 1;
   const list = (items: string[]) => (
     <ul>
@@ -32,36 +35,23 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
   );
 
   return (
-    <Paper>
-      <nav className={r.crumbs} aria-label="Back to the hall">
-        <Link href={hall.back} transitionTypes={['nav-back']}>
-          ← Back to the hall
-        </Link>
-        <span>{hall.where}</span>
-      </nav>
+    <Paper bleed tone={tint.light ? 'dark' : 'light'}>
       <article>
-        <div className={r.top}>
-          <div className={r.work}>
-            {image && (
-              <figure className={r.mount}>
-                <img src={image.src} alt={image.alt} />
-              </figure>
-            )}
-          </div>
-          <header className={r.tomb}>
-            <p className={r.kicker}>
-              {x.kind} · {x.place}
-            </p>
-            <h1>{x.shortTitle}</h1>
-            <p className={r.when}>{x.dateLabel}</p>
-            {x.venue !== x.dateLabel && <p className={r.medium}>{x.venue}</p>}
-            {x.badge && <p className={r.badge}>{x.badge}</p>}
-            <p className={r.lede}>{x.question}</p>
-            <hr className={r.rule} />
-            <h2 className={r.h}>What I did</h2>
-            <p>{x.role}</p>
-            <h2 className={r.h}>{x.kind === 'Granted patent' ? 'Inventors' : 'Authors'}</h2>
-            <p className={r.credit}>
+        <RecordTop
+          back={hall.back}
+          where={hall.where}
+          kicker={[x.kind, x.place, x.dateLabel, x.venue !== x.dateLabel ? x.venue : null].filter(Boolean).join(' · ')}
+          title={x.shortTitle}
+          lede={x.question}
+          badge={x.badge}
+          image={image}
+          tint={tint}
+        />
+        <Hands
+          did={<p>{x.role}</p>}
+          withTitle={x.kind === 'Granted patent' ? 'Inventors' : 'Authors'}
+          credit={
+            <p>
               {x.authors.map((a, i) => (
                 <span key={a.name}>
                   {a.me ? <strong>{a.name}</strong> : a.name}
@@ -69,7 +59,9 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
                 </span>
               ))}
             </p>
-            <p className={r.links}>
+          }
+          links={
+            <>
               {x.links.map(l => (
                 <a key={l.href} href={l.href} target="_blank" rel="noreferrer">
                   {l.label} ↗
@@ -80,86 +72,65 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
                   The system
                 </Link>
               )}
-            </p>
-          </header>
-        </div>
+            </>
+          }
+        />
 
-        <div className={r.body}>
-          <section>
-            <h2>Full title</h2>
-            <div>
-              <p>{x.title}</p>
-              {x.kind === 'Preprint' && <p>A preprint: not yet peer-reviewed.</p>}
-            </div>
-          </section>
-          <section>
-            <h2>In plain words</h2>
-            <div>
-              {x.plain.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
-          </section>
-          <section>
-            <h2>How it works</h2>
-            <div>{list(x.technical)}</div>
-          </section>
-          <section>
-            <h2>What it established</h2>
-            <div>
-              {list(x.established)}
-              {x.figure && (
-                <figure className={r.tableWrap} style={{ margin: '24px 0 0' }}>
-                  <table className={r.table}>
-                    <caption>{x.figure.caption}</caption>
-                    <thead>
-                      <tr>
-                        <th scope="col">Metric</th>
-                        <th scope="col">{x.figure.mineLabel}</th>
-                        <th scope="col">{x.figure.otherLabel}</th>
+        <div className={r.paper}>
+          <Sec title="Full title">
+            <p>{x.title}</p>
+            {x.kind === 'Preprint' && <p>A preprint: not yet peer-reviewed.</p>}
+          </Sec>
+          <Sec title="In plain words">
+            {x.plain.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </Sec>
+          <Sec title="How it works">{list(x.technical)}</Sec>
+          <Sec title="What it established">
+            {list(x.established)}
+            {x.figure && (
+              <figure className={r.tableWrap} style={{ margin: '24px 0 0' }}>
+                <table className={r.table}>
+                  <caption>{x.figure.caption}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Metric</th>
+                      <th scope="col">{x.figure.mineLabel}</th>
+                      <th scope="col">{x.figure.otherLabel}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {x.figure.rows.map(row => (
+                      <tr key={row.label}>
+                        <th scope="row">
+                          {row.label}
+                          {row.better === 'other' ? ' · baseline better' : ''}
+                        </th>
+                        <td>
+                          <span className={r.barCell}>
+                            <span className={r.bar} data-mine style={{ width: `${(row.mine / max) * 70}%` }} />
+                            {row.mine.toFixed(3)}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={r.barCell}>
+                            <span className={r.bar} style={{ width: `${(row.other / max) * 70}%` }} />
+                            {row.other.toFixed(3)}
+                          </span>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {x.figure.rows.map(row => (
-                        <tr key={row.label}>
-                          <th scope="row">
-                            {row.label}
-                            {row.better === 'other' ? ' · baseline better' : ''}
-                          </th>
-                          <td>
-                            <span className={r.barCell}>
-                              <span className={r.bar} data-mine style={{ width: `${(row.mine / max) * 70}%` }} />
-                              {row.mine.toFixed(3)}
-                            </span>
-                          </td>
-                          <td>
-                            <span className={r.barCell}>
-                              <span className={r.bar} style={{ width: `${(row.other / max) * 70}%` }} />
-                              {row.other.toFixed(3)}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </figure>
-              )}
-            </div>
-          </section>
-          <section>
-            <h2>Where it stops</h2>
-            <div>{list(x.limits)}</div>
-          </section>
+                    ))}
+                  </tbody>
+                </table>
+              </figure>
+            )}
+          </Sec>
+          <Hard title="Where it stops">{list(x.limits)}</Hard>
+
+          <SourceList ids={x.sources} />
+          <NextUp next={hall.next} />
         </div>
-
-        <SourceList ids={x.sources} />
-
-        <nav className={r.next} aria-label="Next, further back in time">
-          <span>Next, a little further back in time</span>
-          <Link href={hall.next.href} transitionTypes={['nav-forward']}>
-            {hall.next.title} →
-          </Link>
-        </nav>
       </article>
     </Paper>
   );
