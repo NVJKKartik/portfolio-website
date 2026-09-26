@@ -21,7 +21,7 @@ export type HallEvents = {
   arrive: (id: string | null) => void;
   turned: (id: string, back: boolean) => void;
   pose: (x: number, z: number, yaw: number) => void;
-  /** The first frame with the front row drawn is on screen: the poster can go. */
+  /** The first frame with every work drawn is on screen: the poster can go. */
   ready: () => void;
   /** The opening step into the room has ended, or was skipped. */
   opened: () => void;
@@ -622,45 +622,39 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
 
   // Before the plates start loading: the first one can't land (and call ready) mid-boot.
   await breathe();
-  // Works load front row first; the room is usable before the back wall arrives.
+  // Every work loads at once, the front row first in the queue. The room goes live once they're all in:
+  // the poster shows them all, so anything less would fade blank easels in over it.
   const loader = new THREE.TextureLoader();
   let alive = true,
-    frontIn = false,
+    platesIn = false,
     readyAt = 0;
-  (async () => {
-    for (let k = 0; k < o.rows.length && alive; k++) {
-      await Promise.all(
-        easels
-          .filter(ez => o.rows[k].includes(ez.e))
-          .map(
-            ez =>
-              new Promise<void>(res =>
-                loader.load(
-                  ez.e.image.src,
-                  img => {
-                    if (!alive) return (img.dispose(), res());
-                    const t = keep(high ? img : new THREE.CanvasTexture(halfSize(img.image)));
-                    t.colorSpace = THREE.SRGBColorSpace;
-                    t.anisotropy = high ? 8 : 4;
-                    ez.artMat.map = ez.artMat.emissiveMap = t;
-                    ez.artMat.color.set(0xffffff);
-                    ez.artMat.emissiveIntensity = 0.06;
-                    dirty = true;
-                    res();
-                  },
-                  undefined,
-                  () => res(),
-                ),
-              ),
+  Promise.all(
+    easels.map(
+      ez =>
+        new Promise<void>(res =>
+          loader.load(
+            ez.e.image.src,
+            img => {
+              if (!alive) return (img.dispose(), res());
+              const t = keep(high ? img : new THREE.CanvasTexture(halfSize(img.image)));
+              t.colorSpace = THREE.SRGBColorSpace;
+              t.anisotropy = high ? 8 : 4;
+              ez.artMat.map = ez.artMat.emissiveMap = t;
+              ez.artMat.color.set(0xffffff);
+              ez.artMat.emissiveIntensity = 0.06;
+              dirty = true;
+              res();
+            },
+            undefined,
+            () => res(),
           ),
-      );
-      if (k === 0) {
-        // Ready waits for the next frame to draw them (loop), not just for the files.
-        frontIn = true;
-        dirty = true;
-      }
-    }
-  })();
+        ),
+    ),
+  ).then(() => {
+    // Ready waits for the next frame to draw them (loop), not just for the files.
+    platesIn = true;
+    dirty = true;
+  });
 
   // ——— post-processing ———
   // Multisampled, or thin mullions and glass edges crawl: the composer bypasses the canvas's own antialiasing.
@@ -1200,7 +1194,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     place(now);
     if (composer) composer.render();
     else renderer.render(scene, camera);
-    if (frontIn && !readyAt) open(now);
+    if (platesIn && !readyAt) open(now);
     if (hover && !tween && !lift) report();
   }
 
@@ -1226,9 +1220,9 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   io.observe(container);
   resize();
 
-  // Opening: the room waits at START, where the poster was taken. Once the front row is drawn the poster
-  // crossfades out (0.8 s, .poster in Hall.module.css), then the camera takes one step in. Arriving at
-  // an easel from a hash, or with motion paused, there's no step.
+  // Opening: the room waits at START, where the poster was taken. Once every work is drawn the canvas
+  // fades in over the poster (0.8 s, .gl in Hall.module.css), then the camera takes one step in.
+  // Arriving at an easel from a hash, or with motion paused, there's no step.
   const first = o.start ? byId(o.start) : null;
   if (first) ctl.select(first.e.id);
   else Object.assign(cam, { pos: START.pos.clone(), look: START.look.clone() });

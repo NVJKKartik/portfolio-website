@@ -36,7 +36,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   const ctl = useRef<HallController | null>(null);
   const halfTurn = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { reduced, paused, togglePaused } = useMotion();
-  // The front row is what the room waits for before it goes live: fetch it with the page, not after the engine.
+  // The front row heads the engine's queue: fetch it with the page, not after the engine.
   rows[0]?.forEach(e => preload(e.image.src, { as: 'image' }));
   preload('/media/hall/poster-tall.webp', { as: 'image', media: TALL, fetchPriority: 'high' });
   preload('/media/hall/poster-wide.webp', { as: 'image', media: `not all and ${TALL}`, fetchPriority: 'high' });
