@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
-import type { CreditGroup, Exhibit, Place } from '@/content/hall';
+import type { Exhibit, Place } from '@/content/hall';
 import { useMotion } from '@/lib/motion';
 import type { HallController } from './engine';
 import { layout, planFrame, ROW, type Frame } from './layout';
@@ -13,14 +13,14 @@ import s from './Hall.module.css';
 const CRANE_END = 0.85;
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
-type Props = { rows: Exhibit[][]; years: string[]; credits: CreditGroup[]; places: Place[]; name: string; intro: string; proof: string };
+type Props = { rows: Exhibit[][]; years: string[]; places: Place[]; name: string; intro: string; proof: string };
 
 /**
  * The top of the home page: the WebGL hall under an HTML overlay. Everything readable here is HTML;
  * the canvas only reports where the visitor is and what they're looking at. Scrolling lifts the roof
  * off and cranes up to a drawn plan of the room; the catalogue follows.
  */
-export default function Hall({ rows, years, credits, places, name, intro, proof }: Props) {
+export default function Hall({ rows, years, places, name, intro, proof }: Props) {
   const exhibits = rows.flat();
   const hall = layout(rows);
   const section = useRef<HTMLElement>(null);
@@ -70,7 +70,6 @@ export default function Hall({ rows, years, credits, places, name, intro, proof 
           ctl.current = await createHall(el, {
             rows,
             years,
-            credits,
             places,
             font,
             reduced: false,
@@ -132,7 +131,7 @@ export default function Hall({ rows, years, credits, places, name, intro, proof 
       ctl.current?.dispose();
       ctl.current = null;
     };
-    // rows, years, credits and places are static page data; the engine is built once per visit.
+    // rows, years and places are static page data; the engine is built once per visit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced]);
 

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import SiteHeader from '@/components/SiteHeader';
 import Hall from '@/components/hall/Hall';
 import Catalogue from '@/components/hall/Catalogue';
-import { madeWith, places, rows, rowYears } from '@/content/hall';
+import { places, rows, rowYears } from '@/content/hall';
 import { profile } from '@/content/profile';
 import { journey } from '@/content/journey';
 import { posts } from '@/content/writing';
@@ -16,7 +16,7 @@ export default function Home() {
     <div className="dark">
       <SiteHeader tone="light" hideName />
       <main id="main">
-        <Hall rows={rows} years={years} credits={madeWith} places={places} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
+        <Hall rows={rows} years={years} places={places} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
 
         <section id="work" className={s.section} aria-labelledby="work-h">
           <div className={s.head}>
