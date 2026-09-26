@@ -45,6 +45,8 @@
   font-stretch: var(--wide);
   letter-spacing: -0.04em;
   text-wrap: balance;
+  /* Last resort on the narrowest phones: a long word breaks rather than widening the page. */
+  overflow-wrap: break-word;
 }
 /* A title with a long word (AgentCompass, ClickHouse, diarization) steps down so the word fits its column. */
 .top h1[data-long] {
@@ -55,7 +57,7 @@
   margin: 18px 0 0;
   padding: 5px 12px;
   border-radius: 99px;
-  background: var(--accent);
+  background: var(--accent-ink);
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -115,7 +117,7 @@
   font-weight: 800;
 }
 .links a {
-  color: var(--accent);
+  color: var(--accent-ink);
   text-decoration: none;
 }
 .links a:hover {
@@ -176,7 +178,7 @@
   font-size: 15px;
   font-weight: 800;
   font-stretch: var(--wide);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .hard p,
 .hard li {
@@ -369,7 +371,10 @@
     gap: 4px;
   }
   .top h1 {
-    font-size: 46px;
+    font-size: clamp(32px, 11vw, 46px);
+  }
+  .top h1[data-long] {
+    font-size: clamp(26px, 8.4vw, 40px);
   }
   .lede {
     font-size: 18.5px;

@@ -10,11 +10,12 @@
   --paper-2: #efe5d2;
   --ink: #1e1b17;
   --ink-2: #4f483e;
-  --ink-3: #7b7266;
+  --ink-3: #6f675b; /* 4.96:1 on paper */
   --line-paper: #e0d5c1;
   --on-dark: #f3f1ec;
   --on-dark-2: #bdb9b0;
-  --accent: #e2552b; /* tomato: my hand (what I did), links, "you are here" */
+  --accent: #e2552b; /* tomato: my hand (what I did), links, "you are here". Fills and large type only */
+  --accent-ink: #b8401c; /* the same tomato, dark enough (4.9:1) for small text on paper */
   --team: #3d7a64; /* glass green, deepened: the people I made it with */
   --wide: 122%; /* Archivo's width axis for display type: chunky and friendly, not a poster */
 
@@ -195,7 +196,7 @@ h3 {
   font-size: 1.04em;
 }
 .prose a {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .prose ul,
 .prose ol {

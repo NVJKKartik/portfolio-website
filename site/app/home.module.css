@@ -14,7 +14,7 @@
   margin: 0 0 22px;
   font-size: 15px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .h {
   margin: 0 0 36px;
@@ -70,7 +70,7 @@
   font-size: 16px;
   font-weight: 800;
   font-stretch: var(--wide);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* About: a few paragraphs beside the browser window of places. */
@@ -176,7 +176,7 @@
 }
 .links a:hover,
 .links a:focus-visible {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .receipts {
   margin-top: 18px;
@@ -205,7 +205,7 @@
 }
 .end a {
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-ink);
   text-decoration: none;
 }
 .end a:hover {
@@ -245,7 +245,7 @@
     font-size: 19px;
   }
   .mail {
-    font-size: 38px;
+    font-size: clamp(26px, 8.4vw, 38px);
     line-height: 1.02;
   }
   .off {

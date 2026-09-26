@@ -46,12 +46,8 @@
   font-weight: 750;
   font-stretch: 104%;
   letter-spacing: -0.015em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition:
-    font-stretch 0.35s var(--ease-out),
-    color 0.2s;
+  text-wrap: balance;
+  transition: color 0.2s;
 }
 /* What I did, marked with my colour. */
 .did {
@@ -89,14 +85,12 @@
 }
 .period a:hover b,
 .period a:focus-visible b {
-  color: var(--accent);
-  font-stretch: var(--wide);
+  color: var(--accent-ink);
 }
 /* The row the panel is showing; only where there is a panel. */
-@media (min-width: 901px) {
+@media (min-width: 1181px) {
   .period li[data-on] b {
-    color: var(--accent);
-    font-stretch: var(--wide);
+    color: var(--accent-ink);
   }
 }
 
@@ -150,27 +144,20 @@
   color: var(--ink-2);
 }
 
-@media (max-width: 900px) {
+/* Below 1180px the panel goes: titles get the width, the plate sits beside each row and the facts go
+   under the title. Below 700px the period moves above its works. */
+@media (max-width: 1180px) {
   .index {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .panel {
     display: none;
   }
-  .period {
-    grid-template-columns: 1fr;
-  }
-  .period h3 {
-    top: 0;
-    z-index: 1;
-    padding: 14px 0 8px;
-    background: var(--paper);
-  }
   .period a {
     grid-template-columns: 56px minmax(0, 1fr);
-    gap: 3px 14px;
+    gap: 3px 16px;
     align-items: start;
-    padding: 12px 0;
+    padding: 14px 0;
   }
   .thumb {
     display: block;
@@ -181,24 +168,42 @@
     object-fit: cover;
     border-radius: 2px;
   }
-  .period b {
-    grid-column: 2;
-    font-size: 19px;
-    white-space: normal;
-  }
+  .period b,
   .did {
     grid-column: 2;
+  }
+  .did {
     grid-row: 2;
-    font-size: 14px;
     -webkit-line-clamp: 2;
   }
   .meta {
     grid-column: 2;
     grid-row: 3;
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 2px 10px;
     text-align: left;
     font-size: 12px;
+  }
+}
+@media (max-width: 700px) {
+  .period {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .period h3 {
+    top: 0;
+    z-index: 1;
+    padding: 14px 0 8px;
+    background: var(--paper);
+  }
+  .period a {
+    padding: 12px 0;
+  }
+  .period b {
+    font-size: 19px;
+  }
+  .did {
+    font-size: 14px;
   }
 }
 
@@ -208,13 +213,5 @@
   }
   .period b {
     transition: none;
-  }
-  .period li[data-on] b,
-  .period a:hover b,
-  .period a:focus-visible b {
-    font-stretch: 104% !important;
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 5px;
   }
 }
