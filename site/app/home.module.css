@@ -221,6 +221,9 @@
   font-weight: 800;
   font-stretch: var(--wide);
 }
+.sys {
+  font-family: system-ui, sans-serif;
+}
 .off span {
   font-size: 15.5px;
   line-height: 1.45;

@@ -14,6 +14,9 @@ import s from './home.module.css';
 
 const day = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+// Archivo keeps ₹ in its latin-ext file (86 KB), fetched for this one character; it borrows the system font.
+const Rupee = () => <span className={s.sys}>₹</span>;
+const rupee = (t: string) => t.split('₹').flatMap((part, i) => (i ? [<Rupee key={i} />, part] : [part]));
 
 // One page: the room, then the lights come on for everything I've worked on, the writing, the rabbit
 // holes, and how to reach me.
@@ -37,7 +40,7 @@ export default function Home() {
               {startHere.map(x => (
                 <li key={x.id}>
                   <Link href={x.href} transitionTypes={['nav-forward']}>
-                    <img src={x.image.src} alt="" />
+                    <img src={x.image.src} alt="" loading="lazy" />
                     <span className={s.side}>{x.side}</span>
                     <b>{x.title}</b>
                     <span className={s.callLine}>{x.line}</span>
@@ -108,7 +111,7 @@ export default function Home() {
               {offClock.map(o => (
                 <li key={o.field}>
                   <b>{o.field}</b>
-                  <span>{o.poke}</span>
+                  <span>{rupee(o.poke)}</span>
                 </li>
               ))}
             </ul>
