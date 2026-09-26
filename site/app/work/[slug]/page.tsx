@@ -95,6 +95,7 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
                       <a href={sources[f.source].url} target="_blank" rel="noreferrer">
                         Source
                       </a>
+                      {f.note && <small>{f.note}</small>}
                     </dd>
                   </div>
                 ))}

@@ -7,6 +7,7 @@ import Holes from '@/components/home/Holes';
 import { rows, rowYears } from '@/content/hall';
 import { profile } from '@/content/profile';
 import { holes, offClock } from '@/content/holes';
+import { journey } from '@/content/journey';
 import { startHere } from '@/content/start';
 import { posts, splitTitle } from '@/content/writing';
 import s from './home.module.css';
@@ -39,7 +40,7 @@ export default function Home() {
                     <img src={x.image.src} alt="" />
                     <span className={s.side}>{x.side}</span>
                     <b>{x.title}</b>
-                    <span className={s.callLine}>{x.call}</span>
+                    <span className={s.callLine}>{x.line}</span>
                   </Link>
                 </li>
               ))}
@@ -89,6 +90,16 @@ export default function Home() {
                 {profile.about.map((t, i) => (
                   <p key={i}>{t}</p>
                 ))}
+                <h3 className={s.pathHead}>The path</h3>
+                <ol className={s.path}>
+                  {[...journey].reverse().map(j => (
+                    <li key={j.id}>
+                      <span>{j.when}</span>
+                      <b>{j.place}</b>
+                      {j.role && <em>{j.role}</em>}
+                    </li>
+                  ))}
+                </ol>
               </div>
               <Holes holes={holes} />
             </div>

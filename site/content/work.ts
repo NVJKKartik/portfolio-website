@@ -28,7 +28,8 @@ export type Work = {
   collaborators: string;
   cover: Img;
   gallery?: Img[];
-  facts: { value: string; label: string; source: SourceId }[];
+  /** `note` says what a number measured: against what, where, under what conditions. */
+  facts: { value: string; label: string; source: SourceId; note?: string }[];
   sections: { heading: string; body: string[] }[];
   code?: { lang: string; caption: string; source: string };
   links: { label: string; href: string }[];
@@ -76,7 +77,12 @@ export const work: Work[] = [
       { value: '4', label: 'languages in v1.0.0', source: 'traceaiV1' },
       { value: '46 / 39 / 24', label: 'Python packages / TypeScript packages / Java modules at v1', source: 'traceaiV1' },
       { value: '54', label: 'npm packages listing me as a maintainer', source: 'npm' },
-      { value: '14k', label: 'downloads last month of traceAI’s core Python package (Sep 2026)', source: 'pypiTraceai' },
+      {
+        value: '14k',
+        label: 'downloads last month of traceAI’s core Python package (Sep 2026)',
+        source: 'pypiTraceai',
+        note: 'Project reach, counted by PyPI Stats (which includes CI installs), not a measure of my part; what I did is above.',
+      },
       { value: '222', label: 'GitHub stars on traceAI (Sep 2026)', source: 'ghTraceai' },
     ],
     sections: [
@@ -352,7 +358,14 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
     ],
     collaborators: 'NIT Puducherry, Department of CSE.',
     cover: { src: '/media/plates/lung-nodules.webp', alt: 'Plate: an illustrative CT slice with a nodule marked.' },
-    facts: [],
+    facts: [
+      {
+        value: '77%',
+        label: 'more energy-efficient, with 86% less compute and no loss in accuracy',
+        source: 'oldPortfolio',
+        note: 'As reported on my previous portfolio. The baseline model and the hardware it was measured on aren’t recorded there.',
+      },
+    ],
     sections: [],
     links: [{ label: 'LIDC-IDRI dataset', href: 'https://www.cancerimagingarchive.net/collection/lidc-idri/' }],
     sources: ['oldPortfolio', 'lidc'],
@@ -511,47 +524,73 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
   },
   {
     slug: 'error-feed',
-    name: 'Error Feed: cluster root cause',
+    name: 'Error Feed',
     short: 'Error Feed',
-    years: '2026',
+    years: '2026 — now',
     sort: '2026-06',
     kind: 'AI engineering',
     place: 'Future AGI',
     medium: 'Python · Django · ClickHouse · React',
-    oneLiner: 'An agent that investigates a cluster of failing traces and says what they have in common, what to fix, and how sure it is.',
-    hard: 'Finding what is common to every failing trace, not just the first few, without reading thousands of traces with an expensive model.',
+    oneLiner:
+      'A harness that lives alongside the product: it watches the traces, groups failures (failed evals included) into issues, investigates each one with an agent, and shows the causal trail.',
+    hard: 'Finding what is common to every failing trace, not just the first few, without reading thousands of traces with an expensive model, on tables with millions of spans.',
     purpose: [
-      'Error Feed groups failing traces into clusters, so you can see what is breaking. It didn’t say why: someone still had to open traces, compare them and spot the pattern.',
-      'The root-cause agent does that investigation and shows its work.',
+      'Every agent run leaves a trace. Error Feed reads them continuously, groups the failures into issues, and for each one says what broke, why, and what to fix.',
+      'Before it, someone had to open traces one by one, compare them and spot the pattern themselves.',
     ],
+    caption: 'I built the investigation agent, kept the feed alive through the ClickHouse migration, and made it fast at scale.',
     contribution: [
-      'I built the investigation agent: it reads a cluster’s traces from ClickHouse, compares them across version, model and region, and returns a two-sentence cause, a one-sentence fix, a confidence level and the evidence.',
-      'It reads individual trace summaries with a cheap model, streams its reasoning live into a new Fix tab, and caches the result so later visits are instant. The same PR included a performance pass that cut the feed’s API latencies by 65–92%, and the billing wiring for the agent.',
+      'I built the investigation agent: it reads a cluster’s traces from ClickHouse, compares them across version, model and region, and returns a two-sentence cause, a one-sentence fix, a confidence level and the evidence. Per-trace summaries run on a cheap model, the investigation on the main one, and the result is cached and streamed into a Fix tab.',
+      'I kept it alive through the migration: every feed read, the deep-analysis worker and the live scanner moved to ClickHouse, so the feed survived the Postgres tracer tables being dropped. I proved it by dropping the tables in a test and on a live stack.',
+      'I made it fast at scale: on a large tenant the feed took 15–27 seconds and the traces tab never returned. Pruning the reads by index and project brought every endpoint to about 150–200 ms.',
+      'Last week I turned grouping on by default for eligible projects, made failed eval scores count as failures to cluster, and gave each finding its causal trail: where it started, the decisive step, and the symptom.',
     ],
     collaborators:
-      'Built with KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23, who worked on the same PR. Error Feed is a Future AGI team product.',
+      'Error Feed is a Future AGI team product. KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23 also worked on the investigation PR.',
     cover: {
       src: '/media/plates/error-feed.webp',
       alt: 'Plate: failing traces with one cluster circled, and the cause, fix, confidence and evidence the agent returns.',
     },
     facts: [
-      { value: '65–92%', label: 'lower feed API latencies after the performance pass', source: 'prErrorFeed' },
-      { value: '2,077', label: 'GitHub stars on the open-source platform it ships in (Sep 2026)', source: 'ghPlatform' },
+      {
+        value: '17 s → 0.2 s',
+        label: 'cluster detail, one of five feed endpoints brought to ~150–200 ms',
+        source: 'prErrorFeedPerf',
+        note: 'Benchmarked on a real 10M-row spans table with 120 seeded clusters, warm: list 19.7 s → ~150 ms, detail 17 s → ~200 ms, overview 15–17 s → ~200 ms, trends 14–24 s → ~160 ms, traces tab >30 s → ~150 ms.',
+      },
+      {
+        value: '65–92%',
+        label: 'lower feed API latencies after the first performance pass',
+        source: 'prErrorFeed',
+        note: 'Four feed endpoints, before and after the PR: overview ~1.5 s → 49 ms, list ~1.7 s → 47 ms, sidebar ~1.2 s → 100 ms, trends ~800 ms → 280 ms. The PR doesn’t state the load they were measured under.',
+      },
+      { value: '$0.03–0.08', label: 'per investigation, cheap enough to run on every cluster', source: 'prErrorFeed' },
+      {
+        value: '2,077',
+        label: 'GitHub stars on the open-source platform it ships in (Sep 2026)',
+        source: 'ghPlatform',
+        note: 'The platform’s reach, not a measure of my part in it.',
+      },
     ],
     decision: {
       title: 'Cheap reads, one careful thought',
       call: 'Never read thousands of failing traces with an expensive model. Summarise each one cheaply, reason once over the summaries, and cache the answer.',
       flow: [
         { label: 'A cluster of failing traces', note: 'from ClickHouse' },
-        { label: 'One summary per trace', note: 'a cheap model' },
-        { label: 'One pass over the summaries', note: 'across version, model and region', tone: 'mine' },
+        { label: 'One summary per trace', note: 'a cheap lite model' },
+        { label: 'One pass over the summaries', note: 'the main model, across version, model and region', tone: 'mine' },
         { label: 'Cause, fix, confidence, evidence', note: 'streamed into the Fix tab' },
         { label: 'Cached', note: 'later visits are instant' },
       ],
     },
     sections: [],
-    links: [{ label: 'PR #853', href: 'https://github.com/future-agi/future-agi/pull/853' }],
-    sources: ['prErrorFeed', 'ghPlatform'],
+    links: [
+      { label: 'The agent, #853', href: 'https://github.com/future-agi/future-agi/pull/853' },
+      { label: 'ClickHouse-native, #1510', href: 'https://github.com/future-agi/future-agi/pull/1510' },
+      { label: 'Fast at scale, #1644', href: 'https://github.com/future-agi/future-agi/pull/1644' },
+      { label: 'Grouping and breadcrumbs, #2979', href: 'https://github.com/future-agi/future-agi/pull/2979' },
+    ],
+    sources: ['prErrorFeed', 'prErrorFeedCH', 'prErrorFeedPerf', 'prErrorFeedGrouping', 'ghPlatform'],
   },
   {
     slug: 'annotations-clickhouse',
@@ -562,21 +601,45 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
     kind: 'Platform engineering',
     place: 'Future AGI',
     medium: 'Django · ClickHouse · Postgres',
-    oneLiner: 'Moving the annotation system’s reads of trace data to ClickHouse, ahead of the Postgres tracer tables being dropped.',
+    oneLiner:
+      'Moving the annotation system onto ClickHouse ahead of the Postgres tracer tables being dropped, and keeping it standing: 20 merged PRs over July 2026.',
     hard: 'Removing a data source from under a live feature. Every read path had to move without leaking data between tenants or failing open.',
     purpose: [
       'Tracing at Future AGI was moving fully to ClickHouse, and the Postgres trace, span and session tables were going away. The annotation system (queues, scores, span notes) still read trace data from Postgres.',
     ],
     contribution: [
-      'I moved the annotation subsystem’s reads of trace, span and session data to ClickHouse: resolution, previews, availability checks and scores. Reads are tenant-gated and fail closed.',
+      'I was responsible for the annotation side of the migration. Over four weeks that was 20 merged PRs: every read path moved to ClickHouse (resolution, previews, availability checks, scores, export, and the filter-mode adds), Error Feed moved too, memory guardrails so ClickHouse reads stopped running out of memory on large voice spans, project scoping on every queue read, and a performance sweep of the queue screens that removed N+1 queries, per-row reads and per-item writes.',
+      'The core PR moved the subsystem’s reads of trace, span and session data to ClickHouse. Reads are tenant-gated and fail closed.',
       'Trace roots are read in lean batches so large queues don’t run out of memory. The PR replaced an earlier draft that only guarded the Postgres reads, since removing them was the right end state once the tables were gone.',
     ],
     collaborators: 'One part of the team’s wider migration of tracing to ClickHouse.',
     cover: { src: '/media/plates/annotations-clickhouse.webp', alt: 'Plate: reads moving from Postgres to ClickHouse.' },
-    facts: [],
+    facts: [
+      { value: '20', label: 'merged PRs, 3–31 July 2026: reads, memory, scoping and speed', source: 'prsClickhouse' },
+      { value: '575', label: 'annotation tests passing across 12 suites in the core PR', source: 'prAnnotations' },
+    ],
+    decision: {
+      title: 'Remove the old path, don’t guard it',
+      call: 'The Postgres tracer tables were being dropped. An earlier draft guarded every read against the table going missing; the right end state was to stop reading them at all, and to fail closed rather than open.',
+      before: [
+        { label: 'Annotation read', note: 'resolve, preview, score' },
+        { label: 'Postgres tracer tables', note: 'being dropped' },
+        { label: 'Catch the missing table', note: 'a savepoint and a 42P01 catch', tone: 'lost' },
+        { label: 'A guard around a table that won’t exist' },
+      ],
+      flow: [
+        { label: 'Annotation read', note: 'resolve, preview, score' },
+        { label: 'Straight to ClickHouse', note: 'lean, batched reads', tone: 'mine' },
+        { label: 'Checked against the tenant', note: 'fails closed' },
+        { label: 'Large queues stay in memory', note: 'trace roots read in batches' },
+      ],
+    },
     sections: [],
-    links: [{ label: 'PR #1495', href: 'https://github.com/future-agi/future-agi/pull/1495' }],
-    sources: ['prAnnotations'],
+    links: [
+      { label: 'The core PR, #1495', href: 'https://github.com/future-agi/future-agi/pull/1495' },
+      { label: 'All 20 PRs', href: 'https://github.com/future-agi/future-agi/pulls?q=is%3Apr+is%3Amerged+author%3ANVJKKartik' },
+    ],
+    sources: ['prAnnotations', 'prsClickhouse'],
   },
   {
     slug: 'open-source',

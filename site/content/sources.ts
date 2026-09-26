@@ -163,8 +163,9 @@ export const sources = {
   },
   oldPortfolio: {
     id: 'oldPortfolio',
-    label: 'Previous portfolio (self-reported)',
-    url: 'https://nvjkkartik.netlify.app/',
+    label: 'Previous portfolio, as it stood before this redesign (self-reported)',
+    // The live URL now serves this site, so the evidence points at the old site's source instead.
+    url: 'https://github.com/NVJKKartik/portfolio-website/tree/752fffa3636e88060a4353442ef32d41c50faf71/src',
     supports: 'Self-reported: IIIT Dharwad (Data Science & AI), research at IIT Bombay Educational Technology, CRF approach for SSMR.',
   },
   prEvaluation: {
@@ -207,14 +208,42 @@ export const sources = {
     label: 'future-agi/future-agi PR #853 — Error Feed cluster RCA agent, perf sweep, billing (merged 27 Jun 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/853',
     supports:
-      'Root-cause agent over ClickHouse traces, streamed Fix tab, cached synthesis, feed API latencies cut 65–92%, billing wiring. Authored by Kartik (70 commits); KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23 also committed.',
+      'Root-cause agent over ClickHouse traces (per-trace summaries on a lite model, the investigation on the main model, ~$0.03–0.08 a run), streamed Fix tab, cached synthesis, billing wiring. Feed endpoints before → after: overview ~1.5 s → 49 ms, trends ~800 ms → 280 ms, sidebar ~1.2 s → 100 ms, list ~1.7 s → 47 ms. Authored by Kartik (70 commits); KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23 also committed.',
+  },
+  prsClickhouse: {
+    id: 'prsClickhouse',
+    label: 'future-agi/future-agi — Kartik’s merged annotation and ClickHouse PRs',
+    url: 'https://github.com/future-agi/future-agi/pulls?q=is%3Apr+is%3Amerged+author%3ANVJKKartik',
+    supports:
+      '20 merged PRs, 3–31 Jul 2026. Reads to ClickHouse: #1427, #1495, #1604, #1607; Error Feed: #1510, #1644. Memory: #1160, #1373, #1434, #1455. Project scoping: #1565. Queue performance: #1591, #1593, #1831, #1852, #1861, #1865, #1871, #1876, #1878.',
+  },
+  prErrorFeedCH: {
+    id: 'prErrorFeedCH',
+    label: 'future-agi/future-agi PR #1510 — make Error Feed ClickHouse-native (merged 11 Jul 2026)',
+    url: 'https://github.com/future-agi/future-agi/pull/1510',
+    supports:
+      'Every feed read, the deep-analysis worker and the live scanner moved to ClickHouse to survive the tracer Postgres-table drop; proven by dropping the tables in tests and on a live stack. Authored by Kartik.',
+  },
+  prErrorFeedPerf: {
+    id: 'prErrorFeedPerf',
+    label: 'future-agi/future-agi PR #1644 — prune feed ClickHouse reads (merged 18 Jul 2026)',
+    url: 'https://github.com/future-agi/future-agi/pull/1644',
+    supports:
+      'Benchmarked on a 10M-row spans table: list 19.7 s → ~150 ms, cluster detail 17 s → ~200 ms, overview 15–17 s → ~200 ms, trends 14–24 s → ~160 ms, traces tab >30 s → ~150 ms. Authored by Kartik.',
+  },
+  prErrorFeedGrouping: {
+    id: 'prErrorFeedGrouping',
+    label: 'future-agi/future-agi PR #2979 — grouping, scored evals and causal breadcrumbs (merged 23 Sep 2026)',
+    url: 'https://github.com/future-agi/future-agi/pull/2979',
+    supports:
+      'Grouping on by default for eligible projects; choice, threshold and numeric eval failures eligible for clustering; each finding shows its origin, decisive and symptom steps. Authored by Kartik.',
   },
   prAnnotations: {
     id: 'prAnnotations',
     label: 'future-agi/future-agi PR #1495 — ClickHouse-native reads for annotation sources (merged 11 Jul 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/1495',
     supports:
-      'Annotation reads of trace, span and session data moved to ClickHouse; tenant-gated, fail-closed; supersedes the drop-safety draft #1214. Authored by Kartik.',
+      'Annotation reads of trace, span and session data moved to ClickHouse; tenant-gated, fail-closed; lean batched reads; supersedes the drop-safety draft #1214, which guarded the Postgres reads instead of removing them. 575 annotation tests passing across 12 suites. Authored by Kartik.',
   },
   pypiTraceai: {
     id: 'pypiTraceai',
