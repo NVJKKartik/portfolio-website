@@ -520,8 +520,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     art.castShadow = true;
     art.userData.id = e.id;
     group.add(art);
-    const backMat = keep(new THREE.MeshStandardMaterial({ color: 0x8a847a, roughness: 0.95, side: THREE.BackSide }));
+    // The back of the print is its own plane turned round, not the art's back face: ambient occlusion
+    // only draws front faces, and a back face left it seeing through to the easels beyond (streaks).
+    const backMat = keep(new THREE.MeshStandardMaterial({ color: 0x8a847a, roughness: 0.95 }));
     const back = new THREE.Mesh(artGeo, backMat);
+    back.rotation.y = Math.PI;
     back.position.set(0, cy, 0.008);
     group.add(back);
     const label = new THREE.Mesh(
