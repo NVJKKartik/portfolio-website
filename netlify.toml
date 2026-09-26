@@ -1,4 +1,4 @@
-# New site (branch redesign/mind-at-work) lives in site/. Static export, no server.
+# The site lives in site/: a Next.js static export, no server.
 [build]
   base = "site"
   command = "npm run build && npm run check"
