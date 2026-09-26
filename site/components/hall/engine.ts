@@ -274,19 +274,13 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         clearcoat: 0.16,
         clearcoatRoughness: 0.34,
         envMapIntensity: 0.7,
-        transparent: true,
-        opacity: 0.84,
       }),
     ),
   );
-  const floorMat = floor.material as THREE.MeshPhysicalMaterial;
   floor.rotation.x = -Math.PI / 2;
   floor.position.set(cx, 0, cz);
   floor.receiveShadow = true;
   scene.add(floor);
-  // Everything that should reflect in the floor lives here; a mirrored clone is made once it's built.
-  const reflects = new THREE.Group();
-  scene.add(reflects);
 
   const upper = new THREE.Group();
   scene.add(upper);
@@ -368,9 +362,8 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   const skyMat = keep(new THREE.MeshBasicMaterial({ map: keep(skyTexture()), fog: false }));
   const sky = new THREE.Mesh(keep(new THREE.PlaneGeometry(D + 20, 9)), skyMat);
   sky.rotation.y = Math.PI / 2;
-  // Its bottom edge sits on the floor line: any part below would come back up through its reflection.
   sky.position.set(plan.x0 - 3.5, 4.5, cz);
-  reflects.add(sky);
+  scene.add(sky);
   const mullMat = keep(new THREE.MeshStandardMaterial({ color: 0x1e1f20, roughness: 0.6 }));
   const mullGeo = keep(new THREE.BoxGeometry(0.06, plan.h, 0.06));
   const mullZ: number[] = [];
@@ -378,11 +371,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   const mullions = new THREE.InstancedMesh(mullGeo, mullMat, mullZ.length);
   mullZ.forEach((z, i) => mullions.setMatrixAt(i, new THREE.Matrix4().makeTranslation(plan.x0, plan.h / 2, z)));
   mullions.castShadow = true;
-  reflects.add(mullions);
+  scene.add(mullions);
   const transom = new THREE.Mesh(keep(new THREE.BoxGeometry(0.1, 0.12, D)), mullMat);
   transom.position.set(plan.x0, 2.7, cz);
   transom.castShadow = true;
-  reflects.add(transom);
+  scene.add(transom);
   const windowPane = new THREE.Mesh(
     keep(new THREE.PlaneGeometry(D, plan.h)),
     keep(
@@ -473,7 +466,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   const n = plan.placed.length;
   const instanced = (geo: THREE.BufferGeometry, mat: THREE.Material, count: number) => {
     const m = new THREE.InstancedMesh(geo, mat, count);
-    reflects.add(m);
+    scene.add(m);
     return m;
   };
   const shadows = instanced(shadowGeo, shadowMat, n),
@@ -499,7 +492,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     const group = new THREE.Group();
     group.position.set(p.x, 0, p.z);
     group.rotation.y = p.yaw;
-    reflects.add(group);
+    scene.add(group);
     group.updateMatrix();
     const gy = 0.44 + 1.01 - 0.12;
     put(shadows, i, group, 0, 0.003, 0, -Math.PI / 2);
@@ -607,34 +600,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   mullions.computeBoundingSphere();
   scene.updateMatrixWorld(true);
   easels.forEach(ez => ez.group.localToWorld(ez.center.set(0, 1.52, 0)));
-  // The reflection: the same meshes and materials, flipped under the floor. No shadows, no picking.
-  // Its materials fade with depth below the floor, the way polished concrete loses a reflection
-  // a hand's width from the contact point.
-  const mirror = reflects.clone();
-  mirror.scale.y = -1;
-  const mirrorOf = new Map<THREE.Material, THREE.Material>();
-  mirror.traverse(o => {
-    o.castShadow = o.receiveShadow = false;
-    if (!(o instanceof THREE.Mesh)) return;
-    const src = o.material as THREE.Material;
-    let m = mirrorOf.get(src);
-    if (!m) {
-      m = keep(src.clone());
-      m.onBeforeCompile = sh => {
-        sh.vertexShader = `varying float vMirrorY;\n${sh.vertexShader}`.replace(
-          '#include <begin_vertex>',
-          '#include <begin_vertex>\nvec4 mirrorWp = vec4(transformed, 1.0);\n#ifdef USE_INSTANCING\nmirrorWp = instanceMatrix * mirrorWp;\n#endif\nvMirrorY = (modelMatrix * mirrorWp).y;',
-        );
-        sh.fragmentShader = `varying float vMirrorY;\n${sh.fragmentShader}`.replace(
-          '#include <dithering_fragment>',
-          '#include <dithering_fragment>\ngl_FragColor.rgb *= exp(vMirrorY * 1.5);',
-        );
-      };
-      mirrorOf.set(src, m);
-    }
-    o.material = m;
-  });
-  scene.add(mirror);
 
   // Before the plates start loading: the first one can't land (and call ready) mid-boot.
   await breathe();
@@ -661,13 +626,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
                     ez.artMat.color.set(0xffffff);
                     ez.artMat.emissiveIntensity = 0.06;
                     ez.artMat.needsUpdate = true;
-                    const ma = mirrorOf.get(ez.artMat) as THREE.MeshStandardMaterial | undefined;
-                    if (ma) {
-                      ma.map = ma.emissiveMap = t;
-                      ma.color.set(0xffffff);
-                      ma.emissiveIntensity = 0.06;
-                      ma.needsUpdate = true;
-                    }
                     dirty = true;
                     res();
                   },
@@ -710,7 +668,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   // The roof and the view outside lift off first, like the top of an architect's model. These turn
   // transparent only while the crane is up (the room itself stays opaque and sorted as it was), and
   // their see-through shaders are compiled now so the first scroll doesn't stall on a compile.
-  const lifts = [ceilMat, trough, beamMat, skyMat, mirrorOf.get(skyMat)!];
+  const lifts = [ceilMat, trough, beamMat, skyMat];
   lifts.forEach(m => (m.transparent = true));
   renderer.setRenderTarget(composer ? composer.readBuffer : null);
   renderer.compile(scene, camera);
@@ -754,9 +712,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     painted.forEach(m => (m.opacity = roof));
     canvases.forEach(a => (a.visible = roof > 0.001));
     upper.visible = sky.visible = roof > 0.001;
-    // The floor turns opaque over its reflection as the camera rises out of the angle that shows it.
-    floorMat.opacity = reflect ? 0.84 + 0.16 * sstep(0.05, 0.35, u) : 1;
-    mirror.visible = floorMat.opacity < 0.999;
     (scene.fog as THREE.FogExp2).density = FOG * (1 - sstep(0.1, 0.6, u));
   }
 
@@ -1177,11 +1132,10 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   }
   // ——— adaptive quality ———
   // Screen shape and core count don't say what the GPU can do, so watch it. Once the room is ready,
-  // two windows in a row of slow moving frames drop one step: ambient occlusion first, then resolution,
-  // then the floor's reflection. The level is on the canvas as data-quality.
+  // two windows in a row of slow moving frames drop one step: ambient occlusion first, then resolution.
+  // The level is on the canvas as data-quality.
   let level = high ? 0 : 1,
     maxDpr = high ? 1.5 : 1.25,
-    reflect = true,
     slowWindows = 0,
     lastFrame = 0;
   const frameTimes: number[] = [];
@@ -1190,7 +1144,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     level++;
     if (ao) ao.enabled = level < 1;
     if (level >= 2) maxDpr = 1;
-    reflect = level < 3;
     renderer.domElement.dataset.quality = String(level);
     resize();
   }
@@ -1198,7 +1151,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     const dt = now - lastFrame;
     lastFrame = now;
     // Only back-to-back frames count; skip the first second after load (uploads, compiles) and tab switches.
-    if (level >= 3 || !readyAt || now - readyAt < 1000 || dt > 250) return;
+    if (level >= 2 || !readyAt || now - readyAt < 1000 || dt > 250) return;
     frameTimes.push(dt);
     if (frameTimes.length < 60) return;
     const median = frameTimes.sort((a, b) => a - b)[30];
