@@ -4,7 +4,7 @@ import Hall from '@/components/hall/Hall';
 import WorkIndex from '@/components/home/WorkIndex';
 import Strike from '@/components/home/Strike';
 import Holes from '@/components/home/Holes';
-import { rows, rowYears, walls } from '@/content/hall';
+import { rows, rowYears } from '@/content/hall';
 import { profile } from '@/content/profile';
 import { holes } from '@/content/holes';
 import { posts, splitTitle } from '@/content/writing';
@@ -23,7 +23,7 @@ export default function Home() {
       <SiteHeader tone="light" hideName />
       <main id="main">
         <div className="dark">
-          <Hall rows={rows} years={years} walls={walls} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
+          <Hall rows={rows} years={years} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
         </div>
 
         <div className={s.lit}>

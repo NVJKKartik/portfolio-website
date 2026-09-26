@@ -2,8 +2,6 @@ import { work } from './work';
 import { research } from './research';
 import { speaking } from './more';
 import { posts } from './writing';
-import { holes } from './holes';
-import { profile } from './profile';
 
 // Everything in the hall is derived from the content files, so a label can never disagree with its page.
 // Order is time: the front row is the newest work, the back wall the oldest.
@@ -144,13 +142,3 @@ export const rowYears = (row: Exhibit[]) => {
 };
 
 export const exhibitById = (id: string) => exhibits.find(e => e.id === id);
-
-// ——— the painted end walls ———
-
-/** The back wall paints the rabbit holes (field, then what came out of it); the exit wall says thanks. */
-export type Walls = { holes: [string, string][]; fun: string[]; email: string };
-export const walls: Walls = {
-  holes: holes.map(h => [h.field, h.depth]),
-  fun: profile.fun,
-  email: profile.email,
-};

@@ -8,9 +8,9 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import type { Exhibit, Walls } from '@/content/hall';
+import type { Exhibit } from '@/content/hall';
 import { AISLE, EYE, ROW, layout, planFrame } from './layout';
-import { drawHoles, drawThanks } from './walls';
+import { drawHomage, PAINTINGS } from './walls';
 
 export type HallEvents = {
   hover: (id: string | null, x: number, y: number) => void;
@@ -27,8 +27,6 @@ export type HallEvents = {
 export type HallOptions = {
   rows: Exhibit[][];
   years: string[];
-  /** What the two end walls say. */
-  walls: Walls;
   font: string;
   reduced: boolean;
   mobile: boolean;
@@ -328,38 +326,33 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   fwall.rotation.y = Math.PI;
   fwall.position.set(cx, plan.h / 2, plan.z0);
   scene.add(fwall);
-  // The end walls are painted: a lit, transparent plane a centimetre off the concrete, pulled forward
-  // in depth so it never fights it. The exit wall is in shade, so its paint gets the same lift as its concrete.
-  const pw = high ? 2560 : 1280,
-    ph = Math.round((pw * plan.h) / W);
-  // Everything painted on a wall fades with the roof as the crane rises: seen from above, the walls
+  // Paint on the walls (the row dates) fades with the roof as the crane rises: seen from above, the walls
   // are edge-on and their paint would sit around the plan as squashed slivers.
   const painted: THREE.MeshStandardMaterial[] = [];
-  const paint = (draw: (g: CanvasRenderingContext2D) => void, z: number, turned: boolean) => {
-    const map = keep(textTexture(pw, ph, draw));
-    const mat = keep(
-      new THREE.MeshStandardMaterial({
-        map,
-        transparent: true,
-        depthWrite: false,
-        roughness: 0.95,
-        polygonOffset: true,
-        polygonOffsetFactor: -2,
-        polygonOffsetUnits: -2,
-      }),
-    );
-    painted.push(mat);
-    if (turned) {
-      mat.emissive = frontMat.emissive;
-      mat.emissiveMap = map;
+  // Art on the end walls: stretched canvases of nested squares (walls.ts), 4 cm deep and a few
+  // centimetres off the concrete. One large one closes the aisle; three hang by the door. The door wall
+  // is in shade, so its canvases get the same lift as its concrete.
+  const canvases: THREE.Mesh[] = [];
+  const canvasEdge = keep(new THREE.MeshStandardMaterial({ color: 0xe9e2d4, roughness: 0.9 }));
+  const hang = (colours: readonly string[], side: number, x: number, y: number, z: number, byDoor: boolean, seed: number) => {
+    const n = (side > 2 ? 1024 : 512) / (high ? 1 : 2);
+    const map = keep(textTexture(n, n, g => drawHomage(g, n, colours, seed)));
+    const face = keep(new THREE.MeshStandardMaterial({ map, roughness: 0.85 }));
+    if (byDoor) {
+      face.emissive = frontMat.emissive;
+      face.emissiveMap = map;
     }
-    const mesh = new THREE.Mesh(keep(new THREE.PlaneGeometry(W, plan.h)), mat);
-    mesh.position.set(cx, plan.h / 2, z);
-    if (turned) mesh.rotation.y = Math.PI;
-    scene.add(mesh);
+    const art = new THREE.Mesh(keep(new THREE.BoxGeometry(side, side, 0.04)), [canvasEdge, canvasEdge, canvasEdge, canvasEdge, face, canvasEdge]);
+    art.position.set(x, y, z);
+    if (byDoor) art.rotation.y = Math.PI;
+    scene.add(art);
+    canvases.push(art);
   };
-  paint(g => drawHoles(g, pw, o.walls, o.font), plan.z1 + 0.01, false);
-  paint(g => drawThanks(g, pw, o.walls.email, o.font), plan.z0 - 0.01, true);
+  hang(PAINTINGS.back, 2.6, cx, 2.05, plan.z1 + 0.05, false, 7);
+  // By the door, left to right as you face it (+x is on your left when you turn round).
+  hang(PAINTINGS.left, 1.2, cx + 1.75, 2.0, plan.z0 - 0.05, true, 11);
+  hang(PAINTINGS.middle, 1.2, cx, 2.0, plan.z0 - 0.05, true, 13);
+  hang(PAINTINGS.right, 1.2, cx - 1.75, 2.0, plan.z0 - 0.05, true, 17);
 
   const skyMat = keep(new THREE.MeshBasicMaterial({ map: keep(skyTexture()), fog: false }));
   const sky = new THREE.Mesh(keep(new THREE.PlaneGeometry(D + 20, 9)), skyMat);
@@ -736,6 +729,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     const roof = 1 - sstep(0.02, 0.2, u);
     lifts.forEach(m => (m.opacity = roof));
     painted.forEach(m => (m.opacity = roof));
+    canvases.forEach(a => (a.visible = roof > 0.001));
     upper.visible = sky.visible = roof > 0.001;
     // The floor turns opaque over its reflection as the camera rises out of the angle that shows it.
     floorMat.opacity = reflect ? 0.84 + 0.16 * sstep(0.05, 0.35, u) : 1;
