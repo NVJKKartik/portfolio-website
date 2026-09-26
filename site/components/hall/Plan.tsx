@@ -8,6 +8,8 @@ type Props = {
   mini?: boolean;
   active?: string | null;
   onHover?: (id: string | null) => void;
+  /** Where there's no key beside the plan (a phone), marks select a work instead of opening it. */
+  onPick?: (id: string) => void;
   youRef?: React.Ref<SVGGElement>;
 };
 
@@ -16,7 +18,7 @@ type Props = {
  * glass wall on the left, newest row nearest the door. Its box is the floor exactly, so it can sit
  * on the render. Text lives in HTML beside it; at this scale SVG labels would be unreadable.
  */
-export default function Plan({ rows, mini, active, onHover, youRef }: Props) {
+export default function Plan({ rows, mini, active, onHover, onPick, youRef }: Props) {
   const h = layout(rows);
   const W = h.x1 - h.x0,
     D = h.z0 - h.z1;
@@ -46,6 +48,11 @@ export default function Plan({ rows, mini, active, onHover, youRef }: Props) {
           >
             {mini ? (
               mark
+            ) : onPick ? (
+              <g onClick={() => onPick(p.id)}>
+                <rect className={s.hit} x={p.x - 0.9} y={p.z - 0.8} width={1.8} height={1.6} />
+                {mark}
+              </g>
             ) : (
               // The key beside the plan carries the same links for keyboards and screen readers.
               <a href={e.href} tabIndex={-1} target={e.external ? '_blank' : undefined} rel={e.external ? 'noreferrer' : undefined}>

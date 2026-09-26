@@ -495,6 +495,73 @@
   text-underline-offset: 3px;
 }
 
+/* Phone plan: a picker in the heading and a card for the chosen work. */
+.picker {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--on-dark-2);
+}
+.picker select {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(243, 241, 236, 0.45);
+  border-radius: 8px;
+  background: rgba(28, 28, 27, 0.8);
+  color: var(--on-dark);
+  font: inherit;
+  font-size: 14px;
+}
+.pickCard {
+  /* Paper inside the plan overlay, which re-inks everything light for the drawing. */
+  --ink: #1e1b17;
+  --ink-2: #4f483e;
+  --ink-3: #6f675b;
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 20px;
+  display: grid;
+  gap: 3px;
+  padding: 16px 44px 16px 18px;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+.pickCard span {
+  font: 12px var(--f-mono);
+  color: var(--ink-3);
+}
+.pickCard b {
+  font-size: 19px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  line-height: 1.15;
+}
+.pickCard p {
+  margin: 2px 0 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.pickCard a {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+.pickClose {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+  color: var(--ink-3);
+}
+
 @container hall (height < 620px) {
   .planHead p {
     display: none;

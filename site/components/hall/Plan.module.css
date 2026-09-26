@@ -30,7 +30,8 @@
 .hot .pane {
   stroke: var(--accent);
 }
-.work a {
+.work a,
+.work > g {
   cursor: pointer;
 }
 .hit {

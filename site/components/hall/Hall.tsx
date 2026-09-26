@@ -47,6 +47,9 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   const [craned, setCraned] = useState(false);
   const [planOn, setPlanOn] = useState(false);
   const [frame, setFrame] = useState<Frame | null>(null);
+  // On a phone the plan has no key: a mark (or the picker) selects a work and a card names it.
+  const [pick, setPick] = useState<string | null>(null);
+  const picked = pick ? exhibits.find(e => e.id === pick) : null;
 
   const current = at ? (exhibits.find(e => e.id === at) ?? null) : null;
   const index = current ? exhibits.indexOf(current) : -1;
@@ -358,14 +361,52 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
                 <button type="button" onClick={() => rise(false)}>
                   Back into the room ↑
                 </button>
+                {frame && !frame.key && (
+                  <label className={s.picker}>
+                    <span>Pick a work</span>
+                    <select value={pick ?? ''} onChange={e => setPick(e.target.value || null)}>
+                      <option value="">Tap a mark, or choose</option>
+                      {rows.map((row, k) => (
+                        <optgroup key={k} label={years[k]}>
+                          {row.map(e => (
+                            <option key={e.id} value={e.id}>
+                              {e.title}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </label>
+                )}
               </div>
               {frame && (
                 <>
                   <div className={s.drawing} style={{ left: frame.x, top: frame.y, width: frame.w, height: frame.h }}>
-                    <Plan rows={rows} active={planHover} onHover={setPlanHover} youRef={bigYou} />
+                    <Plan rows={rows} active={planHover ?? pick} onHover={setPlanHover} onPick={frame.key ? undefined : setPick} youRef={bigYou} />
                     <span className={s.glassNote}>Glass wall</span>
                     <span className={s.door}>Entrance</span>
                   </div>
+                  {!frame.key && picked && (
+                    <div className={s.pickCard} role="status">
+                      <button type="button" className={s.pickClose} onClick={() => setPick(null)} aria-label="Close">
+                        ×
+                      </button>
+                      <span>
+                        {picked.when} · {picked.place}
+                      </span>
+                      <b>{picked.title}</b>
+                      <p>{picked.caption}</p>
+                      {picked.external ? (
+                        <a href={picked.href} target="_blank" rel="noreferrer">
+                          Open ↗
+                        </a>
+                      ) : (
+                        <Link href={picked.href} transitionTypes={['nav-forward']}>
+                          Open the record →
+                        </Link>
+                      )}
+                    </div>
+                  )}
                   {frame.key && (
                     <ol className={s.key} style={{ left: frame.key.x, width: frame.key.w }}>
                       {rows.map((row, k) => (

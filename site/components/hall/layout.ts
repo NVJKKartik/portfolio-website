@@ -40,7 +40,8 @@ export type Frame = { x: number; y: number; w: number; h: number; key: { x: numb
 export function planFrame(hall: Hall, w: number, h: number): Frame {
   const ratio = (hall.x1 - hall.x0) / (hall.z0 - hall.z1);
   const tall = w / h < 0.8;
-  const top = tall ? 104 : 64,
+  // A phone's heading carries a picker too, so the plan starts lower.
+  const top = tall ? 176 : 64,
     bottom = tall ? 40 : 56;
   let fh = h - top - bottom,
     fw = fh * ratio;
