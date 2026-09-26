@@ -1,0 +1,541 @@
+/* A record: the top takes the colour of its own plate, then what I did beside who I made it with,
+   then the story on warm paper. Shared by work and research pages. */
+.top {
+  padding: 96px var(--gutter) 64px;
+  background: var(--tint, var(--paper-2));
+  color: var(--tint-ink, var(--ink));
+}
+.inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 32px 72px;
+  align-items: end;
+}
+.crumb {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+}
+.crumb a {
+  font-weight: 800;
+  font-stretch: var(--wide);
+  text-decoration: none;
+}
+.crumb a:hover {
+  text-decoration: underline;
+}
+.crumb span {
+  font: 12.5px var(--f-mono);
+  opacity: 0.7;
+}
+.kicker {
+  margin: 0 0 12px;
+  font: 12.5px/1.5 var(--f-mono);
+  opacity: 0.75;
+}
+.top h1 {
+  margin: 0;
+  font-size: clamp(48px, 7.6vw, 124px);
+  line-height: 0.92;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  /* Last resort on the narrowest phones: a long word breaks rather than widening the page. */
+  overflow-wrap: break-word;
+}
+/* A title with a long word (AgentCompass, ClickHouse, diarization) steps down so the word fits its column. */
+.top h1[data-long] {
+  font-size: clamp(40px, 5vw, 80px);
+}
+.badge {
+  display: inline-block;
+  margin: 18px 0 0;
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: var(--accent-ink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.lede {
+  max-width: 36ch;
+  margin: 26px 0 0;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.4;
+}
+.plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 72svh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.5);
+  transform: rotate(1.2deg);
+}
+
+.hands {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 56px var(--gutter) 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 64px;
+}
+.hand {
+  padding-left: 18px;
+  border-left: 4px solid var(--accent);
+}
+.hand.team {
+  border-left-color: var(--team);
+}
+.hand h2 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+}
+.hand p {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.hand.team p {
+  color: var(--ink-2);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 800;
+}
+.links a {
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* The call I made: a flow of steps, my step in my colour, a lost step struck. */
+.call {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 64px var(--gutter) 0;
+}
+.callKick {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  color: var(--accent-ink);
+}
+.call h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.2vw, 46px);
+  line-height: 1.05;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.callWhy {
+  max-width: 62ch;
+  margin: 14px 0 28px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.flowRow {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 0 16px;
+  align-items: stretch;
+  margin-top: 14px;
+}
+.flowRow:not(:has(.flowLabel)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.flowLabel {
+  align-self: center;
+  font: 700 12.5px var(--f-mono);
+  color: var(--ink-3);
+}
+.flow {
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.flow li {
+  position: relative;
+  flex: 1 1 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  background: #fffaf1;
+}
+/* The arrow between steps. */
+.flow li + li::before {
+  content: '→';
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--ink-3);
+}
+.flow b {
+  font-size: 15.5px;
+  line-height: 1.3;
+  font-weight: 750;
+}
+.flow span {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+.flow li[data-tone='mine'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, #fffaf1);
+}
+.flow li[data-tone='mine'] b {
+  color: var(--accent-ink);
+}
+.flow li[data-tone='lost'] {
+  border-style: dashed;
+  border-color: var(--ink-3);
+  background: transparent;
+}
+.flow li[data-tone='lost'] b {
+  color: var(--ink-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+.paper {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 64px var(--gutter) 40px;
+}
+.sec {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 0 56px;
+  padding: 26px 0 40px;
+  border-top: 1px solid var(--line-paper);
+}
+.sec > h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  line-height: 1.3;
+}
+/* Prose runs in two columns on a wide screen; anything with a figure, a table or code stays in one. */
+.sec > div {
+  columns: 2 30ch;
+  column-gap: 48px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+.sec > div:has(dl, pre, img, table, figure) {
+  columns: 1;
+}
+.sec > div > * {
+  margin-top: 0;
+  break-inside: avoid;
+}
+.sec ul {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 8px;
+}
+.sec li::marker {
+  color: var(--accent);
+}
+.hard {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 0 56px;
+  margin: 0;
+  padding: 30px 0 52px;
+  border-top: 1px solid var(--line-paper);
+}
+.hard > span {
+  font-size: 15px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  color: var(--accent-ink);
+}
+.hard p,
+.hard li {
+  max-width: 34ch;
+  margin: 0 0 0.5em;
+  font-size: clamp(26px, 2.8vw, 40px);
+  line-height: 1.16;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.hard ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.study {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 56px var(--gutter) 0;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 44px;
+  margin: 0;
+}
+.facts div {
+  display: grid;
+  gap: 4px;
+}
+.facts dt {
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.facts dd small {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.facts dd {
+  max-width: 34ch;
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.code {
+  margin: 0;
+}
+.code pre {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: #231f1b;
+  color: #f3ead9;
+  font: 13.5px/1.6 var(--f-mono);
+}
+.code figcaption {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.originals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.originals figure {
+  flex: 1 1 280px;
+  max-width: 560px;
+  margin: 0;
+}
+.originals figure[data-tall] {
+  flex: 0 1 220px;
+}
+.originals img {
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  border: 1px solid var(--line-paper);
+}
+.originals figcaption {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+.demo {
+  margin-top: 56px;
+}
+.demo h2 {
+  margin: 0 0 6px;
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.02em;
+}
+.demo > p {
+  max-width: 68ch;
+  margin: 0 0 20px;
+  color: var(--ink-2);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.table caption {
+  margin-bottom: 10px;
+  text-align: left;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+.table th,
+.table td {
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--line-paper);
+  text-align: left;
+  font-weight: 400;
+}
+.table thead th {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.barCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bar {
+  height: 8px;
+  border-radius: 2px;
+  background: #cbbfa8;
+}
+.bar[data-mine] {
+  background: var(--accent);
+}
+.tableWrap {
+  overflow-x: auto;
+}
+
+.next {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 0 26px;
+  align-items: center;
+  margin-top: 72px;
+  padding: 24px 0 0;
+  border-top: 2px solid var(--ink);
+  text-decoration: none;
+}
+.next img {
+  width: 96px;
+  height: auto;
+  border-radius: 3px;
+  transform: rotate(-2deg);
+  box-shadow: 0 14px 30px -14px rgba(60, 40, 20, 0.5);
+}
+.next small {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.next b {
+  display: block;
+  font-size: clamp(26px, 3.2vw, 48px);
+  line-height: 1;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  letter-spacing: -0.03em;
+}
+.next:hover b {
+  color: var(--accent);
+}
+
+@media (max-width: 800px) {
+  .flowRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .flow {
+    flex-direction: column;
+    gap: 22px;
+  }
+  .flow li + li::before {
+    content: '↓';
+    left: 18px;
+    top: -21px;
+    transform: none;
+  }
+  .top {
+    padding: 84px var(--gutter) 40px;
+  }
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .crumb {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .top h1 {
+    font-size: clamp(32px, 11vw, 46px);
+  }
+  .top h1[data-long] {
+    font-size: clamp(26px, 8.4vw, 40px);
+  }
+  .lede {
+    font-size: 18.5px;
+  }
+  .plate {
+    width: 80%;
+    margin: 8px auto 0;
+  }
+  .hands {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding-top: 36px;
+  }
+  .hand p {
+    font-size: 16.5px;
+  }
+  .paper {
+    padding: 40px var(--gutter) 24px;
+  }
+  .sec,
+  .hard {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .sec > div {
+    columns: 1;
+    font-size: 17px;
+  }
+  .hard p,
+  .hard li {
+    font-size: 26px;
+  }
+  .next {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 0 16px;
+    padding-top: 18px;
+  }
+  .next img {
+    width: 64px;
+  }
+  .next b {
+    font-size: 26px;
+  }
+}

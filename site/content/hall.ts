@@ -1,0 +1,127 @@
+import { work } from './work';
+import { research } from './research';
+import { posts } from './writing';
+
+// Everything in the hall is derived from the content files, so a label can never disagree with its page.
+// Order is time: the front row is the newest work, the back wall the oldest.
+
+export type Exhibit = {
+  id: string;
+  title: string;
+  short: string;
+  when: string;
+  /** YYYY-MM, for row order. */
+  sort: string;
+  place: string;
+  medium: string;
+  /** What Kartik did. */
+  part: string;
+  /** The line under the title on the easel: `part`, or its first sentence when that would run long. */
+  caption: string;
+  /** Who else made it. */
+  credit: string;
+  href: string;
+  external?: boolean;
+  image: { src: string; alt: string; ratio: number };
+  study?: boolean;
+};
+
+const PLATE = 0.8;
+/** Up to about three lines of caption: the whole part, else its first sentence, else that sentence up to its colon. */
+const lead = (text: string) => {
+  if (text.length <= 120) return text;
+  const first = text.split(/(?<=\.)\s+(?=[A-Z])/)[0];
+  return first.length <= 120 || !first.includes(':') ? first : `${first.split(':')[0]}.`;
+};
+const month = (iso: string) => iso.slice(0, 7);
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const monthLabel = (iso: string) => `${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
+
+const fromWork = work.map<Exhibit>(w => ({
+  id: w.slug,
+  title: w.name,
+  short: w.short ?? w.name,
+  when: w.years,
+  sort: w.sort,
+  place: w.place,
+  medium: w.medium,
+  part: w.contribution[0],
+  caption: w.caption ?? lead(w.contribution[0]),
+  credit: w.collaborators,
+  href: `/work/${w.slug}/`,
+  image: { src: w.cover.src, alt: w.cover.alt, ratio: w.cover.ratio ?? PLATE },
+  study: !!w.study,
+}));
+
+// AgentCompass already has a case study (with the demo), so its paper isn't hung twice.
+const fromResearch = research
+  .filter(r => !work.some(w => w.slug === r.slug))
+  .map<Exhibit>(r => {
+    const others = r.authors.filter(a => !a.me).map(a => a.name);
+    const patent = r.kind === 'Granted patent';
+    // The role line names co-authors; the credit line lists them, so the label says each thing once.
+    const part = r.role.includes(', with') ? `${r.role.split(', with')[0]}.` : r.role;
+    return {
+      id: r.slug,
+      title: r.shortTitle,
+      short: r.short,
+      when: monthLabel(r.date),
+      sort: month(r.date),
+      place: r.place,
+      medium: `${r.kind} · ${r.venue}`,
+      part,
+      caption: lead(part),
+      credit: `${patent ? 'Co-inventors' : 'Co-authors'}: ${others.join(', ')}.`,
+      href: `/research/${r.slug}/`,
+      image: patent
+        ? {
+            src: '/media/work/patent.webp',
+            alt: 'Figure from US 12,608,610 B1: the multi-agent synthetic data generation framework.',
+            ratio: 1434 / 1320,
+          }
+        : { src: `/media/plates/${r.slug}.webp`, alt: `Plate: ${r.shortTitle}.`, ratio: PLATE },
+    };
+  });
+
+const oldest = posts[posts.length - 1];
+const writing: Exhibit = {
+  // Not 'writing': that's the home section's id, and a shared /#writing link has to land on the section.
+  id: 'posts',
+  title: 'Posts about what broke',
+  short: 'Writing',
+  when: `${oldest.date.slice(0, 4)} — now`,
+  sort: month(oldest.date),
+  place: 'DEV and Medium',
+  medium: `${posts.length} posts`,
+  part: 'Posts on evals, tracing and agents in production, most of them starting from something that broke.',
+  caption: 'Posts on evals, tracing and agents in production, most of them starting from something that broke.',
+  credit: 'Written alone.',
+  href: '/writing/',
+  image: { src: '/media/plates/writing.webp', alt: 'Plate: “My CI evals were green. A regression still paged me at 3 AM.”', ratio: PLATE },
+};
+
+export const exhibits: Exhibit[] = [...fromWork, ...fromResearch, writing].sort((a, b) => b.sort.localeCompare(a.sort));
+
+/** Rows alternate four and three easels, so every row stands in the gaps of the one in front. */
+const ROW_SIZES = [3, 4, 3, 4, 3, 3, 2];
+export const rows: Exhibit[][] = (() => {
+  const out: Exhibit[][] = [];
+  let i = 0;
+  for (let k = 0; i < exhibits.length; k++) {
+    const n = ROW_SIZES[k] ?? 4;
+    out.push(exhibits.slice(i, i + n));
+    i += n;
+  }
+  return out;
+})();
+
+/** A row's span: "Jun–Sep 2026" within one year, "Jun 2024 – Jun 2025" across two. */
+export const rowYears = (row: Exhibit[]) => {
+  const s = row.map(e => e.sort).sort();
+  const [a, b] = [s[0], s[s.length - 1]];
+  const [ma, mb] = [MONTHS[+a.slice(5, 7) - 1], MONTHS[+b.slice(5, 7) - 1]];
+  if (a.slice(0, 4) !== b.slice(0, 4)) return `${ma} ${a.slice(0, 4)} – ${mb} ${b.slice(0, 4)}`;
+  return ma === mb ? `${ma} ${a.slice(0, 4)}` : `${ma}–${mb} ${a.slice(0, 4)}`;
+};
+
+export const exhibitById = (id: string) => exhibits.find(e => e.id === id);

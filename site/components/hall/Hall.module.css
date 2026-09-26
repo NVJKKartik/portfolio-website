@@ -1,0 +1,656 @@
+/* The hall: one sticky screen inside a taller section. Scrolling through it lifts the roof off and
+   cranes up to the plan; reduced motion gets one still screen and no crane. */
+.hall {
+  position: relative;
+  height: 100svh;
+  background: var(--basalt);
+}
+.hall[data-crane] {
+  height: 240svh;
+}
+.hall[data-crane] .stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+.stage {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  container: hall / size;
+  color: var(--on-dark);
+  isolation: isolate;
+}
+.poster,
+.gl,
+.grade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.poster {
+  object-fit: cover;
+  transition: opacity 0.8s var(--ease-out);
+}
+.poster[data-hidden] {
+  opacity: 0;
+}
+.gl canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Vertical swipes still scroll the page on touch; sideways drags look around the room. */
+  touch-action: pan-y;
+  filter: contrast(1.05) saturate(1.06);
+}
+/* Grade: a soft vignette and film grain over the render, so it reads as a photograph, not CG. */
+.grade {
+  pointer-events: none;
+  background:
+    radial-gradient(120% 95% at 50% 55%, transparent 58%, rgba(8, 8, 7, 0.5) 100%),
+    linear-gradient(100deg, rgba(14, 14, 13, 0.55), rgba(14, 14, 13, 0.1) 46%, transparent 60%),
+    linear-gradient(rgba(14, 14, 13, 0.5), rgba(14, 14, 13, 0.12) 24%, transparent 40%);
+}
+.grade::after {
+  /* Still grain, never animated: moving grain reads as flicker. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+}
+
+.stage [data-off] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.wall {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(env(safe-area-inset-top, 0px) + 84px);
+  max-width: min(560px, 44cqw);
+  z-index: 2;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.6s var(--ease-out);
+}
+/* A soft local backdrop, so the words don't have to fight the ceiling beams behind them. */
+.wall::before,
+.caption::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -56px -96px -56px calc(-1 * var(--gutter));
+  background: radial-gradient(closest-side, rgba(14, 14, 13, 0.6), rgba(14, 14, 13, 0.36) 60%, transparent);
+  pointer-events: none;
+}
+.wall h1 {
+  margin: 0;
+  font-weight: 700;
+  font-stretch: 118%;
+  font-size: clamp(30px, 3.4cqw, 54px);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+.wall p {
+  margin: 0.8em 0 0;
+  font-size: clamp(14px, 1.08cqw, 17px);
+  line-height: 1.5;
+  color: #e3e0d9;
+  text-wrap: pretty;
+}
+.wall .proof {
+  font-size: clamp(12px, 0.92cqw, 14px);
+  color: #cfcbc2;
+}
+.skip {
+  display: inline-block;
+  margin-top: 1em;
+  font-size: 14px;
+  color: var(--on-dark);
+  text-underline-offset: 4px;
+}
+.wall .count {
+  font-size: clamp(12px, 0.9cqw, 14px);
+  color: #bdb9b0;
+}
+
+.hint p {
+  margin: 0 0 8px;
+}
+.forTouch {
+  display: none;
+}
+@media (hover: none) {
+  .forMouse {
+    display: none;
+  }
+  .forTouch {
+    display: inline;
+  }
+}
+.hintBtns {
+  display: inline-flex;
+  gap: 6px;
+}
+.hint button {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(243, 241, 236, 0.45);
+  border-radius: 99px;
+  padding: 4px 12px;
+}
+.hint button:hover {
+  border-color: var(--on-dark);
+}
+.hint {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 28px;
+  margin: 0;
+  z-index: 2;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: right;
+  color: #e9e6df;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.6s;
+}
+
+.mini {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 28px;
+  z-index: 2;
+  padding: 24px 12px 10px;
+  background: rgba(236, 233, 226, 0.9);
+  backdrop-filter: blur(6px);
+  border-radius: 2px;
+  transition:
+    opacity 0.6s,
+    background-color 0.2s;
+  --ink: #2a2927;
+}
+.mini:hover,
+.mini:focus-visible {
+  background: #fff;
+}
+.mini svg {
+  width: auto;
+  height: clamp(120px, 24cqh, 210px);
+}
+.mini > span {
+  position: absolute;
+  left: 10px;
+  top: 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #55524b;
+}
+
+.tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0.55em 0.85em 0.6em;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.tip b {
+  display: block;
+  font-weight: 650;
+}
+.tip span {
+  color: var(--ink-3);
+}
+
+.caption {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(env(safe-area-inset-top, 0px) + 84px);
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  max-width: 36ch;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.55);
+  transition: opacity 0.5s;
+}
+.caption span {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #d7d3ca;
+}
+.caption b {
+  font-size: clamp(18px, 1.6cqw, 24px);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.caption p {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #e6e3dc;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.caption a {
+  font-size: 14px;
+  color: var(--on-dark);
+  margin-top: 4px;
+}
+
+.controls {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 8px;
+}
+.controls button,
+.controls a {
+  white-space: nowrap;
+  font-size: 14px;
+  background: rgba(244, 242, 237, 0.94);
+  color: var(--ink);
+  border-radius: 99px;
+  padding: 0.7em 1.25em;
+}
+.controls a {
+  text-decoration: none;
+}
+.controls button:hover {
+  background: #fff;
+}
+.controls .primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.controls .primary:hover {
+  background: #000;
+}
+
+.label {
+  position: absolute;
+  right: calc(var(--gutter) + 1cqw);
+  top: 50%;
+  transform: translateY(-46%);
+  width: min(420px, 32cqw);
+  max-height: 78cqh;
+  overflow: auto;
+  z-index: 3;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 28px 30px 30px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.6s var(--ease-out);
+}
+.label[data-on] {
+  opacity: 1;
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+.label .k,
+.label h3 {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+  margin: 0;
+}
+.label h2 {
+  margin: 0.5em 0 0.15em;
+  font-size: 23px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.label .d {
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.label .m {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+.label hr {
+  border: 0;
+  border-top: 1px solid var(--line-paper);
+  margin: 18px 0;
+}
+.label h3 {
+  margin-bottom: 5px;
+}
+.label p {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.label .credit {
+  color: var(--ink-2);
+}
+.label a {
+  font-size: 14px;
+  font-weight: 550;
+}
+
+/* The plan: the render dims under a drawing of the room that sits exactly on it. Both follow --p,
+   the crane's progress, which the scroll handler sets on the stage. The camera lands at 0.8, so the
+   drawing only comes in over a still picture. */
+.sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: var(--basalt);
+  opacity: calc(clamp(0, (var(--p, 0) - 0.62) / 0.3, 1) * 0.72);
+}
+.drawn {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: clamp(0, (var(--p, 0) - 0.78) / 0.18, 1);
+  color: var(--on-dark);
+  /* Plan.module.css draws in ink for paper; here it's light on the dimmed room. */
+  --ink: #e9e6df;
+  --glass-deep: var(--glass);
+  --accent: #e0936c;
+}
+.drawn[inert] {
+  pointer-events: none;
+}
+.drawing {
+  position: absolute;
+}
+.drawing svg {
+  width: 100%;
+  height: 100%;
+}
+.glassNote,
+.door {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-dark-2);
+  white-space: nowrap;
+}
+.glassNote {
+  right: calc(100% + 10px);
+  top: 50%;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+}
+.door {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.planHead {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(env(safe-area-inset-top, 0px) + 28px);
+  max-width: 40ch;
+}
+.planHead h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+  font-stretch: 116%;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.planHead p {
+  margin: 4px 0 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--on-dark-2);
+}
+.planHead button {
+  font-size: 13px;
+  border: 1px solid rgba(243, 241, 236, 0.45);
+  border-radius: 99px;
+  padding: 4px 12px;
+}
+.planHead button:hover {
+  border-color: var(--on-dark);
+}
+.key {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* It spans the stage so rows can sit at their plan heights; only the links take the pointer. */
+  pointer-events: none;
+}
+.key a {
+  pointer-events: auto;
+}
+/* Period on the left, works on the right: an entry stays one or two lines, inside a row's height. */
+.key li {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: 124px minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: baseline;
+}
+/* A hairline from the row on the plan to its entry, like the key on a drawing. */
+.key li::before {
+  content: '';
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  width: 40px;
+  border-top: 1px solid rgba(233, 230, 223, 0.3);
+}
+.key li > span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-dark-2);
+}
+.key p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--on-dark-2);
+}
+.key a {
+  color: var(--on-dark);
+  text-decoration: none;
+}
+.key a:hover,
+.key a:focus-visible,
+.key a[data-hot] {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Phone plan: a picker in the heading and a card for the chosen work. */
+.picker {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--on-dark-2);
+}
+.picker select {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(243, 241, 236, 0.45);
+  border-radius: 8px;
+  background: rgba(28, 28, 27, 0.8);
+  color: var(--on-dark);
+  font: inherit;
+  font-size: 14px;
+}
+.pickCard {
+  /* Paper inside the plan overlay, which re-inks everything light for the drawing. */
+  --ink: #1e1b17;
+  --ink-2: #4f483e;
+  --ink-3: #6f675b;
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 20px;
+  display: grid;
+  gap: 3px;
+  padding: 16px 44px 16px 18px;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+.pickCard span {
+  font: 12px var(--f-mono);
+  color: var(--ink-3);
+}
+.pickCard b {
+  font-size: 19px;
+  font-weight: 800;
+  font-stretch: var(--wide);
+  line-height: 1.15;
+}
+.pickCard p {
+  margin: 2px 0 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.pickCard a {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+.pickClose {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+  color: var(--ink-3);
+}
+
+@container hall (height < 620px) {
+  .planHead p {
+    display: none;
+  }
+}
+
+@container hall (aspect-ratio < 0.8) {
+  .wall {
+    max-width: none;
+    right: var(--gutter);
+    top: calc(env(safe-area-inset-top, 0px) + 70px);
+  }
+  .wall h1 {
+    font-size: 8cqw;
+  }
+  .wall .count,
+  .mini {
+    display: none;
+  }
+  /* Phones keep the hint and the pause, on one line at the foot of the screen. */
+  .hint {
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+  }
+  .hint p {
+    margin: 0;
+    max-width: 24ch;
+  }
+  .hintBtns {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .planHead p {
+    display: none;
+  }
+  /* Two rows that keep the gutter: ← Open the record →, then Turn it around · Entrance. */
+  .controls {
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 20px;
+    transform: none;
+    display: grid;
+    grid-template-columns: 48px 1fr 1fr 48px;
+    gap: 8px;
+  }
+  .controls > * {
+    padding: 0.75em 0.5em;
+    text-align: center;
+  }
+  .controls .prev {
+    grid-area: 1 / 1;
+  }
+  .controls .primary {
+    grid-area: 1 / 2 / 2 / 4;
+  }
+  .controls .next {
+    grid-area: 1 / 4;
+  }
+  .controls .turn {
+    grid-area: 2 / 1 / 3 / 3;
+  }
+  .controls .side {
+    grid-area: 2 / 3 / 3 / 5;
+  }
+  .caption {
+    top: auto;
+    bottom: 136px;
+    left: var(--gutter);
+    right: var(--gutter);
+  }
+  .label {
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+    top: auto;
+    bottom: 132px;
+    transform: translateY(12px);
+    max-height: 58cqh;
+    padding: 20px 22px 34px;
+    /* It scrolls when the text is long; the fade at the foot says there's more. */
+    mask-image: linear-gradient(#000 calc(100% - 30px), transparent);
+  }
+  .label[data-on] {
+    transform: none;
+  }
+}
