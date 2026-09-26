@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=block"
+    />
+  </head>
+  <body style="margin: 0; background: #000">
+    <script type="module">
+      import { drawPlate, fontsReady, ids } from './draw.js';
+      await fontsReady();
+      window.plates = { ids, png: id => drawPlate(id).toDataURL('image/png') };
+      window.ready = true;
+    </script>
+  </body>
+</html>

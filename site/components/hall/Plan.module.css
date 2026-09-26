@@ -1,0 +1,55 @@
+.plan {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.walls {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.07;
+}
+.glass {
+  stroke: var(--glass-deep);
+  stroke-width: 0.14;
+}
+.mull {
+  stroke: var(--glass-deep);
+  stroke-width: 0.05;
+}
+.base {
+  fill: #c9c4ba;
+  stroke: #8b867c;
+  stroke-width: 0.03;
+}
+.pane {
+  stroke: var(--glass-deep);
+  stroke-width: 0.08;
+}
+.work:hover .pane,
+.hot .pane {
+  stroke: var(--accent);
+}
+.work a {
+  cursor: pointer;
+}
+.hit {
+  fill: transparent;
+}
+.you path {
+  fill: var(--accent);
+}
+.mini .walls {
+  stroke: #8d897f;
+  stroke-width: 0.12;
+}
+.mini .glass {
+  stroke-width: 0.26;
+}
+.mini .base {
+  fill: #b9b3a8;
+  stroke: none;
+}
+.mini .pane {
+  stroke-width: 0.14;
+}

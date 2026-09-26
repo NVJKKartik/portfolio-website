@@ -1,0 +1,31 @@
+.sources {
+  border-top: 1px solid var(--line-paper);
+  padding-top: 22px;
+  margin-top: 56px;
+  max-width: 900px;
+}
+.sources h2 {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.sources ol {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 12px;
+  font-size: 15px;
+}
+.sources small {
+  display: block;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  margin-top: 2px;
+  line-height: 1.45;
+}
+.sources p {
+  font-size: 14px;
+}

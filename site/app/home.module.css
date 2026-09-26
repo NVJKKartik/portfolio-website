@@ -1,0 +1,133 @@
+.section {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 88px var(--gutter) 24px;
+}
+.head {
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) minmax(0, 62ch);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.head h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  font-stretch: 116%;
+  letter-spacing: -0.015em;
+}
+.head p {
+  margin: 0.3em 0 0;
+  color: var(--mute);
+  font-size: 16px;
+}
+.posts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.posts a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  align-items: baseline;
+}
+.posts b {
+  font-size: 18px;
+  font-weight: 550;
+}
+.posts a:hover b,
+.posts a:focus-visible b {
+  color: var(--accent-on);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.posts span {
+  color: var(--mute);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.more {
+  margin: 18px 0 0;
+  font-size: 15px;
+}
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 62ch) minmax(240px, 1fr);
+  gap: 40px 64px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.words p {
+  margin: 0 0 1em;
+  font-size: 17px;
+  line-height: 1.62;
+  color: #dcd9d2;
+}
+.chrono {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.chrono li {
+  display: grid;
+  gap: 1px;
+  font-size: 15px;
+}
+.chrono span {
+  font-size: 13px;
+  color: var(--mute);
+  font-variant-numeric: tabular-nums;
+}
+.chrono b {
+  font-weight: 600;
+}
+.chrono em {
+  font-style: normal;
+  color: #cfcbc2;
+}
+.contact {
+  padding-bottom: 96px;
+}
+.mail {
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 650;
+  font-stretch: 108%;
+  color: var(--on-dark);
+}
+.links {
+  list-style: none;
+  margin: 0;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px 24px;
+  font-size: 16px;
+}
+.links span {
+  display: block;
+  color: var(--mute);
+  font-size: 14px;
+}
+@media (max-width: 800px) {
+  .head,
+  .about {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .about {
+    gap: 28px;
+  }
+  .posts a {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
