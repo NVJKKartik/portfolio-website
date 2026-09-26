@@ -300,7 +300,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
                 {current.when} · {current.place}
               </span>
               <b>{current.title}</b>
-              <p>{current.part}</p>
+              <p>{current.caption}</p>
             </div>
             <div className={s.controls} {...off(craned)}>
               <button type="button" className={s.prev} onClick={() => step(-1)} aria-label="Previous work">

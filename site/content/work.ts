@@ -22,6 +22,8 @@ export type Work = {
   hard: string;
   purpose: string[];
   contribution: string[];
+  /** The easel caption, when the first sentence of `contribution` is too long for it. A subset of that sentence. */
+  caption?: string;
   collaborators: string;
   cover: Img;
   gallery?: Img[];
@@ -371,7 +373,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       'I rewrote the evaluation SDK for its 1.0 release: the unified evaluate() API with automatic engine routing, 72+ local metrics, and image and audio judging.',
       'The local metrics cover string, JSON and similarity checks, NLI hallucination detection, RAG retrieval and generation, function calling, agent trajectories, structured output and guardrails. The release also added grading criteria generated from a short description, a feedback loop that turns corrections into few-shot examples, streaming evaluation with early stopping, OpenTelemetry spans, distributed backends (Celery, Ray, Temporal, Kubernetes), nine cookbooks, and the move from Poetry to uv.',
     ],
-    collaborators: 'Evaluation is a Future AGI team area. The release PR also carries a commit from nik13.',
+    collaborators: 'Evaluation is Future AGI team work; nik13 also worked on the release.',
     cover: {
       src: '/media/plates/ai-evaluation.webp',
       alt: 'Plate: one evaluate() call branching to a local metric, a Turing model and an LLM judge.',
@@ -408,6 +410,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
     contribution: [
       'I built the working prototype and the Bayesian-search optimizer, simplified the optimisation loop, and merged the first release to main in October 2025.',
     ],
+    caption: 'I built the working prototype and the Bayesian-search optimizer, and merged the first release to main in October 2025.',
     collaborators: 'azain-commits wrote most of the other optimizers (ProTeGi, meta-prompt, GEPA and PromptWizard) and the evaluator integration.',
     cover: { src: '/media/plates/agent-optimizer.webp', alt: 'Plate: candidate prompts per round, with the best path rising.' },
     facts: [],
@@ -437,7 +440,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       'I added chat simulation to the SDK: agent wrappers for OpenAI, LangChain, Anthropic and Gemini, tool calls and tool outputs in responses, traced conversations, timeouts, and runs through the Future AGI platform.',
       'I also moved the LiveKit voice engine into its own module so voice and chat share one runner.',
     ],
-    collaborators: 'The voice engine and the platform’s simulation product are Future AGI team work.',
+    collaborators: 'The Future AGI team built the voice engine and the platform’s simulation product.',
     cover: { src: '/media/plates/chat-simulation.webp', alt: 'Plate: a conversation between a simulated customer and an agent.' },
     facts: [],
     sections: [],
@@ -465,7 +468,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       'I published the client SDKs’ first public release: an OpenAI-compatible Python client, a TypeScript client (ESM and CJS), and packages for LangChain.js, LlamaIndex.TS, React chat UIs and the Vercel AI SDK.',
       'In the gateway, I fixed Claude’s server tools, such as web search, being silently dropped when callers used the OpenAI-format endpoint. Tools that aren’t plain functions now keep the caller’s original bytes and replay them, so they round-trip on every provider path.',
     ],
-    collaborators: 'The gateway itself, written in Go, is a Future AGI team system.',
+    collaborators: 'The Future AGI team built the gateway itself, in Go.',
     cover: {
       src: '/media/plates/agent-command-center.webp',
       alt: 'Plate: one request fanning out to several model providers, with a server tool kept byte for byte.',
@@ -505,7 +508,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       'It reads individual trace summaries with a cheap model, streams its reasoning live into a new Fix tab, and caches the result so later visits are instant. The same PR included a performance pass that cut the feed’s API latencies by 65–92%, and the billing wiring for the agent.',
     ],
     collaborators:
-      'KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23 have commits in the same PR. Error Feed is a Future AGI team product.',
+      'Built with KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23, who worked on the same PR. Error Feed is a Future AGI team product.',
     cover: {
       src: '/media/plates/error-feed.webp',
       alt: 'Plate: failing traces with one cluster circled, and the cause, fix, confidence and evidence the agent returns.',
@@ -557,7 +560,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
     contribution: [
       'Releases I shipped or co-authored: AI Evaluation 1.0, Agent Optimizer’s first release, chat in Simulate SDK, the Agent Command Center SDK 1.0, and traceAI v1.0.0 in Python, TypeScript, Java and C#.',
     ],
-    collaborators: 'Every one of these repositories has several authors, and the Future AGI team owns them.',
+    collaborators: 'Each of these repositories has several authors; the Future AGI team owns them all.',
     cover: { src: '/media/plates/open-source.webp', alt: 'Plate: the Future AGI open-source repositories.' },
     facts: [],
     sections: [],
@@ -608,6 +611,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
     contribution: [
       'As a full-stack developer intern I built speaker diarization and voice emotion recognition models and the React app people used to run them, fine-tuned Llama 2 and GPT-3.5 Turbo for sentiment, topic modelling and conversation scoring, and wired an automated QA system and REST APIs into customer-service workflows.',
     ],
+    caption: 'I built speaker diarization and voice emotion recognition models and the React app people used to run them.',
     collaborators: 'The Vocab.AI team.',
     cover: { src: '/media/plates/conversation-analytics.webp', alt: 'Plate: a two-speaker call waveform with sentiment, topic and QA score.' },
     facts: [],
@@ -630,6 +634,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
     contribution: [
       'I ran transformer-based sentiment analysis over social media and financial news, combined it with technical indicators and fundamentals, and studied how feature selection and time-series models change prediction quality.',
     ],
+    caption: 'I ran transformer-based sentiment analysis over social media and financial news.',
     collaborators: 'RBCDSAI, IIT Madras.',
     cover: { src: '/media/plates/market-sentiment.webp', alt: 'Plate: a price series above sentiment bars.' },
     facts: [],

@@ -17,6 +17,8 @@ export type Exhibit = {
   medium: string;
   /** What Kartik did. */
   part: string;
+  /** The line under the title on the easel: `part`, or its first sentence when that would run long. */
+  caption: string;
   /** Who else made it. */
   credit: string;
   href: string;
@@ -26,6 +28,12 @@ export type Exhibit = {
 };
 
 const PLATE = 0.8;
+/** Up to about three lines of caption: the whole part, else its first sentence, else that sentence up to its colon. */
+const lead = (text: string) => {
+  if (text.length <= 120) return text;
+  const first = text.split(/(?<=\.)\s+(?=[A-Z])/)[0];
+  return first.length <= 120 || !first.includes(':') ? first : `${first.split(':')[0]}.`;
+};
 const month = (iso: string) => iso.slice(0, 7);
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const monthLabel = (iso: string) => `${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
@@ -39,6 +47,7 @@ const fromWork = work.map<Exhibit>(w => ({
   place: w.place,
   medium: w.medium,
   part: w.contribution[0],
+  caption: w.caption ?? lead(w.contribution[0]),
   credit: w.collaborators,
   href: `/work/${w.slug}/`,
   image: { src: w.cover.src, alt: w.cover.alt, ratio: w.cover.ratio ?? PLATE },
@@ -62,6 +71,7 @@ const fromResearch = research
       place: r.place,
       medium: `${r.kind} · ${r.venue}`,
       part,
+      caption: lead(part),
       credit: `${patent ? 'Co-inventors' : 'Co-authors'}: ${others.join(', ')}.`,
       href: `/research/${r.slug}/`,
       image: patent
@@ -83,6 +93,7 @@ const talks = speaking.map<Exhibit>(s => ({
   place: s.event,
   medium: 'Live session',
   part: s.role,
+  caption: lead(s.role),
   credit: s.credit,
   href: s.href,
   external: true,
@@ -99,6 +110,7 @@ const writing: Exhibit = {
   place: 'DEV and Medium',
   medium: `${posts.length} posts`,
   part: 'Posts on evals, tracing and agents in production, most of them starting from something that broke.',
+  caption: 'Posts on evals, tracing and agents in production, most of them starting from something that broke.',
   credit: 'Written alone.',
   href: '/writing/',
   image: { src: '/media/plates/writing.webp', alt: 'Plate: “My CI evals were green. A regression still paged me at 3 AM.”', ratio: PLATE },
