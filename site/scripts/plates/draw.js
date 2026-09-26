@@ -315,17 +315,6 @@ const DRAW = {
     txt(g, 'paged me at 3 AM.', 64, 670, { size: 104, weight: 300, color: '#9a4a2f', width: 76 });
     caption(g, W, H, 'Posts about what broke', 'DEV and Medium · 2026 —', '#1d1c1a', '#77726a');
   },
-  'harness-engineering-btw-2026'(g, W, H) {
-    g.fillStyle = '#0d2a52';
-    g.fillRect(0, 0, W, H);
-    txt(g, 'HARNESS', 64, 330, { size: 150, weight: 800, color: '#f2eee4', width: 70 });
-    txt(g, 'ENGINEERING', 64, 480, { size: 150, weight: 800, color: '#f2eee4', width: 70 });
-    wrap(g, 'Build the loop around agents you can trust. A live build, from a failing model call.', 64, 600, W - 128, 42, {
-      size: 30,
-      color: '#b9c8e0',
-    });
-    caption(g, W, H, 'Bengaluru Tech Week', '6 Sep 2026 · co-host', '#f2eee4', '#b9c8e0');
-  },
   'speaker-diarization-tale-2024'(g, W, H) {
     g.fillStyle = '#1d1a26';
     g.fillRect(0, 0, W, H);

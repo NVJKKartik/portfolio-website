@@ -1,6 +1,5 @@
 import { work } from './work';
 import { research } from './research';
-import { speaking } from './more';
 import { posts } from './writing';
 
 // Everything in the hall is derived from the content files, so a label can never disagree with its page.
@@ -84,22 +83,6 @@ const fromResearch = research
     };
   });
 
-const talks = speaking.map<Exhibit>(s => ({
-  id: s.slug,
-  title: s.title.split(':')[0],
-  short: 'Talk',
-  when: monthLabel(s.date),
-  sort: month(s.date),
-  place: s.event,
-  medium: 'Live session',
-  part: s.role,
-  caption: lead(s.role),
-  credit: s.credit,
-  href: s.href,
-  external: true,
-  image: { src: `/media/plates/${s.slug}.webp`, alt: `Plate: ${s.title}.`, ratio: PLATE },
-}));
-
 const oldest = posts[posts.length - 1];
 const writing: Exhibit = {
   // Not 'writing': that's the home section's id, and a shared /#writing link has to land on the section.
@@ -117,10 +100,10 @@ const writing: Exhibit = {
   image: { src: '/media/plates/writing.webp', alt: 'Plate: “My CI evals were green. A regression still paged me at 3 AM.”', ratio: PLATE },
 };
 
-export const exhibits: Exhibit[] = [...fromWork, ...fromResearch, ...talks, writing].sort((a, b) => b.sort.localeCompare(a.sort));
+export const exhibits: Exhibit[] = [...fromWork, ...fromResearch, writing].sort((a, b) => b.sort.localeCompare(a.sort));
 
 /** Rows alternate four and three easels, so every row stands in the gaps of the one in front. */
-const ROW_SIZES = [4, 3, 4, 3, 4, 3, 2];
+const ROW_SIZES = [3, 4, 3, 4, 3, 3, 2];
 export const rows: Exhibit[][] = (() => {
   const out: Exhibit[][] = [];
   let i = 0;

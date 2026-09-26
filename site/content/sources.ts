@@ -155,12 +155,6 @@ export const sources = {
     url: 'https://medium.com/@kartik.nvj',
     supports: 'Articles snapshotted into the Writing section.',
   },
-  luma: {
-    id: 'luma',
-    label: 'Luma — Harness Engineering (Bengaluru Tech Week)',
-    url: 'https://luma.com/future-bpgk',
-    supports: '6 Sep 2026, 11:00–13:00 IST at Future AGI, HSR Layout; Kartik listed among hosts.',
-  },
   linkedin: {
     id: 'linkedin',
     label: 'LinkedIn',
@@ -221,6 +215,24 @@ export const sources = {
     url: 'https://github.com/future-agi/future-agi/pull/1495',
     supports:
       'Annotation reads of trace, span and session data moved to ClickHouse; tenant-gated, fail-closed; supersedes the drop-safety draft #1214. Authored by Kartik.',
+  },
+  pypiTraceai: {
+    id: 'pypiTraceai',
+    label: 'PyPI Stats — fi-instrumentation-otel',
+    url: 'https://pypistats.org/packages/fi-instrumentation-otel',
+    supports: 'traceAI’s core Python instrumentation package: 14,383 downloads in the month to 26 Sep 2026 (traceai-openai: 11,864).',
+  },
+  ghTraceai: {
+    id: 'ghTraceai',
+    label: 'GitHub — future-agi/traceAI',
+    url: 'https://github.com/future-agi/traceAI/stargazers',
+    supports: '222 stars and 44 forks on 26 Sep 2026.',
+  },
+  ghPlatform: {
+    id: 'ghPlatform',
+    label: 'GitHub — future-agi/future-agi',
+    url: 'https://github.com/future-agi/future-agi/stargazers',
+    supports: 'The open-source platform repository Error Feed and the annotation reads ship in: 2,077 stars and 644 forks on 26 Sep 2026.',
   },
   futureAgiOrg: {
     id: 'futureAgiOrg',

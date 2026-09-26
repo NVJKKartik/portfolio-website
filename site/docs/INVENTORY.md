@@ -15,7 +15,7 @@ Built from three inputs: the original portfolio (`../src`, live at nvjkkartik.ne
 | NIT Puducherry, MLOps Intern, Dept of CSE, Dec 2023 – Jan 2024                      | old portfolio `Jobs/NITPY.js`                                                                                       | Self-reported. 77% / 86% / 95% figures shown on the case study only                                                | Journey, Work (lung nodules)           |
 | E2MIP (Jun 2023 post stub)                                                          | old `src/posts/e2mip.mdx`                                                                                           | **Dropped.** Dated before the NIT-Py role and no participation record found                                        | —                                      |
 | IIT Madras, RBCDSAI Research Intern, "June 2024 – Present"                          | old portfolio `Jobs/IITM.js`                                                                                        | **Stale "Present"** corrected: three months from Jun 2024 (confirmed by Kartik). "Preliminary results" not claimed | Journey                                |
-| Future AGI, Dec 2024 – now                                                          | patent assignee, traceAI org, Luma host, repo activity from Apr 2025; start and role change from Kartik, 2026-09-26 | Verified employer. Intern from Dec 2024, full-time from Jul 2025; now senior engineer and tech lead                | Journey, Work, About, back wall        |
+| Future AGI, Dec 2024 – now                                                          | patent assignee, traceAI org, Luma host, repo activity from Apr 2025; start and role change from Kartik, 2026-09-26 | Verified employer. Intern from Dec 2024, full-time from Jul 2025; AI engineer (his title, 2026-09-26)              | Journey, Work, About, back wall        |
 
 ## Projects
 
@@ -43,7 +43,6 @@ Unchanged from `SOURCES.md`: AgentCompass (preprint), TALE 2024 Best Student Pap
 ## Writing, talks, community
 
 - 28 posts snapshotted (all DEV + Medium's latest 10). Canonical links point to the originals.
-- Harness Engineering, Bengaluru Tech Week, 6 Sep 2026: listed as a **host**.
 - Profiles: GitHub, LinkedIn (unreadable to tools), DEV, Medium, Hugging Face, npm, PyPI (bot-walled).
 
 ## Media used

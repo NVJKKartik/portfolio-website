@@ -108,7 +108,7 @@ export const journey: Stop[] = [
     when: 'Dec 2024 — now',
     sort: '2024-12',
     place: 'Future AGI',
-    role: 'Intern, then full-time from Jul 2025. Now senior engineer and tech lead',
+    role: 'AI engineer: intern from Dec 2024, full-time from Jul 2025',
     kind: 'industry',
     summary:
       'Most of the platform and its open-source SDKs: evaluation, Agent Optimizer, simulation, the gateway, Error Feed, and the data and annotation systems underneath.',
@@ -117,7 +117,7 @@ export const journey: Stop[] = [
       'Built the Error Feed root-cause agent, which investigates a cluster of failing traces and returns a cause, a fix, a confidence and its evidence.',
       'Shipped Agent Optimizer’s first release, chat simulation in Simulate SDK, and the Agent Command Center SDK 1.0.',
       'Moved the annotation system onto ClickHouse, and published traceAI v1.0.0 in four languages.',
-      'First author of AgentCompass; co-inventor on a granted US patent; co-hosted a Bengaluru Tech Week session.',
+      'First author of AgentCompass; co-inventor on a granted US patent.',
     ],
     work: [
       'ai-evaluation',
@@ -131,17 +131,6 @@ export const journey: Stop[] = [
       'agentcompass',
     ],
     research: ['agentcompass', 'synthetic-data-patent'],
-    sources: [
-      'prEvaluation',
-      'prErrorFeed',
-      'prAgentOpt',
-      'prSimulate',
-      'prAgentcc',
-      'prAnnotations',
-      'traceaiV1',
-      'arxivAgentCompass',
-      'patent',
-      'luma',
-    ],
+    sources: ['prEvaluation', 'prErrorFeed', 'prAgentOpt', 'prSimulate', 'prAgentcc', 'prAnnotations', 'traceaiV1', 'arxivAgentCompass', 'patent'],
   },
 ];

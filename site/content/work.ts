@@ -73,6 +73,8 @@ export const work: Work[] = [
       { value: '4', label: 'languages in v1.0.0', source: 'traceaiV1' },
       { value: '46 / 39 / 24', label: 'Python packages / TypeScript packages / Java modules at v1', source: 'traceaiV1' },
       { value: '54', label: 'npm packages listing me as a maintainer', source: 'npm' },
+      { value: '14k', label: 'downloads last month of traceAI’s core Python package (Sep 2026)', source: 'pypiTraceai' },
+      { value: '222', label: 'GitHub stars on traceAI (Sep 2026)', source: 'ghTraceai' },
     ],
     sections: [
       {
@@ -105,7 +107,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       { label: 'GitHub', href: 'https://github.com/future-agi/traceAI' },
       { label: 'v1.0.0 release notes', href: 'https://github.com/future-agi/traceAI/releases/tag/v1.0.0' },
     ],
-    sources: ['traceaiRepo', 'traceaiV1', 'traceaiContributors', 'npm'],
+    sources: ['traceaiRepo', 'traceaiV1', 'traceaiContributors', 'npm', 'pypiTraceai', 'ghTraceai'],
   },
   {
     slug: 'agentcompass',
@@ -513,10 +515,13 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
       src: '/media/plates/error-feed.webp',
       alt: 'Plate: failing traces with one cluster circled, and the cause, fix, confidence and evidence the agent returns.',
     },
-    facts: [{ value: '65–92%', label: 'lower feed API latencies after the performance pass', source: 'prErrorFeed' }],
+    facts: [
+      { value: '65–92%', label: 'lower feed API latencies after the performance pass', source: 'prErrorFeed' },
+      { value: '2,077', label: 'GitHub stars on the open-source platform it ships in (Sep 2026)', source: 'ghPlatform' },
+    ],
     sections: [],
     links: [{ label: 'PR #853', href: 'https://github.com/future-agi/future-agi/pull/853' }],
-    sources: ['prErrorFeed'],
+    sources: ['prErrorFeed', 'ghPlatform'],
   },
   {
     slug: 'annotations-clickhouse',

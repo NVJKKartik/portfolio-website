@@ -105,7 +105,7 @@ export default function Home() {
               ))}
             </p>
             <p className={s.receipts}>
-              <Link href="/receipts/">Receipts</Link> for every fact on this site.
+              Based in {profile.city}. <Link href="/receipts/">Receipts</Link> for every fact on this site.
             </p>
           </section>
           <footer className={s.end}>
