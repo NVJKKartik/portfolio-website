@@ -7,10 +7,8 @@ export type Stop = {
   id: string;
   when: string; // display
   sort: string; // ISO-ish for ordering
-  /** [start, end] for the chronology wall: YYYY-MM, YYYY when only the year is known, or 'now'. Omitted when undated. */
+  /** [start, end]: YYYY-MM, YYYY when only the year is known, or 'now'. Omitted when undated. */
   span?: [string, string];
-  /** A change of role partway through the span, e.g. intern to full-time. */
-  shift?: { at: string; before: string; after: string };
   place: string;
   role?: string;
   kind: 'study' | 'research' | 'industry' | 'milestone';
@@ -107,7 +105,6 @@ export const journey: Stop[] = [
     id: 'future-agi',
     span: ['2024-12', 'now'],
     // From Kartik, 2026-09-26: joined as an intern in December 2024, full-time from July 2025.
-    shift: { at: '2025-07', before: 'intern', after: 'full-time' },
     when: 'Dec 2024 — now',
     sort: '2024-12',
     place: 'Future AGI',

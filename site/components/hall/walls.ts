@@ -1,93 +1,121 @@
-// The painted back wall, drawn onto a canvas the engine hangs on the concrete. Paint, not signage: flat colour, big type, nothing thin enough to shimmer as the camera moves.
-// Coordinates are in metres of wall (m = pixels per metre); every wall is 14.2 m wide.
-import type { Place } from '@/content/hall';
+// The two painted end walls, drawn onto canvases the engine hangs on the concrete. Paint, not
+// signage: flat colour and big type, nothing thin enough to shimmer as the camera moves.
+// Coordinates are metres of wall (m = pixels per metre); both walls are 14.2 × 4.3 m.
+import type { Walls } from '@/content/hall';
 
 const WALL = 14.2;
+const INK = '#1e1b17',
+  INK_2 = '#4f483e',
+  CREAM = '#fff8ec',
+  TOMATO = '#e2552b';
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+const count = (n: number) => WORDS[n] ?? String(n);
+
+/** Cuts text to a width with an ellipsis, the way a browser squashes a tab. */
+function fit(g: CanvasRenderingContext2D, t: string, w: number) {
+  if (g.measureText(t).width <= w) return t;
+  let s = t;
+  while (s.length > 1 && g.measureText(`${s}…`).width > w) s = s.slice(0, -1);
+  return `${s.trimEnd()}…`;
+}
 
 /**
- * The back wall: where the work was made. One painted bar per place on a time axis from January 2023
- * to this month. A year-only end fades across that year instead of claiming a month; a start before
- * the axis fades in from its edge. A change of role (intern to full-time) changes the bar's tone.
- * The canvas is the whole wall, 4.3 m tall.
+ * The back wall: a painted browser window. The pinned tabs are the interests, then a tab per place,
+ * newest first, the first one open. They squash as they run out of room, which is the joke.
  */
-export function drawPlaces(g: CanvasRenderingContext2D, W: number, places: Place[], font: string, now = new Date()) {
+export function drawTabs(g: CanvasRenderingContext2D, W: number, walls: Walls, font: string) {
   const m = W / WALL;
-  const start = 2023 * 12,
-    end = now.getFullYear() * 12 + now.getMonth() + 1;
-  const X0 = 0.6 * m,
-    X1 = W - 0.6 * m;
-  const x = (month: number) => X0 + ((Math.min(end, Math.max(start, month)) - start) / (end - start)) * (X1 - X0);
-  const month = (s: string, edge: 'from' | 'to') =>
-    s === 'now' ? end : s.length === 4 ? +s * 12 + (edge === 'to' ? 12 : 0) : +s.slice(0, 4) * 12 + +s.slice(5, 7) - 1 + (edge === 'to' ? 1 : 0);
-  const deep = [61, 90, 80],
-    paint = (a: number) => `rgba(${deep.join(',')},${a})`;
-  const paper = 'rgba(246,244,239,.92)',
-    ink = 'rgba(27,28,28,.78)';
-  const pitch = 0.46 * m,
-    bh = 0.38 * m,
-    top = 0.55 * m,
-    fs = 0.25 * m,
-    pad = 0.14 * m;
+  const x0 = 0.75 * m,
+    y0 = 0.45 * m,
+    ww = W - 2 * x0,
+    wh = 3.5 * m;
+  g.fillStyle = '#e6d6b9';
+  g.beginPath();
+  g.roundRect(x0, y0, ww, wh, 0.22 * m);
+  g.fill();
 
-  // Year rules and numerals, thick enough to hold at the far end of the hall.
-  const bottom = top + places.length * pitch;
-  g.font = `700 semi-expanded ${0.5 * m}px ${font}`;
-  for (let y = 2023; y * 12 < end; y++) {
-    const at = x(y * 12);
-    if (y > 2023) {
-      g.fillStyle = 'rgba(27,28,28,.22)';
-      g.fillRect(at - 0.025 * m, top - 0.2 * m, 0.05 * m, bottom - top + 0.35 * m);
+  const top = y0 + 0.15 * m,
+    th = 0.59 * m,
+    pad = 0.13 * m;
+  // Pinned and open tabs fit their words; the closed ones share what's left and squash.
+  const width = (t: string, weight: number, extra = 0) => {
+    g.font = `${weight} semi-expanded ${0.28 * m}px ${font}`;
+    return g.measureText(t).width + 2 * pad + extra;
+  };
+  const pins = walls.fun.map(f => width(f, 700));
+  const open = width(walls.places[0], 800, 0.3 * m);
+  const rest = (ww - 0.4 * m - pins.reduce((a, b) => a + b, 0) - open - 0.5 * m) / Math.max(1, walls.places.length - 1);
+  let x = x0 + 0.2 * m;
+  const tab = (label: string, w: number, kind: 'pin' | 'open' | 'tab') => {
+    if (kind === 'open') {
+      g.fillStyle = CREAM;
+      g.beginPath();
+      g.roundRect(x, top, w - 0.05 * m, th + 0.2 * m, [0.15 * m, 0.15 * m, 0, 0]);
+      g.fill();
     }
-    g.fillStyle = 'rgba(27,28,28,.5)';
-    g.fillText(String(y), at + (y > 2023 ? 0.12 * m : 0), bottom + 0.72 * m);
-  }
-
-  places.forEach((p, i) => {
-    const a = month(p.from, 'from'),
-      b = month(p.to, 'to');
-    const xa = x(a),
-      xb = x(b),
-      y = top + i * pitch;
-    // Fuzzy ends: a start before the axis fades in over 0.8 m; a year-only end fades across its year.
-    const fadeIn = a < start ? Math.min(0.8 * m, (xb - xa) / 3) : 0;
-    const fadeOut = p.to.length === 4 ? xb - x(b - 12) : 0;
-    const grad = g.createLinearGradient(xa, 0, xb, 0);
-    grad.addColorStop(0, paint(fadeIn ? 0 : 0.88));
-    if (fadeIn) grad.addColorStop(fadeIn / (xb - xa), paint(0.88));
-    if (fadeOut) grad.addColorStop(1 - fadeOut / (xb - xa), paint(0.88));
-    grad.addColorStop(1, paint(fadeOut ? 0 : 0.88));
-    g.font = `700 semi-expanded ${fs}px ${font}`;
-    const base = y + bh / 2 + fs * 0.36;
-
-    if (p.shift) {
-      // Two tones: the lighter first phase, then the solid one. The place is named just before the bar.
-      const xs = x(month(p.shift.at, 'from'));
-      g.fillStyle = paint(0.42);
-      g.fillRect(xa, y, xs - xa, bh);
-      g.fillStyle = paint(0.88);
-      g.fillRect(xs, y, xb - xs, bh);
-      g.fillStyle = ink;
-      g.textAlign = 'right';
-      g.fillText(p.place, xa - pad, base);
-      g.textAlign = 'left';
-      g.fillStyle = 'rgba(27,28,28,.72)';
-      g.fillText(p.shift.before, xa + pad, base);
-      g.fillStyle = paper;
-      g.fillText(p.shift.after, xs + pad, base);
-      return;
-    }
-    g.fillStyle = grad;
-    g.fillRect(xa, y, xb - xa, bh);
-    // A place that began before the axis carries its years, since the axis can't show them.
-    const label = a < start ? `${p.place}, ${p.from} – ${p.to}` : p.place;
-    const tw = g.measureText(label).width;
-    const lx = xa + fadeIn * 0.6 + pad;
-    if (lx + tw + pad <= xb - fadeOut * 0.5) {
-      g.fillStyle = paper;
-      g.fillText(label, lx, base);
+    g.font = `${kind === 'open' ? 800 : 700} semi-expanded ${0.28 * m}px ${font}`;
+    g.fillStyle = kind === 'open' ? INK : '#6b5f4e';
+    g.textBaseline = 'middle';
+    const text = fit(g, label, w - 2 * pad - (kind === 'open' ? 0.3 * m : 0));
+    g.fillText(text, x + pad, top + th / 2 + 0.03 * m);
+    if (kind === 'open') {
+      g.fillStyle = '#9b8f7c';
+      g.fillText('×', x + pad + g.measureText(text).width + 0.14 * m, top + th / 2 + 0.03 * m);
     } else {
-      g.fillStyle = ink;
-      g.fillText(label, xb + pad, base);
+      // The divider between closed tabs: 4 cm wide, so it holds at the far end of the hall.
+      g.fillStyle = '#c9b797';
+      g.fillRect(x + w - 0.06 * m, top + 0.15 * m, 0.04 * m, 0.3 * m);
     }
-  });
+    x += w;
+  };
+  walls.fun.forEach((f, i) => tab(f, pins[i], 'pin'));
+  walls.places.forEach((p, i) => tab(p, i === 0 ? open : rest, i === 0 ? 'open' : 'tab'));
+  g.font = `600 ${0.4 * m}px ${font}`;
+  g.fillStyle = '#6b5f4e';
+  g.fillText('+', x + 0.08 * m, top + th / 2);
+
+  // The page: cream, with the line and the count.
+  const py = y0 + 0.74 * m;
+  g.fillStyle = CREAM;
+  g.beginPath();
+  g.roundRect(x0, py, ww, y0 + wh - py, [0, 0, 0.22 * m, 0.22 * m]);
+  g.fill();
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = INK;
+  g.font = `800 expanded ${1.0 * m}px ${font}`;
+  g.fillText('Too many tabs open.', x0 + 0.55 * m, y0 + 2.1 * m);
+  const a = `${count(walls.places.length)} places I’ve studied and worked. `,
+    b = `${count(walls.fun.length)} things I do for fun.`;
+  g.font = `600 ${0.38 * m}px ${font}`;
+  g.fillStyle = INK_2;
+  g.fillText(a, x0 + 0.58 * m, y0 + 2.85 * m);
+  const aw = g.measureText(a).width;
+  g.font = `800 ${0.38 * m}px ${font}`;
+  g.fillStyle = TOMATO;
+  g.fillText(b, x0 + 0.58 * m + aw, y0 + 2.85 * m);
+}
+
+/** The exit wall: thanks for walking through, and the email on a tomato pill. No names; they're on the labels. */
+export function drawThanks(g: CanvasRenderingContext2D, W: number, email: string, font: string) {
+  const m = W / WALL;
+  g.fillStyle = TOMATO;
+  g.fillRect(0, 0, W, 0.2 * m);
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = INK;
+  g.font = `800 semi-expanded ${0.75 * m}px ${font}`;
+  g.fillText('Thanks for walking through.', 1.1 * m, 1.45 * m);
+  g.fillStyle = '#3e372e';
+  g.font = `600 ${0.38 * m}px ${font}`;
+  g.fillText('Everyone I built these with is on the labels. Thank you, too.', 1.13 * m, 2.2 * m);
+  const pill = `One more tab won’t hurt → ${email}`;
+  g.font = `800 semi-expanded ${0.35 * m}px ${font}`;
+  const pw = g.measureText(pill).width + 0.44 * m,
+    ph = 0.35 * m + 0.26 * m;
+  g.fillStyle = TOMATO;
+  g.beginPath();
+  g.roundRect(1.1 * m, 2.8 * m, pw, ph, ph / 2);
+  g.fill();
+  g.fillStyle = CREAM;
+  g.textBaseline = 'middle';
+  g.fillText(pill, 1.1 * m + 0.22 * m, 2.8 * m + ph / 2 + 0.02 * m);
 }

@@ -20,6 +20,8 @@ export const profile = {
     'Before Future AGI: classroom AI research at IIT Bombay (Best Student Paper, IEEE TALE 2024), conversation analytics at Vocab.AI, energy-efficient medical imaging at NIT Puducherry, market-sentiment research at IIT Madras, and a run of college builds at IIIT Dharwad with the same small group of friends. In December 2023 I was doing three of those at once, plus the degree.',
     'The thread through all of it: build the thing, then check that it actually works. The posts are about the times it didn’t.',
   ],
+  /** Things he keeps open that aren't work: pinned tabs on the About window and the hall's back wall. */
+  fun: ['F1', 'Markets', 'Economics'],
   links: [
     { label: 'GitHub', href: 'https://github.com/NVJKKartik', handle: 'NVJKKartik' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/n-v-j-k-kartik-95283823b/', handle: 'in/n-v-j-k-kartik' },

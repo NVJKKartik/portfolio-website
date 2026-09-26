@@ -8,9 +8,9 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import type { Exhibit, Place } from '@/content/hall';
+import type { Exhibit, Walls } from '@/content/hall';
 import { AISLE, EYE, ROW, layout, planFrame } from './layout';
-import { drawPlaces } from './walls';
+import { drawTabs, drawThanks } from './walls';
 
 export type HallEvents = {
   hover: (id: string | null, x: number, y: number) => void;
@@ -27,8 +27,8 @@ export type HallEvents = {
 export type HallOptions = {
   rows: Exhibit[][];
   years: string[];
-  /** Painted on the back wall. */
-  places: Place[];
+  /** What the two end walls say. */
+  walls: Walls;
   font: string;
   reduced: boolean;
   mobile: boolean;
@@ -328,15 +328,15 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   fwall.rotation.y = Math.PI;
   fwall.position.set(cx, plan.h / 2, plan.z0);
   scene.add(fwall);
-  // Where the work was made, painted across the whole back wall, in the sun: a lit, transparent plane a
-  // centimetre off the concrete, pulled forward in depth so it never fights it.
+  // The end walls are painted: a lit, transparent plane a centimetre off the concrete, pulled forward
+  // in depth so it never fights it. The exit wall is in shade, so its paint gets the same lift as its concrete.
   const pw = high ? 2560 : 1280,
     ph = Math.round((pw * plan.h) / W);
-  const places = new THREE.Mesh(
-    keep(new THREE.PlaneGeometry(W, plan.h)),
-    keep(
+  const paint = (draw: (g: CanvasRenderingContext2D) => void, z: number, turned: boolean) => {
+    const map = keep(textTexture(pw, ph, draw));
+    const mat = keep(
       new THREE.MeshStandardMaterial({
-        map: keep(textTexture(pw, ph, g => drawPlaces(g, pw, o.places, o.font))),
+        map,
         transparent: true,
         depthWrite: false,
         roughness: 0.95,
@@ -344,10 +344,18 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         polygonOffsetFactor: -2,
         polygonOffsetUnits: -2,
       }),
-    ),
-  );
-  places.position.set(cx, plan.h / 2, plan.z1 + 0.01);
-  scene.add(places);
+    );
+    if (turned) {
+      mat.emissive = frontMat.emissive;
+      mat.emissiveMap = map;
+    }
+    const mesh = new THREE.Mesh(keep(new THREE.PlaneGeometry(W, plan.h)), mat);
+    mesh.position.set(cx, plan.h / 2, z);
+    if (turned) mesh.rotation.y = Math.PI;
+    scene.add(mesh);
+  };
+  paint(g => drawTabs(g, pw, o.walls, o.font), plan.z1 + 0.01, false);
+  paint(g => drawThanks(g, pw, o.walls.email, o.font), plan.z0 - 0.01, true);
 
   const skyMat = keep(new THREE.MeshBasicMaterial({ map: keep(skyTexture()), fog: false }));
   const sky = new THREE.Mesh(keep(new THREE.PlaneGeometry(D + 20, 9)), skyMat);

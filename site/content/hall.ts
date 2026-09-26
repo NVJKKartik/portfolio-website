@@ -3,6 +3,7 @@ import { research } from './research';
 import { speaking } from './more';
 import { posts } from './writing';
 import { journey } from './journey';
+import { profile } from './profile';
 
 // Everything in the hall is derived from the content files, so a label can never disagree with its page.
 // Order is time: the front row is the newest work, the back wall the oldest.
@@ -143,10 +144,12 @@ export const rowYears = (row: Exhibit[]) => {
 
 export const exhibitById = (id: string) => exhibits.find(e => e.id === id);
 
-// ——— the painted back wall ———
+// ——— the painted end walls ———
 
-/** The back wall: where the work was made, as painted bars on a time axis. From the journey's dated stops. */
-export type Place = { place: string; from: string; to: string; shift?: { at: string; before: string; after: string } };
-export const places: Place[] = journey
-  .filter(j => j.span)
-  .map(j => ({ place: j.place.split(' · ')[0], from: j.span![0], to: j.span![1], shift: j.shift }));
+/** The back wall is a browser window with a tab per place (newest first) and the pinned interests; the exit wall says thanks. */
+export type Walls = { places: string[]; fun: string[]; email: string };
+export const walls: Walls = {
+  places: [...journey].reverse().map(j => j.place.split(' · ')[0]),
+  fun: profile.fun,
+  email: profile.email,
+};

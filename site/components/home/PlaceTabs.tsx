@@ -5,37 +5,35 @@ import s from './PlaceTabs.module.css';
 
 export type Place = { id: string; when: string; place: string; role?: string; summary: string; did: string[] };
 
-// Pinned tabs: the things he keeps open that aren't work. Only what he has said; add more here.
-const PINS: [string, ReactNode][] = [
-  [
-    'F1',
+// Icons for the pinned tabs (the interests in content/profile.ts); anything new gets a plain pin.
+const ICONS: Record<string, ReactNode> = {
+  F1: (
     <>
       <path d="M3 14V2.5M3 3h9.5l-2 3 2 3H3" />
       <path d="M6 3v6M9 3v6M3 6h9.5" />
-    </>,
-  ],
-  [
-    'Markets',
+    </>
+  ),
+  Markets: (
     <>
       <path d="M1.5 12.5l4-4.2 3 2.6 5.8-6.4" />
       <path d="M11 4.4h3.4v3.4" />
-    </>,
-  ],
-  [
-    'Economics',
+    </>
+  ),
+  Economics: (
     <>
       <path d="M2 2v12h12" />
       <path d="M4 4.5c3 0 6 3.5 9 7" />
       <path d="M4 11.5c3-3.5 6-6.5 9-7" />
-    </>,
-  ],
-];
+    </>
+  ),
+};
+const PIN = <path d="M8 1.5v5M5 6.5h6l-1 3H6zM8 9.5v5" />;
 
 /**
  * About, as a browser window: one tab per place, newest first, and they squash as they run out of
  * room, which is the joke. Real tabs: arrow keys move between them, and the panel is labelled by its tab.
  */
-export default function PlaceTabs({ places }: { places: Place[] }) {
+export default function PlaceTabs({ places, fun }: { places: Place[]; fun: string[] }) {
   const [at, setAt] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const p = places[at];
@@ -50,9 +48,9 @@ export default function PlaceTabs({ places }: { places: Place[] }) {
   return (
     <div className={s.win}>
       <div className={s.bar}>
-        {PINS.map(([label, icon]) => (
+        {fun.map(label => (
           <span key={label} className={s.pin} role="img" aria-label={`Pinned: ${label}`} title={label}>
-            <svg viewBox="0 0 16 16">{icon}</svg>
+            <svg viewBox="0 0 16 16">{ICONS[label] ?? PIN}</svg>
           </span>
         ))}
         <div className={s.tabs} role="tablist" aria-label="Where I’ve studied and worked" onKeyDown={onKey}>

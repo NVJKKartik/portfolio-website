@@ -4,7 +4,7 @@ import Hall from '@/components/hall/Hall';
 import WorkIndex from '@/components/home/WorkIndex';
 import Strike from '@/components/home/Strike';
 import PlaceTabs from '@/components/home/PlaceTabs';
-import { places, rows, rowYears } from '@/content/hall';
+import { rows, rowYears, walls } from '@/content/hall';
 import { profile } from '@/content/profile';
 import { journey } from '@/content/journey';
 import { posts, splitTitle } from '@/content/writing';
@@ -24,7 +24,7 @@ export default function Home() {
       <SiteHeader tone="light" hideName />
       <main id="main">
         <div className="dark">
-          <Hall rows={rows} years={years} places={places} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
+          <Hall rows={rows} years={years} walls={walls} name={profile.fullName} intro={profile.wall} proof={profile.proof} />
         </div>
 
         <div className={s.lit}>
@@ -74,9 +74,9 @@ export default function Home() {
                 {profile.about.map((t, i) => (
                   <p key={i}>{t}</p>
                 ))}
-                <p className={s.aside}>Pinned: F1, markets and economics.</p>
+                <p className={s.aside}>Pinned: {new Intl.ListFormat('en-GB').format(profile.fun)}.</p>
               </div>
-              <PlaceTabs places={tabs} />
+              <PlaceTabs places={tabs} fun={profile.fun} />
             </div>
           </section>
 
