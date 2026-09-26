@@ -14,11 +14,11 @@ export const profile = {
   city: 'Bangalore',
   // The first thing people read. Short on purpose.
   intro:
-    'Engineer and researcher. I’m an AI engineer at Future AGI, working across evaluation, simulation, the gateway and the open-source SDKs. Before that: classroom AI research, conversation analytics, medical imaging, markets, and college builds with friends.',
+    'Engineer and researcher. I’m an AI engineer at Future AGI, mostly on Error Feed, which finds out why AI agents fail in production, and on tracing, the gateway and the open-source SDKs. Before that: classroom AI research, conversation analytics, medical imaging, markets, and college builds with friends.',
   // About, beside the rabbit holes (which carry the where and the what).
   about: [
     'I’m Kartik. I build things across research and product, and I like the stretch where they meet: a model that has to survive real users, or an app that needs real ML underneath it.',
-    'At Future AGI I work across the pieces a team needs once its agent is live: tracing (traceAI), evaluation, simulation, Agent Optimizer, the Agent Command Center gateway, Error Feed, and the ClickHouse data and annotation systems underneath. They are one loop: see what the agent did, score it, rehearse it, improve it, route it, and find out what broke.',
+    'At Future AGI I work across the pieces a team needs once its agent is live: tracing (traceAI), evaluation, simulation, Agent Optimizer, the Agent Command Center gateway, and the ClickHouse data and annotation systems underneath. They are one loop: see what the agent did, score it, rehearse it, improve it, route it, and find out what broke. Most of my time goes into that last step: AgentCompass, then Error Feed.',
     'In December 2023 I was at three of the places below at once, plus the degree.',
     'The thread through all of it: build the thing, then check that it actually works. The posts are about the times it didn’t.',
   ],

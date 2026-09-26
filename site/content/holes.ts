@@ -9,10 +9,10 @@ const entries: Entry[] = [
   {
     stop: 'future-agi',
     field: 'Evaluating AI agents',
-    depth: 'A first-author paper, a granted patent and the SDKs',
+    depth: 'A first-author paper, then Error Feed in production',
     links: [
       { label: 'AgentCompass', href: '/work/agentcompass/' },
-      { label: 'The patent', href: '/research/synthetic-data-patent/' },
+      { label: 'Error Feed', href: '/work/error-feed/' },
       { label: 'traceAI', href: '/work/traceai/' },
     ],
   },

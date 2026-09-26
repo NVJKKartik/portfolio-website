@@ -198,7 +198,7 @@ const DRAW = {
       wrap(g, s, x + 28, y + 44, bw - 56, 32, { size: 25, color: who ? '#1d2b25' : '#e7efe9', weight: 500 });
       txt(g, who ? 'your agent' : 'simulated customer', who ? W - 64 : 64, y - 14, { size: 18, color: '#8fb3a3', align: who ? 'right' : 'left' });
     });
-    caption(g, W, H, 'Chat simulation', 'Personas and scenarios before real customers · 2025', '#e7efe9', '#8fb3a3');
+    caption(g, W, H, 'Simulate SDK', 'Voice and chat agents against simulated customers · 2025', '#e7efe9', '#8fb3a3');
   },
   'agent-command-center'(g, W, H) {
     g.fillStyle = '#121416';

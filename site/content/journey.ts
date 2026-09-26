@@ -111,12 +111,13 @@ export const journey: Stop[] = [
     role: 'AI engineer: intern from Dec 2024, full-time from Jul 2025',
     kind: 'industry',
     summary:
-      'Most of the platform and its open-source SDKs: evaluation, Agent Optimizer, simulation, the gateway, Error Feed, and the data and annotation systems underneath.',
+      'Mostly finding out why AI agents fail once they’re live: AgentCompass, then Error Feed. Around that, traceAI, the evaluation and simulation SDKs, the gateway, and the ClickHouse migration underneath.',
     did: [
+      'Built the Error Feed investigation agent, which reads a cluster of failing traces and returns a cause, a fix, a confidence and its evidence, and kept the feed alive and fast through the ClickHouse migration.',
       'Rewrote the evaluation SDK for 1.0: one evaluate() call routed between local metrics, Turing models and LLM judges.',
-      'Built the Error Feed root-cause agent, which investigates a cluster of failing traces and returns a cause, a fix, a confidence and its evidence.',
-      'Shipped Agent Optimizer’s first release, chat simulation in Simulate SDK, and the Agent Command Center SDK 1.0.',
-      'Moved the annotation system onto ClickHouse, and published traceAI v1.0.0 in four languages.',
+      'Wrote traceAI’s TypeScript, Java and C# SDKs, and published v1.0.0 in four languages.',
+      'Started Simulate SDK for voice agents and added chat; published the Agent Command Center SDK 1.0.',
+      'Moved the annotation system’s reads onto ClickHouse before the Postgres tracer tables were dropped.',
       'First author of AgentCompass; co-inventor on a granted US patent.',
     ],
     work: [
@@ -131,6 +132,19 @@ export const journey: Stop[] = [
       'agentcompass',
     ],
     research: ['agentcompass', 'synthetic-data-patent'],
-    sources: ['prEvaluation', 'prErrorFeed', 'prAgentOpt', 'prSimulate', 'prAgentcc', 'prAnnotations', 'traceaiV1', 'arxivAgentCompass', 'patent'],
+    sources: [
+      'prEvaluation',
+      'prErrorFeed',
+      'prErrorFeedCH',
+      'prAgentOpt',
+      'prSimulateV1',
+      'prSimulate',
+      'prAgentcc',
+      'prAnnotations',
+      'traceaiV1',
+      'traceaiSdks',
+      'arxivAgentCompass',
+      'patent',
+    ],
   },
 ];

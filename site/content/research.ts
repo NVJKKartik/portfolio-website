@@ -69,7 +69,8 @@ export const research: Research[] = [
     ],
     limits: [
       'It is a preprint. It has not been peer-reviewed.',
-      'Gemini-2.5-Pro beat it on category F1 (0.389 vs 0.309) and on correlation with human scores (0.462 vs 0.430). On the SWE split, joint accuracy was effectively a tie (0.051 vs 0.050).',
+      'On the GAIA split, Gemini-2.5-Pro and Gemini-2.5-Flash named the category better (category F1 0.389 and 0.337 vs 0.309), and five models tracked human scores more closely, Claude-3.7-Sonnet most (0.738 vs 0.430). On the SWE split, Gemini-2.5-Pro’s correlation with humans was twice as high (0.817 vs 0.408), and joint accuracy was a tie (0.051 vs 0.050).',
+      'The other models’ numbers are the ones reported in the TRAIL paper; they weren’t re-run for this comparison.',
       'The design-partner results are described qualitatively, without public numbers.',
     ],
     figure: {
@@ -83,6 +84,8 @@ export const research: Research[] = [
         { label: 'GAIA · ρ with humans', mine: 0.43, other: 0.462, better: 'other' },
         { label: 'SWE · localisation acc.', mine: 0.25, other: 0.238, better: 'mine' },
         { label: 'SWE · joint acc.', mine: 0.051, other: 0.05, better: 'tie' },
+        { label: 'SWE · category F1', mine: 0.232, other: 0.148, better: 'mine' },
+        { label: 'SWE · ρ with humans', mine: 0.408, other: 0.817, better: 'other' },
       ],
     },
     links: [

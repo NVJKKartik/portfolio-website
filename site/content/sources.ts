@@ -1,4 +1,4 @@
-// Every factual claim on the site points at one of these. Checked on 2026-09-25.
+// Every factual claim on the site points at one of these. Checked on 2026-09-26.
 export type Source = { id: string; label: string; url: string; supports: string };
 
 export const sources = {
@@ -117,7 +117,7 @@ export const sources = {
     id: 'traceaiContributors',
     label: 'traceAI contributors graph',
     url: 'https://github.com/future-agi/traceAI/graphs/contributors',
-    supports: 'Contributors to traceAI, including Kartik.',
+    supports: 'Kartik is the top contributor: 215 commits, then JayaSurya-27 (145) and sarthakFuture (29), on 26 Sep 2026.',
   },
   npm: {
     id: 'npm',
@@ -173,7 +173,7 @@ export const sources = {
     label: 'future-agi/agent-learning-kit PR #13 — Version 1.0.0 (merged 27 Feb 2026)',
     url: 'https://github.com/future-agi/agent-learning-kit/pull/13',
     supports:
-      'Unified evaluate() with engine routing, 72+ local metrics, multimodal judge, feedback loop, streaming, OTel spans, distributed backends, uv migration. Authored by Kartik; 38 of 40 commits his, one from nik13.',
+      'Unified evaluate() with engine routing, 72+ local metrics, multimodal judge, feedback loop, streaming, OTel spans, distributed backends, uv migration. Authored by Kartik; 38 of 39 commits his, one from nik13.',
   },
   prAgentOpt: {
     id: 'prAgentOpt',
@@ -191,10 +191,10 @@ export const sources = {
   },
   prAgentcc: {
     id: 'prAgentcc',
-    label: 'future-agi/agent-command-center-sdk PR #1 — AgentCC SDK v1.0.0 (merged 22 Apr 2026)',
+    label: 'future-agi/agent-command-center-sdk PR #1 — AgentCC SDK v1.0.0 and the public repository (merged 22 Apr 2026)',
     url: 'https://github.com/future-agi/agent-command-center-sdk/pull/1',
     supports:
-      'Initial public release: agentcc (Python), @agentcc/client, @agentcc/langchain, @agentcc/llamaindex, @agentcc/react, @agentcc/vercel. Authored by Kartik.',
+      'v1.0.0 of agentcc (Python), @agentcc/client, @agentcc/langchain, @agentcc/llamaindex, @agentcc/react, @agentcc/vercel, as one commit by Kartik. The SDKs were first written by nik13 in an internal repository and were already on npm and PyPI as 0.1.0 (9 Apr 2026).',
   },
   prGateway: {
     id: 'prGateway',
@@ -208,21 +208,21 @@ export const sources = {
     label: 'future-agi/future-agi PR #853 — Error Feed cluster RCA agent, perf sweep, billing (merged 27 Jun 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/853',
     supports:
-      'Root-cause agent over ClickHouse traces (per-trace summaries on a lite model, the investigation on the main model, ~$0.03–0.08 a run), streamed Fix tab, cached synthesis, billing wiring. Feed endpoints before → after: overview ~1.5 s → 49 ms, trends ~800 ms → 280 ms, sidebar ~1.2 s → 100 ms, list ~1.7 s → 47 ms. Authored by Kartik (70 commits); KarthikAvinashFI, velalagan-pixel, commitPirate and cdileep23 also committed.',
+      'Root-cause agent over ClickHouse traces (at launch: per-trace summaries on a lite model, the investigation on the main model, ~$0.03–0.08 a run), streamed Fix tab, cached synthesis, billing wiring. Feed endpoints before → after: overview ~1.5 s → 49 ms, trends ~800 ms → 280 ms, sidebar ~1.2 s → 100 ms, list ~1.7 s → 47 ms. Authored by Kartik: 83 of 113 commits. velalagan-pixel (19) built the redesigned Overview and Fix tab UI; the KarthikAvinashFI, commitPirate and cdileep23 commits are unrelated dev-branch fixes carried in by a merge. The agent itself is in ee (internal ee#121, all 54 commits by Kartik).',
   },
   prsClickhouse: {
     id: 'prsClickhouse',
     label: 'future-agi/future-agi — Kartik’s merged annotation and ClickHouse PRs',
     url: 'https://github.com/future-agi/future-agi/pulls?q=is%3Apr+is%3Amerged+author%3ANVJKKartik',
     supports:
-      '20 merged PRs, 3–31 Jul 2026. Reads to ClickHouse: #1427, #1495, #1604, #1607; Error Feed: #1510, #1644. Memory: #1160, #1373, #1434, #1455. Project scoping: #1565. Queue performance: #1591, #1593, #1831, #1852, #1861, #1865, #1871, #1876, #1878.',
+      '20 merged PRs, 3–31 Jul 2026: 16 on annotations, 4 on Error Feed and its scanner. Annotation reads to ClickHouse: #1427, #1495, #1604, #1607. Error Feed: #1510, #1644. Memory: #1160, #1434 (annotations), #1373, #1455 (trace scanner). Project scoping: #1565. Queue performance: #1591, #1593, #1831, #1852, #1861, #1865, #1871, #1876, #1878. The link lists all of Kartik’s merged PRs in the repository, not only these 20.',
   },
   prErrorFeedCH: {
     id: 'prErrorFeedCH',
     label: 'future-agi/future-agi PR #1510 — make Error Feed ClickHouse-native (merged 11 Jul 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/1510',
     supports:
-      'Every feed read, the deep-analysis worker and the live scanner moved to ClickHouse to survive the tracer Postgres-table drop; proven by dropping the tables in tests and on a live stack. Authored by Kartik.',
+      'Every feed read, the deep-analysis worker and the live scanner moved to ClickHouse to survive the tracer Postgres-table drop; proven by dropping the tables in tests and renaming them away on a live stack. Authored by Kartik.',
   },
   prErrorFeedPerf: {
     id: 'prErrorFeedPerf',
@@ -236,7 +236,7 @@ export const sources = {
     label: 'future-agi/future-agi PR #2979 — grouping, scored evals and causal breadcrumbs (merged 23 Sep 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/2979',
     supports:
-      'Grouping on by default for eligible projects; choice, threshold and numeric eval failures eligible for clustering; each finding shows its origin, decisive and symptom steps. Authored by Kartik.',
+      'Grouping on by default for eligible projects, with a kill-switch and budget controls; choice, threshold and numeric eval failures eligible for clustering; each finding shows its origin, decisive and symptom steps. Authored by Kartik (21 of 23 commits; atharva-bhange 2). Merged into a stacked branch and released in v1.40.0 (23 Sep 2026); the PR notes quality at scale was still to be verified after deployment.',
   },
   prAnnotations: {
     id: 'prAnnotations',
@@ -262,6 +262,54 @@ export const sources = {
     label: 'GitHub — future-agi/future-agi',
     url: 'https://github.com/future-agi/future-agi/stargazers',
     supports: 'The open-source platform repository Error Feed and the annotation reads ship in: 2,077 stars and 644 forks on 26 Sep 2026.',
+  },
+  prSimulateV1: {
+    id: 'prSimulateV1',
+    label: 'future-agi/simulate-sdk PR #1 — Version 0.1.1, the first release (merged 9 Oct 2025)',
+    url: 'https://github.com/future-agi/simulate-sdk/pull/1',
+    supports:
+      'Simulate SDK’s first version, all 20 commits by Kartik from the repository’s initial commit (6 Oct 2025): LiveKit integration, RTC, transcription, call recording, the simulated-customer agent definition, end-call handling. Released as agent-simulate 0.1.1 on PyPI (9 Oct 2025). Kartik has 60 of the repository’s 70 commits (26 Sep 2026).',
+  },
+  traceaiSdks: {
+    id: 'traceaiSdks',
+    label: 'future-agi/traceAI — Kartik’s merged PRs, including the v1 SDKs (#127–#131) and TypeScript support (#9)',
+    url: 'https://github.com/future-agi/traceAI/pulls?q=is%3Apr+is%3Amerged+author%3ANVJKKartik',
+    supports:
+      'All authored by Kartik: C# SDK (#127, 10 of 10 commits), Java SDK (#128, 7 of 7), 31 new TypeScript packages (#129), TypeScript move to gen_ai conventions (#130), 23 new Python instrumentors (#131), merged 23–24 Feb 2026. TypeScript support (#9, merged 20 May 2025): FITracer, register, OpenAI, Anthropic and LangChain instrumentation, 28 of 32 commits (sarthakFuture 4). The v1.0.0 notes say TypeScript grew from 8 packages to 39.',
+  },
+  prErrorFeedReadPath: {
+    id: 'prErrorFeedReadPath',
+    label: 'future-agi/future-agi PR #2019 — scanner and cluster-RCA port, deterministic RCA read path (merged 7 Aug 2026)',
+    url: 'https://github.com/future-agi/future-agi/pull/2019',
+    supports:
+      'Measured on a live production run: ClickHouse was 551 ms of a five-minute investigation and 88% of wall clock was model turns. The read tool stopped sending the span tree to a cheaper model; it renders budgeted verbatim I/O deterministically, budgeted per trace with failing spans first, plus a 90 s per-turn deadline. Authored by Kartik (21 of 24 commits; 3 ported from hadarishav’s scanner branch).',
+  },
+  prErrorFeedV2: {
+    id: 'prErrorFeedV2',
+    label: 'future-agi/future-agi PR #2942 — Error Feed investigation handoff (merged 23 Sep 2026, released in v1.40.0)',
+    url: 'https://github.com/future-agi/future-agi/pull/2942',
+    supports:
+      'Opt-in traces are handed to a separate investigation worker; durable investigation jobs, normalized findings and evidence are stored and read back in Error Feed and cluster RCA; legacy scans are backfilled. Authored by Kartik (32 of 32 commits). In the v1.40.0 release (23 Sep 2026), 47 of 59 commits are Kartik’s and 12 are atharva-bhange’s (grouping jobs, severity and fix-layer assessments).',
+  },
+  prGatewayOtlp: {
+    id: 'prGatewayOtlp',
+    label: 'future-agi/future-agi PR #2186 — gateway traces over OTLP/HTTP with prompts and completions (merged 18 Aug 2026, v1.28.0)',
+    url: 'https://github.com/future-agi/future-agi/pull/2186',
+    supports:
+      'An OTLP/HTTP exporter (the otel plugin could only print spans to stdout); bodies behind otel.include_bodies, redacted before truncation; byte-bounded batches; streamed completions assembled; image, embedding, rerank, search and OCR bodies. The stacked #2183, #2187 and #2188 were collapsed into it. Authored by Kartik (11 of 11 commits).',
+  },
+  prGatewayPlugins: {
+    id: 'prGatewayPlugins',
+    label: 'future-agi/future-agi PR #2231 — run the plugin pipeline on /v1/messages and Gemini generateContent (merged 21 Aug 2026)',
+    url: 'https://github.com/future-agi/future-agi/pull/2231',
+    supports:
+      'Those two handlers never called the plugin engine, so Anthropic-SDK and Google-GenAI-SDK traffic had no span, request log, cost, budget, credits or rate limits. Fixed on all eight paths, with a regression test over all 11 billable handlers. Authored by Kartik.',
+  },
+  npmAgentcc: {
+    id: 'npmAgentcc',
+    label: 'npm — @agentcc/client versions',
+    url: 'https://www.npmjs.com/package/@agentcc/client?activeTab=versions',
+    supports: '0.1.0 published 9 Apr 2026 by azainfi; 1.0.0 published 22 Apr 2026 by nvjkkartik. PyPI agentcc: 0.1.0 on 9 Apr, 1.0.0 on 22 Apr 2026.',
   },
   futureAgiOrg: {
     id: 'futureAgiOrg',

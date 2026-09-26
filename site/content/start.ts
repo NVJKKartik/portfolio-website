@@ -7,7 +7,7 @@ const picks = [
   {
     id: 'error-feed',
     side: 'A harness that watches the product',
-    line: 'Grouping failed AI runs into issues and investigating each one, without sending every trace to an expensive model.',
+    line: 'Grouping failed AI runs into issues and investigating each one with an agent, fast enough for tables with millions of spans.',
   },
   {
     id: 'agent-command-center',
@@ -17,7 +17,7 @@ const picks = [
   {
     id: 'annotations-clickhouse',
     side: 'A migration under a live feature',
-    line: 'Twenty PRs moving annotations onto ClickHouse before their Postgres tables were dropped, without failing open or running out of memory.',
+    line: 'Twenty PRs moving annotations and Error Feed onto ClickHouse before their Postgres tables were dropped, without failing open or running out of memory.',
   },
 ];
 
