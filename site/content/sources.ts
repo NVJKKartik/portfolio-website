@@ -208,7 +208,7 @@ export const sources = {
     label: 'future-agi/future-agi PR #853 — Error Feed cluster RCA agent, perf sweep, billing (merged 27 Jun 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/853',
     supports:
-      'Root-cause agent over ClickHouse traces (at launch: per-trace summaries on a lite model, the investigation on the main model, ~$0.03–0.08 a run), streamed Fix tab, cached synthesis, billing wiring. Feed endpoints before → after: overview ~1.5 s → 49 ms, trends ~800 ms → 280 ms, sidebar ~1.2 s → 100 ms, list ~1.7 s → 47 ms. Authored by Kartik: 83 of 113 commits. velalagan-pixel (19) built the redesigned Overview and Fix tab UI; the KarthikAvinashFI, commitPirate and cdileep23 commits are unrelated dev-branch fixes carried in by a merge. The agent itself is in ee (internal ee#121, all 54 commits by Kartik).',
+      'Root-cause agent over ClickHouse traces (at launch: per-trace summaries on a lite model, the investigation on the main model, ~$0.03–0.08 a run), streamed Fix tab, cached synthesis, billing wiring. Feed endpoints before → after: overview ~1.5 s → 49 ms, trends ~800 ms → 280 ms, sidebar ~1.2 s → 100 ms, list ~1.7 s → 47 ms. Authored by Kartik: 83 of 113 commits. velalagan-pixel (19) built the redesigned Overview and Fix tab UI; the KarthikAvinashFI, commitPirate and cdileep23 commits are unrelated dev-branch fixes carried in by a merge. The agent itself is in ee (internal ee#121, all 54 commits by Kartik). It also folds Gemini thinking tokens into completion tokens, which the cost header had left out.',
   },
   prsClickhouse: {
     id: 'prsClickhouse',
@@ -296,20 +296,48 @@ export const sources = {
     label: 'future-agi/future-agi PR #2186 — gateway traces over OTLP/HTTP with prompts and completions (merged 18 Aug 2026, v1.28.0)',
     url: 'https://github.com/future-agi/future-agi/pull/2186',
     supports:
-      'An OTLP/HTTP exporter (the otel plugin could only print spans to stdout); bodies behind otel.include_bodies, redacted before truncation; byte-bounded batches; streamed completions assembled; image, embedding, rerank, search and OCR bodies. The stacked #2183, #2187 and #2188 were collapsed into it. Authored by Kartik (11 of 11 commits).',
+      'An OTLP/HTTP exporter (the otel plugin could only print spans to stdout); bodies behind otel.include_bodies, redacted before truncation; byte-bounded batches; streamed completions assembled; image, embedding, rerank, search and OCR bodies. The stacked #2183, #2187 and #2188 were collapsed into it. Authored by Kartik (11 of 11 commits). It also fixed a runtime fatal (concurrent map read and write) when several post-parallel plugins shared one request context, which took the gateway down with every in-flight request.',
   },
   prGatewayPlugins: {
     id: 'prGatewayPlugins',
     label: 'future-agi/future-agi PR #2231 — run the plugin pipeline on /v1/messages and Gemini generateContent (merged 21 Aug 2026)',
     url: 'https://github.com/future-agi/future-agi/pull/2231',
     supports:
-      'Those two handlers never called the plugin engine, so Anthropic-SDK and Google-GenAI-SDK traffic had no span, request log, cost, budget, credits or rate limits. Fixed on all eight paths, with a regression test over all 11 billable handlers. Authored by Kartik.',
+      'Those two handlers never called the plugin engine, so Anthropic-SDK and Google-GenAI-SDK traffic had no span, request log, cost, budget, credits or rate limits. Fixed on all eight paths, with a regression test over all 11 billable handlers. Its review fallout fixed the native Anthropic path hashing every prompt to one exact-cache key (a second request was served a content-less 200 without calling the provider) and the streaming usage tee leaking its goroutines on client disconnect. Authored by Kartik.',
   },
   npmAgentcc: {
     id: 'npmAgentcc',
     label: 'npm — @agentcc/client versions',
     url: 'https://www.npmjs.com/package/@agentcc/client?activeTab=versions',
     supports: '0.1.0 published 9 Apr 2026 by azainfi; 1.0.0 published 22 Apr 2026 by nvjkkartik. PyPI agentcc: 0.1.0 on 9 Apr, 1.0.0 on 22 Apr 2026.',
+  },
+  gatewayReadme: {
+    id: 'gatewayReadme',
+    label: 'Agent Command Center README (future-agi/future-agi, agentcc-gateway)',
+    url: 'https://github.com/future-agi/future-agi/blob/main/agentcc-gateway/README.md',
+    supports:
+      'The product’s own description: one OpenAI-compatible API, 15 routing strategies, exact and semantic caching, budgets, quotas and virtual keys, 18 built-in guardrail scanners, Prometheus and OpenTelemetry. It compares itself there with Portkey, Bifrost, LiteLLM and Helicone. Future AGI team product.',
+  },
+  gatewayTranslation: {
+    id: 'gatewayTranslation',
+    label: 'Agent Command Center: cross-format translation (agentcc-gateway/internal/translation)',
+    url: 'https://github.com/future-agi/future-agi/tree/main/agentcc-gateway/internal/translation',
+    supports:
+      'The public code. Authorship is from internal PR future-agi-temp#57 (merged 21 Apr 2026, 20 of 20 commits by Kartik), which a visitor can’t open: requests to /v1/chat/completions, /v1/messages and /v1beta/models/* can route to any configured provider.',
+  },
+  prGatewayKeyExpiry: {
+    id: 'prGatewayKeyExpiry',
+    label: 'future-agi/future-agi PR #936: enforce control-plane key expiry on synced keys (merged 18 Jun 2026)',
+    url: 'https://github.com/future-agi/future-agi/pull/936',
+    supports:
+      'Expired keys synced from the Django control plane authenticated indefinitely: expires_at never left Django, so the gateway never saw it. Authored by Kartik (3 of 3 commits).',
+  },
+  agentCompassAgent: {
+    id: 'agentCompassAgent',
+    label: 'Future AGI: trace error-analysis agent (futureagi/ee/agenthub/traceerroragent)',
+    url: 'https://github.com/future-agi/future-agi/tree/main/futureagi/ee/agenthub/traceerroragent',
+    supports:
+      'The public, EE-licensed code, which Error Feed’s error analysis and investigation agent build on. Authorship is from internal PRs agentic-eval#338 and core-backend#1328 (merged 4 Sep 2025; 14 of 16 and 19 of 21 commits by Kartik, the rest gsapra), which a visitor can’t open: four passes over a trace, subtree batching over the token limit, episodic and semantic memory, HDBSCAN clustering.',
   },
   futureAgiOrg: {
     id: 'futureAgiOrg',
