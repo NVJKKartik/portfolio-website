@@ -705,7 +705,8 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         .clone()
         .addScaledVector(n, dist)
         .setY(EYE - 0.05),
-      look: ez.center.clone().add(V(0, o.mobile ? -0.12 : 0, 0)),
+      // On a phone the caption and controls take the lower third, so the work sits higher in the frame.
+      look: ez.center.clone().add(V(0, o.mobile ? -0.3 : 0, 0)),
     };
   };
   const turnPose = (ez: Easel, u: number, dist = 2.05): Pose => {

@@ -76,6 +76,16 @@
   text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
   transition: opacity 0.6s var(--ease-out);
 }
+/* A soft local backdrop, so the words don't have to fight the ceiling beams behind them. */
+.wall::before,
+.caption::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -56px -96px -56px calc(-1 * var(--gutter));
+  background: radial-gradient(closest-side, rgba(14, 14, 13, 0.6), rgba(14, 14, 13, 0.36) 60%, transparent);
+  pointer-events: none;
+}
 .wall h1 {
   margin: 0;
   font-weight: 700;
@@ -109,6 +119,17 @@
 
 .hint p {
   margin: 0 0 8px;
+}
+.forTouch {
+  display: none;
+}
+@media (hover: none) {
+  .forMouse {
+    display: none;
+  }
+  .forTouch {
+    display: inline;
+  }
 }
 .hintBtns {
   display: inline-flex;
@@ -490,25 +511,63 @@
     font-size: 8cqw;
   }
   .wall .count,
-  .hint,
   .mini {
     display: none;
+  }
+  /* Phones keep the hint and the pause, on one line at the foot of the screen. */
+  .hint {
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+  }
+  .hint p {
+    margin: 0;
+    max-width: 24ch;
+  }
+  .hintBtns {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
   .planHead p {
     display: none;
   }
+  /* Two rows that keep the gutter: ← Open the record →, then Turn it around · Entrance. */
   .controls {
     left: var(--gutter);
     right: var(--gutter);
+    bottom: 20px;
     transform: none;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 48px 1fr 1fr 48px;
+    gap: 8px;
+  }
+  .controls > * {
+    padding: 0.75em 0.5em;
+    text-align: center;
+  }
+  .controls .prev {
+    grid-area: 1 / 1;
+  }
+  .controls .primary {
+    grid-area: 1 / 2 / 2 / 4;
+  }
+  .controls .next {
+    grid-area: 1 / 4;
+  }
+  .controls .turn {
+    grid-area: 2 / 1 / 3 / 3;
   }
   .controls .side {
-    display: none;
+    grid-area: 2 / 3 / 3 / 5;
   }
   .caption {
     top: auto;
-    bottom: 92px;
+    bottom: 136px;
     left: var(--gutter);
     right: var(--gutter);
   }
@@ -517,7 +576,7 @@
     right: var(--gutter);
     width: auto;
     top: auto;
-    bottom: 88px;
+    bottom: 132px;
     transform: translateY(12px);
     max-height: 58cqh;
     padding: 20px 22px;

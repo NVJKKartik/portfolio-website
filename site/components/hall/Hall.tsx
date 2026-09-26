@@ -253,9 +253,12 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
         {!still && (
           <div className={s.hint} {...off(!!current || !live || craned)}>
             <p>
-              Drag to look around. Click the floor to walk there, or a work to go to it.
-              <br />
-              Once you’re in the room, WASD or the arrow keys walk.
+              <span className={s.forMouse}>
+                Drag to look around. Click the floor to walk there, or a work to go to it.
+                <br />
+                Once you’re in the room, WASD or the arrow keys walk.
+              </span>
+              <span className={s.forTouch}>Tap a work or the floor to walk there. Drag to look.</span>
             </p>
             <span className={s.hintBtns}>
               {roaming && (
@@ -300,10 +303,10 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
               <p>{current.part}</p>
             </div>
             <div className={s.controls} {...off(craned)}>
-              <button type="button" onClick={() => step(-1)} aria-label="Previous work">
+              <button type="button" className={s.prev} onClick={() => step(-1)} aria-label="Previous work">
                 ←
               </button>
-              <button type="button" onClick={turn}>
+              <button type="button" className={s.turn} onClick={turn}>
                 {back ? 'Turn it back' : 'Turn it around'}
               </button>
               {current.external ? (
@@ -315,7 +318,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
                   Open the record
                 </Link>
               )}
-              <button type="button" onClick={() => step(1)} aria-label="Next work">
+              <button type="button" className={s.next} onClick={() => step(1)} aria-label="Next work">
                 →
               </button>
               <button type="button" onClick={entrance} className={s.side}>
