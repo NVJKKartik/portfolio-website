@@ -9,7 +9,7 @@ const entries: Entry[] = [
   {
     stop: 'future-agi',
     field: 'Evaluating AI agents',
-    depth: 'A first-author paper, then Error Feed in production',
+    depth: 'A first-author paper that grew into Error Feed',
     links: [
       { label: 'AgentCompass', href: '/work/agentcompass/' },
       { label: 'Error Feed', href: '/work/error-feed/' },

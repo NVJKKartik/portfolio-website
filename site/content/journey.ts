@@ -111,7 +111,7 @@ export const journey: Stop[] = [
     role: 'AI engineer: intern from Dec 2024, full-time from Jul 2025',
     kind: 'industry',
     summary:
-      'Mostly finding out why AI agents fail once they’re live: AgentCompass, then Error Feed. Around that, traceAI, the evaluation and simulation SDKs, the gateway, and the ClickHouse migration underneath.',
+      'Mostly finding out why AI agents fail once they’re live: AgentCompass, which grew into Error Feed. Around that, traceAI, the evaluation and simulation SDKs, the gateway, and the ClickHouse migration underneath.',
     did: [
       'Built the Error Feed investigation agent, which reads a cluster of failing traces and returns a cause, a fix, a confidence and its evidence, and kept the feed alive and fast through the ClickHouse migration.',
       'Rewrote the evaluation SDK for 1.0: one evaluate() call routed between local metrics, Turing models and LLM judges.',
