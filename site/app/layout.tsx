@@ -25,12 +25,12 @@ export const viewport: Viewport = { themeColor: '#1c1c1b' };
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${archivo.variable} ${mono.variable}`} suppressHydrationWarning>
-      {/* Browser inspection extensions add attributes to head before React hydrates. This is scoped to head attributes only. */}
-      <head suppressHydrationWarning>
-        {/* Decide the motion mode before first paint, so reduced-motion visitors never see a start state. */}
-        <script dangerouslySetInnerHTML={{ __html: motionBoot }} />
-      </head>
+      {/* No children of our own in <head>: hosts add nodes there (Netlify injects a comment), and React
+          fails hydration if they sit where it expects its own. */}
       <body>
+        {/* Decide the motion mode before first paint, so reduced-motion visitors never see a start state.
+            First in <body>, it still runs before anything below it is parsed. */}
+        <script dangerouslySetInnerHTML={{ __html: motionBoot }} />
         <a className="skip-link" href="#main">
           Skip to content
         </a>
