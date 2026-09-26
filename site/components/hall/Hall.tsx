@@ -32,6 +32,9 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   const ctl = useRef<HallController | null>(null);
   const halfTurn = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { reduced, paused, togglePaused } = useMotion();
+  // Reduced motion, or a browser that couldn't run the engine: the still poster, no crane.
+  const [failed, setFailed] = useState(false);
+  const still = reduced || failed;
   const [live, setLive] = useState(false);
   const [at, setAt] = useState<string | null>(null);
   const [back, setBack] = useState(false);
@@ -59,53 +62,61 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
         io.disconnect();
         const font = getComputedStyle(document.documentElement).getPropertyValue('--font-archivo').trim() || 'Arial';
         await Promise.all(['400 28px', '600 108px', '650 40px'].map(w => document.fonts.load(`${w} ${font}`).catch(() => [])));
-        const { createHall } = await import('./engine');
-        if (disposed) return;
         const hash = decodeURIComponent(location.hash.slice(1));
         const mobile = el.clientWidth / el.clientHeight < 0.8;
-        ctl.current = await createHall(el, {
-          rows,
-          years,
-          font,
-          reduced: false,
-          mobile,
-          quality: mobile || (navigator.hardwareConcurrency ?? 8) < 6 ? 'low' : 'high',
-          start: exhibits.some(e => e.id === hash) ? hash : undefined,
-          on: {
-            ready: () => setLive(true),
-            hover: (id, x, y) => setTip(id ? { id, x, y } : null),
-            roam: () => {
-              setRoaming(true);
-              setAt(null);
-              setBack(false);
-              setMoving(false);
-              setTip(null);
-              if (exhibits.some(e => `#${e.id}` === location.hash)) history.replaceState(null, '', location.pathname);
+        try {
+          const { createHall } = await import('./engine');
+          if (disposed) return;
+          ctl.current = await createHall(el, {
+            rows,
+            years,
+            font,
+            reduced: false,
+            mobile,
+            quality: mobile || (navigator.hardwareConcurrency ?? 8) < 6 ? 'low' : 'high',
+            start: exhibits.some(e => e.id === hash) ? hash : undefined,
+            on: {
+              ready: () => setLive(true),
+              hover: (id, x, y) => setTip(id ? { id, x, y } : null),
+              roam: () => {
+                setRoaming(true);
+                setAt(null);
+                setBack(false);
+                setMoving(false);
+                setTip(null);
+                if (exhibits.some(e => `#${e.id}` === location.hash)) history.replaceState(null, '', location.pathname);
+              },
+              walk: id => {
+                setAt(id);
+                setBack(false);
+                setMoving(true);
+                setTip(null);
+              },
+              arrive: id => {
+                setAt(id);
+                setBack(false);
+                setMoving(false);
+                if (id) history.replaceState(null, '', `#${id}`);
+                else if (exhibits.some(e => `#${e.id}` === location.hash)) history.replaceState(null, '', location.pathname);
+              },
+              turned: (_, b) => {
+                setBack(b);
+                setMoving(false);
+              },
+              pose: (x, z, yaw) => {
+                const t = `translate(${x.toFixed(2)} ${z.toFixed(2)}) rotate(${((yaw * 180) / Math.PI).toFixed(1)})`;
+                you.current?.setAttribute('transform', t);
+                bigYou.current?.setAttribute('transform', t);
+              },
             },
-            walk: id => {
-              setAt(id);
-              setBack(false);
-              setMoving(true);
-              setTip(null);
-            },
-            arrive: id => {
-              setAt(id);
-              setBack(false);
-              setMoving(false);
-              if (id) history.replaceState(null, '', `#${id}`);
-              else if (exhibits.some(e => `#${e.id}` === location.hash)) history.replaceState(null, '', location.pathname);
-            },
-            turned: (_, b) => {
-              setBack(b);
-              setMoving(false);
-            },
-            pose: (x, z, yaw) => {
-              const t = `translate(${x.toFixed(2)} ${z.toFixed(2)}) rotate(${((yaw * 180) / Math.PI).toFixed(1)})`;
-              you.current?.setAttribute('transform', t);
-              bigYou.current?.setAttribute('transform', t);
-            },
-          },
-        });
+          });
+        } catch (err) {
+          // No WebGL, a lost context or a software renderer: the poster stays and the crane goes, as with
+          // reduced motion. The catalogue below is the way in either way.
+          console.warn('The hall is staying on its poster:', err);
+          if (!disposed) setFailed(true);
+          return;
+        }
         if (disposed) ctl.current.dispose();
         else ctl.current.crane(lift.current);
       },
@@ -128,7 +139,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   // The stage is sticky inside a taller section; how far through it the page is drives the crane.
   // Reduced motion has no crane: the section is one screen and the catalogue is the way in.
   useEffect(() => {
-    if (reduced || !section.current || !stage.current) return;
+    if (still || !section.current || !stage.current) return;
     const el = section.current,
       st = stage.current;
     let raf = 0;
@@ -158,7 +169,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
     };
     // hall is derived from static page data.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced]);
+  }, [still]);
 
   /** Scrolls to the top of the crane (or back down into the room), so the camera flies there with the page. */
   const rise = (up: boolean) => {
@@ -217,7 +228,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   const rowY = (k: number) => (frame ? frame.y + ((-k * ROW - hall.z1) / (hall.z0 - hall.z1)) * frame.h : 0);
 
   return (
-    <section ref={section} className={s.hall} aria-label="The hall" data-crane={!reduced || undefined}>
+    <section ref={section} className={s.hall} aria-label="The hall" data-crane={!still || undefined}>
       <div ref={stage} className={s.stage} data-live={live || undefined}>
         <img
           className={s.poster}
@@ -239,7 +250,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
           </a>
         </div>
 
-        {!reduced && (
+        {!still && (
           <div className={s.hint} {...off(!!current || !live || craned)}>
             <p>
               Drag to look around. Click the floor to walk there, or a work to go to it.
@@ -259,7 +270,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
           </div>
         )}
 
-        {!reduced && (
+        {!still && (
           <button
             type="button"
             className={s.mini}
@@ -330,7 +341,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
           </aside>
         )}
 
-        {!reduced && (
+        {!still && (
           <>
             <div className={s.sheet} aria-hidden />
             <div className={s.drawn} inert={!planOn} role="region" aria-label="Plan of the room">

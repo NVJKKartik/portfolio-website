@@ -189,6 +189,14 @@ function skyTexture() {
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
+/** Phones and low-end machines get plates at half size: a quarter of the texture memory, and still sharp at that screen size. */
+function halfSize(img: HTMLImageElement) {
+  const c = document.createElement('canvas');
+  c.width = Math.round(img.width / 2);
+  c.height = Math.round(img.height / 2);
+  c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
 function textTexture(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void) {
   const c = document.createElement('canvas');
   c.width = w;
@@ -208,6 +216,14 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   const keep = <T extends { dispose: () => void }>(x: T) => (disposables.push(x), x);
 
   const renderer = new THREE.WebGLRenderer({ antialias: !high, powerPreference: 'high-performance' });
+  // A software renderer (no GPU, a VM, some headless browsers) draws this room at a few frames a second.
+  // Refuse it and let the page keep its poster. Browsers that mask the renderer name are let through.
+  const gl = renderer.getContext();
+  const gpu = gl.getExtension('WEBGL_debug_renderer_info');
+  if (/swiftshader|llvmpipe|software/i.test(String(gl.getParameter(gpu ? gpu.UNMASKED_RENDERER_WEBGL : gl.RENDERER)))) {
+    renderer.dispose();
+    throw new Error('hall: software renderer');
+  }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -223,7 +239,9 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   scene.background = new THREE.Color(0x8d8f8b);
   scene.fog = new THREE.FogExp2(0x8a8c88, 0.014);
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const env = keep(pmrem.fromScene(new RoomEnvironment(), 0.04).texture);
+  const room = new RoomEnvironment();
+  const env = keep(pmrem.fromScene(room, 0.04).texture);
+  room.dispose();
   pmrem.dispose();
   scene.environment = env;
   scene.environmentIntensity = 0.55;
@@ -330,11 +348,12 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
 
   // Light: sky, the sun through the glass wall, a warm fill from the ceiling troughs.
   scene.add(new THREE.HemisphereLight(0xeef1ee, 0x4a4640, 0.85));
-  const sun = new THREE.DirectionalLight(0xfff0d8, 3.9);
+  const sun = new THREE.DirectionalLight(0xfff0d8, 3.63);
   sun.position.set(-16, 11, 2);
   sun.target.position.set(0, 0, -8);
   scene.add(sun, sun.target);
   sun.castShadow = true;
+  keep(sun.shadow);
   sun.shadow.mapSize.set(high ? 4096 : 2048, high ? 4096 : 2048);
   sun.shadow.bias = -0.0003;
   sun.shadow.normalBias = 0.015;
@@ -557,7 +576,8 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
 
   // Works load front row first; the room is usable before the back wall arrives.
   const loader = new THREE.TextureLoader();
-  let alive = true;
+  let alive = true,
+    readyAt = 0;
   (async () => {
     for (let k = 0; k < o.rows.length && alive; k++) {
       await Promise.all(
@@ -568,11 +588,11 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
               new Promise<void>(res =>
                 loader.load(
                   ez.e.image.src,
-                  t => {
-                    if (!alive) return (t.dispose(), res());
+                  img => {
+                    if (!alive) return (img.dispose(), res());
+                    const t = keep(high ? img : new THREE.CanvasTexture(halfSize(img.image)));
                     t.colorSpace = THREE.SRGBColorSpace;
                     t.anisotropy = high ? 8 : 4;
-                    keep(t);
                     ez.artMat.map = ez.artMat.emissiveMap = t;
                     ez.artMat.color.set(0xffffff);
                     ez.artMat.emissiveIntensity = 0.06;
@@ -593,16 +613,20 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
               ),
           ),
       );
-      if (k === 0) o.on.ready();
+      if (k === 0) {
+        o.on.ready();
+        readyAt = performance.now();
+      }
     }
   })();
 
   // ——— post-processing ———
   // Multisampled, or thin mullions and glass edges crawl: the composer bypasses the canvas's own antialiasing.
+  let ao: GTAOPass | null = null;
   const composer = high ? new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 })) : null;
   if (composer) {
     composer.addPass(new RenderPass(scene, camera));
-    const ao = new GTAOPass(scene, camera, 2, 2);
+    ao = new GTAOPass(scene, camera, 2, 2);
     ao.output = GTAOPass.OUTPUT.Default;
     ao.blendIntensity = 1;
     ao.updateGtaoMaterial({ radius: 0.55, distanceExponent: 1.4, thickness: 1.4, scale: 1.2, samples: 8 });
@@ -665,7 +689,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     lifts.forEach(m => (m.opacity = roof));
     upper.visible = sky.visible = roof > 0.001;
     // The floor turns opaque over its reflection as the camera rises out of the angle that shows it.
-    floorMat.opacity = 0.84 + 0.16 * sstep(0.05, 0.35, u);
+    floorMat.opacity = reflect ? 0.84 + 0.16 * sstep(0.05, 0.35, u) : 1;
     mirror.visible = floorMat.opacity < 0.999;
     (scene.fog as THREE.FogExp2).density = FOG * (1 - sstep(0.1, 0.6, u));
   }
@@ -724,7 +748,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   /** Paused or reduced motion: every camera move becomes a cut. */
   const cut = () => paused || o.reduced;
   let dirty = true;
-  const t0 = performance.now();
   const byId = (id: string) => easels.find(ez => ez.e.id === id) ?? null;
 
   function finishTween() {
@@ -813,6 +836,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
       removeEventListener('keydown', onKeyDown);
       removeEventListener('keyup', onKeyUp);
       removeEventListener('blur', onBlur);
+      composer?.passes.forEach(p => p.dispose());
       composer?.dispose();
       disposables.forEach(d => d.dispose());
       renderer.dispose();
@@ -1037,7 +1061,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     visible = true,
     lastPose = '';
   function place(now: number) {
-    const t = (now - t0) / 1000;
     stepKeys(now);
     if (tween) {
       const u = clamp((now - tween.t0) / 1000 / tween.dur);
@@ -1077,7 +1100,6 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
       camera.setViewOffset(top.w, top.h, -top.dx * ks, -top.dy * ks, top.w, top.h);
     } else if (camera.view) camera.clearViewOffset();
     camera.rotation.set(pitch, -yaw, 0);
-    sun.intensity = 3.9 * (paused ? 0.93 : 0.86 + 0.14 * (0.5 + 0.5 * Math.sin(t * 0.21) * Math.sin(t * 0.13 + 1)));
     const facing = Math.atan2(look.x - pos.x, -(look.z - pos.z));
     const key = `${pos.x.toFixed(2)},${pos.z.toFixed(2)},${facing.toFixed(2)}`;
     if (key !== lastPose) {
@@ -1085,14 +1107,50 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
       o.on.pose(pos.x, pos.z, facing);
     }
   }
-  let lastIdle = 0;
+  // ——— adaptive quality ———
+  // Screen shape and core count don't say what the GPU can do, so watch it. Once the room is ready,
+  // two windows in a row of slow moving frames drop one step: ambient occlusion first, then resolution,
+  // then the floor's reflection. The level is on the canvas as data-quality.
+  let level = high ? 0 : 1,
+    maxDpr = high ? 1.5 : 1.25,
+    reflect = true,
+    slowWindows = 0,
+    lastFrame = 0;
+  const frameTimes: number[] = [];
+  renderer.domElement.dataset.quality = String(level);
+  function stepDown() {
+    level++;
+    if (ao) ao.enabled = level < 1;
+    if (level >= 2) maxDpr = 1;
+    reflect = level < 3;
+    renderer.domElement.dataset.quality = String(level);
+    resize();
+  }
+  function measure(now: number) {
+    const dt = now - lastFrame;
+    lastFrame = now;
+    // Only back-to-back frames count; skip the first second after load (uploads, compiles) and tab switches.
+    if (level >= 3 || !readyAt || now - readyAt < 1000 || dt > 250) return;
+    frameTimes.push(dt);
+    if (frameTimes.length < 60) return;
+    const median = frameTimes.sort((a, b) => a - b)[30];
+    frameTimes.length = 0;
+    slowWindows = median > 24 ? slowWindows + 1 : 0;
+    if (slowWindows === 2) {
+      slowWindows = 0;
+      stepDown();
+    }
+  }
+
   function loop(now: number) {
     raf = requestAnimationFrame(loop);
     if (!visible) return;
-    const moving = !!tween || dirty || keys.size > 0 || lift !== liftTo;
-    // Idle: the sun and the camera breathe at 24 fps; nothing renders at all when paused and still.
-    if (!moving && (paused || now - lastIdle < 1000 / 24)) return;
-    lastIdle = now;
+    // Nothing moving, nothing drawn: the room holds its last frame between interactions.
+    if (!tween && !dirty && !keys.size && lift === liftTo) {
+      lastFrame = 0;
+      return;
+    }
+    measure(now);
     dirty = false;
     place(now);
     if (composer) composer.render();
@@ -1104,7 +1162,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     const b = container.getBoundingClientRect();
     const w = Math.max(2, b.width),
       h = Math.max(2, b.height);
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, high ? 1.5 : 1.25));
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, maxDpr));
     renderer.setSize(w, h, false);
     composer?.setPixelRatio(renderer.getPixelRatio());
     composer?.setSize(w, h);
@@ -1115,7 +1173,10 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   }
   const ro = new ResizeObserver(resize);
   ro.observe(container);
-  const io = new IntersectionObserver(es => (visible = es[0].isIntersecting));
+  const io = new IntersectionObserver(es => {
+    visible = es[0].isIntersecting;
+    if (visible) dirty = true;
+  });
   io.observe(container);
   resize();
 
