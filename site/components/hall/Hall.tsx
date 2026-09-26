@@ -257,7 +257,7 @@ export default function Hall({ rows, years, walls, name, intro, proof }: Props) 
               <span className={s.forMouse}>
                 Drag to look around. Click the floor to walk there, or a work to go to it.
                 <br />
-                Once you’re in the room, WASD or the arrow keys walk.
+                WASD walks; the arrow keys do too once you’ve clicked in.
               </span>
               <span className={s.forTouch}>Tap a work or the floor to walk there. Drag to look.</span>
             </p>

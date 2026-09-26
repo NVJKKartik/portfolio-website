@@ -332,6 +332,9 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   // in depth so it never fights it. The exit wall is in shade, so its paint gets the same lift as its concrete.
   const pw = high ? 2560 : 1280,
     ph = Math.round((pw * plan.h) / W);
+  // Everything painted on a wall fades with the roof as the crane rises: seen from above, the walls
+  // are edge-on and their paint would sit around the plan as squashed slivers.
+  const painted: THREE.MeshStandardMaterial[] = [];
   const paint = (draw: (g: CanvasRenderingContext2D) => void, z: number, turned: boolean) => {
     const map = keep(textTexture(pw, ph, draw));
     const mat = keep(
@@ -345,6 +348,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         polygonOffsetUnits: -2,
       }),
     );
+    painted.push(mat);
     if (turned) {
       mat.emissive = frontMat.emissive;
       mat.emissiveMap = map;
@@ -577,6 +581,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
         }),
       ),
     );
+    painted.push(d.material as THREE.MeshStandardMaterial);
     d.rotation.y = -Math.PI / 2;
     d.position.set(plan.x1 - 0.01, 2.3, -k * ROW + 0.6);
     scene.add(d);
@@ -730,6 +735,7 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
     }
     const roof = 1 - sstep(0.02, 0.2, u);
     lifts.forEach(m => (m.opacity = roof));
+    painted.forEach(m => (m.opacity = roof));
     upper.visible = sky.visible = roof > 0.001;
     // The floor turns opaque over its reflection as the camera rises out of the angle that shows it.
     floorMat.opacity = reflect ? 0.84 + 0.16 * sstep(0.05, 0.35, u) : 1;
@@ -1065,8 +1071,10 @@ export async function createHall(container: HTMLElement, o: HallOptions): Promis
   const MOVE = new Set(['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']);
   const onKeyDown = (ev: KeyboardEvent) => {
     const k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
-    if (!MOVE.has(k) || ev.metaKey || ev.ctrlKey || ev.altKey || typing(ev.target) || !visible || liftTo > 0 || document.activeElement !== canvas)
-      return;
+    // WASD walk whenever the room fills the screen and nothing else has focus; the arrow keys scroll the
+    // page until the visitor has clicked or tabbed into the room.
+    const focused = document.activeElement === canvas || (k.length === 1 && (!document.activeElement || document.activeElement === document.body));
+    if (!MOVE.has(k) || ev.metaKey || ev.ctrlKey || ev.altKey || typing(ev.target) || !visible || liftTo > 0 || !focused) return;
     ev.preventDefault();
     if (!keys.size) leave();
     keys.add(k);

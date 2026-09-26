@@ -174,7 +174,7 @@ OpenAIInstrumentor().instrument(tracer_provider=trace_provider)`,
   {
     slug: 'nexus',
     name: 'Nexus',
-    years: 'Hackfest ’24',
+    years: '2024',
     place: 'IIIT Dharwad · Hackfest ’24',
     medium: 'Vite · React',
     sort: '2024-04',

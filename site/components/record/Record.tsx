@@ -6,7 +6,6 @@ import r from './record.module.css';
 
 type TopProps = {
   back: string;
-  where: string;
   kicker: string;
   title: string;
   lede: string;
@@ -16,7 +15,7 @@ type TopProps = {
 };
 
 /** A record's top: its plate on a ground of the plate's own colour, so no two records look alike. */
-export function RecordTop({ back, where, kicker, title, lede, badge, image, tint }: TopProps) {
+export function RecordTop({ back, kicker, title, lede, badge, image, tint }: TopProps) {
   return (
     <header className={r.top} style={{ '--tint': tint.bg, '--tint-ink': tint.ink } as CSSProperties}>
       <div className={r.inner}>
@@ -24,7 +23,6 @@ export function RecordTop({ back, where, kicker, title, lede, badge, image, tint
           <Link href={back} transitionTypes={['nav-back']}>
             ← Back to the hall
           </Link>
-          <span>{where}</span>
         </nav>
         <div>
           <p className={r.kicker}>{kicker}</p>
@@ -79,12 +77,12 @@ export function Hard({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-export function NextUp({ next }: { next: Exhibit }) {
+export function NextUp({ next, wrapped }: { next: Exhibit; wrapped?: boolean }) {
   return (
     <Link className={r.next} href={next.href} transitionTypes={['nav-forward']}>
       <img src={next.image.src} alt="" loading="lazy" />
       <span>
-        <small>Next, a little further back in time</small>
+        <small>{wrapped ? 'That was the oldest. Back to the newest' : 'Next, a little further back in time'}</small>
         <b>{next.title} →</b>
       </span>
     </Link>

@@ -18,6 +18,8 @@ export type Research = {
   badge?: string;
   question: string;
   role: string;
+  /** What Kartik did, when the role alone doesn't say. Self-reported on his old portfolio. */
+  did?: string;
   authors: { name: string; me?: boolean }[];
   plain: string[];
   technical: string[];
@@ -101,6 +103,7 @@ export const research: Research[] = [
     short: 'Diarization',
     question: 'Who said what, in a classroom where people switch between English and local languages mid-sentence?',
     role: 'Co-author, second of seven. My part was the diarization pipeline work.',
+    did: 'I implemented speaker diarization for code-switched classroom audio, with pyannote and Whisper.',
     authors: [
       { name: 'Aarsh Desai' },
       { name: 'N.V.J.K Kartik', me: true },
@@ -147,6 +150,7 @@ export const research: Research[] = [
     short: 'Shared regulation',
     question: 'When a group stops and asks “wait, is this working?”, what set it off? Could a model spot that moment in the conversation?',
     role: 'First author, with seven co-authors from the same research group.',
+    did: 'I applied Conditional Random Fields to detect the triggers of socially shared regulation in group problem-solving.',
     authors: [
       { name: 'N.V.J.K Kartik', me: true },
       { name: 'Priyesh Gupta' },

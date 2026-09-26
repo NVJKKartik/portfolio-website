@@ -8,7 +8,7 @@ import './globals.css';
 const archivo = Archivo({ subsets: ['latin'], variable: '--font-archivo', axes: ['wdth'], display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
-const title = `${profile.fullName} · the hall`;
+const title = profile.fullName;
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
   title: { default: title, template: `%s · ${profile.name}` },

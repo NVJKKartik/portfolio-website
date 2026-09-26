@@ -33,7 +33,6 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
       <article>
         <RecordTop
           back={hall.back}
-          where={hall.where}
           kicker={`${w.kind} · ${w.place} · ${w.years} · ${w.medium}`}
           title={w.name}
           lede={w.oneLiner}
@@ -135,7 +134,7 @@ export default async function WorkPage({ params }: PageProps<'/work/[slug]'>) {
           )}
 
           <SourceList ids={w.sources} />
-          <NextUp next={hall.next} />
+          <NextUp next={hall.next} wrapped={hall.wrapped} />
         </div>
       </article>
     </Paper>

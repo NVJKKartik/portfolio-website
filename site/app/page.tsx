@@ -100,6 +100,10 @@ export default function Home() {
               <Link href="/receipts/">Receipts</Link> for every fact on this site.
             </p>
           </section>
+          <footer className={s.end}>
+            <p>Thanks for walking through.</p>
+            <a href="#main">Back to the hall ↑</a>
+          </footer>
         </div>
       </main>
     </>

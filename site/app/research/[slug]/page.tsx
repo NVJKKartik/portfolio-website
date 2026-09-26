@@ -39,7 +39,6 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
       <article>
         <RecordTop
           back={hall.back}
-          where={hall.where}
           kicker={[x.kind, x.place, x.dateLabel, x.venue !== x.dateLabel ? x.venue : null].filter(Boolean).join(' · ')}
           title={x.shortTitle}
           lede={x.question}
@@ -48,7 +47,12 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
           tint={tint}
         />
         <Hands
-          did={<p>{x.role}</p>}
+          did={
+            <>
+              <p>{x.role}</p>
+              {x.did && <p>{x.did}</p>}
+            </>
+          }
           withTitle={x.kind === 'Granted patent' ? 'Inventors' : 'Authors'}
           credit={
             <p>
@@ -129,7 +133,7 @@ export default async function ResearchPage({ params }: PageProps<'/research/[slu
           <Hard title="Where it stops">{list(x.limits)}</Hard>
 
           <SourceList ids={x.sources} />
-          <NextUp next={hall.next} />
+          <NextUp next={hall.next} wrapped={hall.wrapped} />
         </div>
       </article>
     </Paper>

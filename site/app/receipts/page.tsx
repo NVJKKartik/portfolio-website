@@ -6,21 +6,21 @@ import Paper from '@/components/page/Paper';
 import p from '@/components/page/page.module.css';
 
 const description = 'Where the facts on this site come from, and what on it is illustration rather than evidence.';
-export const metadata: Metadata = { title: 'Sources', description, openGraph: og('Sources', description) };
+export const metadata: Metadata = { title: 'Receipts', description, openGraph: og('Receipts', description) };
 
 export default function Receipts() {
   return (
     <Paper>
       <header className={p.head}>
         <p className={p.kicker}>Checked September 2026</p>
-        <h1>Sources</h1>
+        <h1>Receipts</h1>
         <p className={p.lede}>
           Every factual claim on this site points to one of these. Shared work names the people it was shared with, and preprints are labelled as
           preprints.
         </p>
       </header>
       <div className={p.cols}>
-        <h2>Sources</h2>
+        <h2>Every source</h2>
         <div>
           <ol className={p.list}>
             {Object.values(sources).map(s => (

@@ -74,9 +74,10 @@ export default function PlaceTabs({ places, fun }: { places: Place[]; fun: strin
             </button>
           ))}
         </div>
-        <span className={s.plus} aria-hidden>
+        {/* One more tab won't hurt: it opens Contact. */}
+        <a className={s.plus} href="#contact" aria-label="One more tab: contact">
           +
-        </span>
+        </a>
       </div>
       <div className={s.panel} role="tabpanel" id="place-panel" aria-labelledby={`tab-${p.id}`}>
         <p className={s.when}>{p.when}</p>

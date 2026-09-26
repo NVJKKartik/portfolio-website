@@ -104,7 +104,8 @@ const talks = speaking.map<Exhibit>(s => ({
 
 const oldest = posts[posts.length - 1];
 const writing: Exhibit = {
-  id: 'writing',
+  // Not 'writing': that's the home section's id, and a shared /#writing link has to land on the section.
+  id: 'posts',
   title: 'Posts about what broke',
   short: 'Writing',
   when: `${oldest.date.slice(0, 4)} — now`,

@@ -579,7 +579,9 @@
     bottom: 132px;
     transform: translateY(12px);
     max-height: 58cqh;
-    padding: 20px 22px;
+    padding: 20px 22px 34px;
+    /* It scrolls when the text is long; the fade at the foot says there's more. */
+    mask-image: linear-gradient(#000 calc(100% - 30px), transparent);
   }
   .label[data-on] {
     transform: none;
