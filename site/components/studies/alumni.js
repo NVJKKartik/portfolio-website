@@ -1,7 +1,10 @@
+import { fitter } from './fit.js';
 // Alumni Connect: a redesigned interface study (2026) with sample profiles. Not the 2023 Flutter app.
 // Idea: the network is only useful if a current student can find the right person and ask for something specific.
 const W = 1440,
   H = 900;
+// Close-ups for a phone: one screen at a time.
+const focusAt = t => (t < 4.4 ? [133, 60, 358, 700] : [541, 60, 358, 700]);
 const CSS = `
 .al-fit{position:absolute;inset:0;overflow:hidden;background:#0a1214}
 .al-board{position:absolute;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0;background:radial-gradient(90% 80% at 50% 40%,#13262a,#0a1214 70%);display:flex;align-items:center;justify-content:center;gap:48px;font-family:var(--font-bricolage),system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -157,14 +160,7 @@ export async function mount(el, opts = {}) {
   );
   const ask = r.querySelector('.al-ask');
   r.querySelector('.al-askbtn').addEventListener('click', () => ask.classList.toggle('on'));
-  function resize() {
-    const b = fit.getBoundingClientRect();
-    const s = Math.min(b.width / W, b.height / H);
-    r.style.transform = `translate(${(b.width - W * s) / 2}px,${(b.height - H * s) / 2}px) scale(${s})`;
-  }
-  const ro = new ResizeObserver(resize);
-  ro.observe(fit);
-  resize();
+  const fitr = fitter(fit, r, W, H, focusAt);
   let timers = [];
   const script = [
     [
@@ -190,11 +186,13 @@ export async function mount(el, opts = {}) {
       },
     ],
     [4.4, () => ask.classList.add('on')],
+    [4.4, () => fitr.time(4.4)],
   ];
   const ctrl = {
     duration: 7,
     play() {
       timers.forEach(clearTimeout);
+      fitr.time(0);
       timers = script.map(([s, f]) => setTimeout(f, s * 1000));
     },
     pause() {
@@ -203,13 +201,17 @@ export async function mount(el, opts = {}) {
     seek(v) {
       timers.forEach(clearTimeout);
       script.filter(([s]) => s <= v).forEach(([, f]) => f());
+      fitr.time(v);
     },
     async setState(n) {
       this.seek(n === 'ask' ? 6 : n === 'filter' ? 4 : 0);
     },
+    zoom(on) {
+      fitr.zoom(on);
+    },
     destroy() {
       timers.forEach(clearTimeout);
-      ro.disconnect();
+      fitr.disconnect();
       fit.remove();
     },
   };

@@ -1,8 +1,11 @@
+import { fitter } from './fit.js';
 // Centio.AI: a redesigned interface study (2026). Not the 2024 app.
 // Idea: the researcher mode is a document that writes itself in front of you, with its plan and sources in view.
 // The sample topic and sources are real (Kartik's own research area); the uploaded files are samples.
 const W = 1440,
   H = 900;
+// Close-ups for a phone: the sources being gathered, then the question and the plan.
+const focusAt = t => (t < 5 ? [10, 80, 250, 690] : [1060, 16, 368, 600]);
 const CSS = `
 .ce-fit{position:absolute;inset:0;overflow:hidden;background:#e6e8e1}
 .ce{position:absolute;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0;background:#eceee7;color:#1d211c;font-family:var(--font-albert),system-ui,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;display:grid;grid-template-columns:268px 1fr 392px;overflow:hidden}
@@ -177,6 +180,7 @@ export async function mount(el, opts = {}) {
   const pop = r.querySelector('.ce-pop');
   const DUR = 12;
   function at(tt) {
+    fitr.time(tt);
     // plan: 0–4.5s research steps, then writing 4.5–11s
     const step = tt < 0.6 ? 0 : tt < 2.2 ? 1 : tt < 3.4 ? 2 : tt < 4.4 ? 3 : tt < 10.6 ? 4 : tt < 11.4 ? 5 : 6;
     planLis.forEach((li, i) => {
@@ -231,14 +235,7 @@ export async function mount(el, opts = {}) {
   let t = 0,
     raf = 0,
     last = 0;
-  function resize() {
-    const b = fit.getBoundingClientRect();
-    const s = Math.min(b.width / W, b.height / H);
-    r.style.transform = `translate(${(b.width - W * s) / 2}px,${(b.height - H * s) / 2}px) scale(${s})`;
-  }
-  const ro = new ResizeObserver(resize);
-  ro.observe(fit);
-  resize();
+  const fitr = fitter(fit, r, W, H, focusAt);
   function loop(now) {
     raf = requestAnimationFrame(loop);
     const dt = Math.min(0.05, (now - (last || now)) / 1000);
@@ -269,9 +266,12 @@ export async function mount(el, opts = {}) {
     async setState(n) {
       this.seek({ research: 2.6, writing: 7.6, done: 11.8 }[n] ?? 11.8);
     },
+    zoom(on) {
+      fitr.zoom(on);
+    },
     destroy() {
       cancelAnimationFrame(raf);
-      ro.disconnect();
+      fitr.disconnect();
       fit.remove();
     },
   };

@@ -1,7 +1,11 @@
+import { fitter } from './fit.js';
 // Nexus: a redesigned interface study (2026) with sample data. Not the 2024 hackathon UI.
 // Idea: the market and the trader on one time axis. When the session turns into loss-chasing, Nexus says so.
 const W = 1440,
   H = 900;
+// Close-ups for a phone: the session's signals, then the nudge, then the cool-down ring, then what the
+// pause means.
+const focusAt = t => (t < 7.5 ? [1056, 380, 372, 470] : t < 9.4 ? [1050, 70, 385, 420] : t < 10.2 ? [228, 190, 500, 540] : [676, 300, 452, 320]);
 const CSS = `
 .nx-fit{position:absolute;inset:0;overflow:hidden;background:#07080a}
 .nx{position:absolute;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0;background:#0b0d0f;color:#e8ebee;font-family:var(--font-chivo),system-ui,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -239,6 +243,7 @@ export async function mount(el, opts = {}) {
   }
   function at(tt) {
     t = tt;
+    fitr.time(tt);
     const frac = Math.min(1, tt / 7.2);
     if (tt < 9.4) cooled = false;
     if (tt >= 9.4 && !dismissed) cooled = true;
@@ -263,14 +268,7 @@ export async function mount(el, opts = {}) {
     draw(1);
   });
 
-  function resize() {
-    const b = fit.getBoundingClientRect();
-    const s = Math.min(b.width / W, b.height / H);
-    r.style.transform = `translate(${(b.width - W * s) / 2}px,${(b.height - H * s) / 2}px) scale(${s})`;
-  }
-  const ro = new ResizeObserver(resize);
-  ro.observe(fit);
-  resize();
+  const fitr = fitter(fit, r, W, H, focusAt);
   function loop(now) {
     raf = requestAnimationFrame(loop);
     const dt = Math.min(0.05, (now - (last || now)) / 1000);
@@ -301,9 +299,12 @@ export async function mount(el, opts = {}) {
       const m = { calm: 1.6, rising: 4.6, nudge: 8.2, cooldown: 10.5 };
       this.seek(m[n] ?? 8.2);
     },
+    zoom(on) {
+      fitr.zoom(on);
+    },
     destroy() {
       stop();
-      ro.disconnect();
+      fitr.disconnect();
       fit.remove();
     },
   };

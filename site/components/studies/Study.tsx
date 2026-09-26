@@ -5,7 +5,7 @@ import { useMotion } from '@/lib/motion';
 import s from './Study.module.css';
 
 export type StudyKind = 'nexus' | 'centio' | 'alumni';
-type Controller = { play: () => void; pause: () => void; setState: (n: string) => unknown; destroy: () => void };
+type Controller = { play: () => void; pause: () => void; setState: (n: string) => unknown; zoom: (on: boolean) => void; destroy: () => void };
 
 const load: Record<StudyKind, () => Promise<{ mount: (el: HTMLElement, o?: object) => Promise<Controller> }>> = {
   nexus: () => import('./nexus.js'),
@@ -35,6 +35,8 @@ export default function Study({ kind, poster, alt, fonts }: { kind: StudyKind; p
   const stage = useRef<HTMLDivElement>(null);
   const ctl = useRef<Controller | null>(null);
   const [live, setLive] = useState(false);
+  // Phones see a close-up of the panel the story is on; this shows the whole screen instead.
+  const [whole, setWhole] = useState(false);
   const { reduced } = useMotion();
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export default function Study({ kind, poster, alt, fonts }: { kind: StudyKind; p
 
   return (
     <figure className={s.study}>
-      <div ref={stage} className={`${s.stage} ${fonts}`}>
+      <div ref={stage} className={`${s.stage} ${fonts}`} data-whole={whole || undefined}>
         <img src={poster} alt={alt} data-hidden={live || undefined} />
       </div>
       <figcaption className={s.bar}>
@@ -76,6 +78,18 @@ export default function Study({ kind, poster, alt, fonts }: { kind: StudyKind; p
               Play the interaction
             </button>
           )}
+          <button
+            type="button"
+            className={s.whole}
+            aria-pressed={whole}
+            disabled={!live}
+            onClick={() => {
+              ctl.current?.zoom(whole);
+              setWhole(!whole);
+            }}
+          >
+            {whole ? 'Close-up' : 'Whole screen'}
+          </button>
           {states[kind].map(([k, label]) => (
             <button key={k} type="button" onClick={() => ctl.current?.setState(k)} disabled={!live}>
               {label}

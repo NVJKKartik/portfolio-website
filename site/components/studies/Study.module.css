@@ -54,3 +54,19 @@
   opacity: 0.5;
   cursor: default;
 }
+.whole {
+  display: none;
+}
+/* On a phone the stage is tall, for a readable close-up of one panel; "Whole screen" shows it all. */
+@media (max-width: 640px) {
+  .stage {
+    aspect-ratio: 10 / 16;
+  }
+  .stage[data-whole] {
+    aspect-ratio: 16 / 10;
+  }
+  .whole {
+    display: inline-block;
+    font-weight: 700;
+  }
+}
