@@ -56,10 +56,10 @@
   font-size: 15px;
   line-height: 1.45;
   color: var(--ink-2);
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  /* The whole line, never cut: captions are kept short at the source (lead() in content/hall.ts).
+     The dot hangs in the margin, so a second line starts under the words, not under the dot. */
+  padding-left: 16px;
+  text-indent: -16px;
 }
 .did::before {
   content: '';
@@ -171,10 +171,6 @@
   .period b,
   .did {
     grid-column: 2;
-  }
-  .did {
-    grid-row: 2;
-    -webkit-line-clamp: 2;
   }
   .meta {
     grid-column: 2;

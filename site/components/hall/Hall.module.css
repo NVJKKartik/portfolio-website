@@ -86,6 +86,8 @@
   max-width: min(560px, 44cqw);
   z-index: 2;
   text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
+  /* The words ride the first part of the lift and leave as the camera turns to look down on the room. */
+  opacity: clamp(0, (0.26 - var(--p, 0)) / 0.18, 1);
   transition: opacity 0.6s var(--ease-out);
 }
 /* A soft local backdrop, so the words don't have to fight the ceiling beams behind them. */
@@ -117,12 +119,20 @@
   font-size: clamp(12px, 0.92cqw, 14px);
   color: #cfcbc2;
 }
+/* The way past the room: a button like the room's own controls, so nobody has to find a text link. */
 .skip {
   display: inline-block;
-  margin-top: 1em;
+  margin-top: 1.2em;
   font-size: 14px;
-  color: var(--on-dark);
-  text-underline-offset: 4px;
+  background: rgba(244, 242, 237, 0.94);
+  color: var(--ink);
+  border-radius: 99px;
+  padding: 0.6em 1.15em;
+  text-decoration: none;
+  text-shadow: none;
+}
+.skip:hover {
+  background: #fff;
 }
 .wall .count {
   font-size: clamp(12px, 0.9cqw, 14px);
@@ -382,7 +392,7 @@
   position: absolute;
   inset: 0;
   z-index: 5;
-  opacity: clamp(0, (var(--p, 0) - 0.78) / 0.18, 1);
+  --in: clamp(0, (var(--p, 0) - 0.78) / 0.18, 1);
   color: var(--on-dark);
   /* Plan.module.css draws in ink for paper; here it's light on the dimmed room. */
   --ink: #e9e6df;
@@ -391,6 +401,19 @@
 }
 .drawn[inert] {
   pointer-events: none;
+}
+.drawing,
+.key,
+.pickCard,
+.planHead button,
+.picker {
+  opacity: var(--in);
+}
+/* The title isn't registered to the picture, so it comes in while the camera is still rising and says
+   where the lift is going. */
+.planHead h2,
+.planHead p {
+  opacity: clamp(0, (var(--p, 0) - 0.5) / 0.14, 1);
 }
 .drawing {
   position: absolute;
@@ -425,6 +448,7 @@
   left: var(--gutter);
   top: calc(env(safe-area-inset-top, 0px) + 28px);
   max-width: 40ch;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 .planHead h2 {
   margin: 0;
