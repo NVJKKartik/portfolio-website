@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Exhibit } from '@/content/hall';
 import s from './WorkIndex.module.css';
 
@@ -10,7 +10,8 @@ type Props = { rows: Exhibit[][]; years: string[] };
 /**
  * Everything in the hall as a list, newest first: one row per work with what I did under the title.
  * On a wide screen, pointing at or focusing a row turns its plate around in the panel beside the list,
- * the hall's own gesture. The list is the reduced-motion and no-WebGL way in, so it's plain links first.
+ * the hall's own gesture; with no pointer on the list, the panel follows the row the page has reached.
+ * The list is the reduced-motion and no-WebGL way in, so it's plain links first.
  * Rows carry data-exhibit (hash links into the hall resolve through it) and never an id of their own.
  */
 export default function WorkIndex({ rows, years }: Props) {
@@ -18,10 +19,38 @@ export default function WorkIndex({ rows, years }: Props) {
   const [at, setAt] = useState(all[0].id);
   const e = all.find(x => x.id === at) ?? all[0];
   const point = (id: string) => ({ onPointerEnter: () => setAt(id), onFocus: () => setAt(id) });
+  const list = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLElement>(null);
+
+  // Scrolling past with the pointer elsewhere: the panel shows the row on the reading line, a little
+  // above the middle of the screen. Read at most four times a second, so a fast scroll doesn't spin the plate.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const read = () => {
+      timer = undefined;
+      const el = list.current;
+      if (!el || !panel.current?.offsetParent || el.matches(':hover') || el.contains(document.activeElement)) return;
+      const line = innerHeight * 0.4;
+      let near: string | undefined,
+        gap = Infinity;
+      for (const li of el.querySelectorAll<HTMLElement>('li[data-exhibit]')) {
+        const r = li.getBoundingClientRect();
+        const d = line < r.top ? r.top - line : line > r.bottom ? line - r.bottom : 0;
+        if (d < gap) [near, gap] = [li.dataset.exhibit, d];
+      }
+      if (near) setAt(near);
+    };
+    const onScroll = () => (timer ??= setTimeout(read, 250));
+    addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   return (
     <div className={s.index}>
-      <div className={s.list}>
+      <div ref={list} className={s.list}>
         {rows.map((row, k) => (
           <section key={k} className={s.period} aria-labelledby={`period-${k}`}>
             <h3 id={`period-${k}`}>{years[k]}</h3>
@@ -44,7 +73,7 @@ export default function WorkIndex({ rows, years }: Props) {
         ))}
       </div>
       {/* A preview of the row the pointer or focus is on; the row itself says the same things to a screen reader. */}
-      <aside className={s.panel} aria-hidden>
+      <aside ref={panel} className={s.panel} aria-hidden>
         <div key={e.id} className={s.plate}>
           <img src={e.image.src} alt="" style={{ aspectRatio: e.image.ratio }} />
         </div>
