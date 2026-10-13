@@ -57,6 +57,8 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
   // Off the floor (the room's controls step aside), and high enough for the drawn plan to take over.
   const [craned, setCraned] = useState(false);
   const [planOn, setPlanOn] = useState(false);
+  // The wall text rides the first part of the lift (its opacity follows --p) and is gone by here.
+  const [aloft, setAloft] = useState(false);
   const [frame, setFrame] = useState<Frame | null>(null);
   // On a phone the plan has no key: a mark (or the picker) selects a work and a card names it.
   const [pick, setPick] = useState<string | null>(null);
@@ -168,6 +170,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
       st.style.setProperty('--p', u.toFixed(4));
       ctl.current?.crane(u);
       setCraned(u > 0.03);
+      setAloft(u > 0.26);
       setPlanOn(u > 0.8);
     };
     const onScroll = () => (raf ||= requestAnimationFrame(read));
@@ -253,7 +256,7 @@ export default function Hall({ rows, years, name, intro, proof }: Props) {
         <div ref={gl} className={s.gl} />
         <div className={s.grade} aria-hidden />
 
-        <div className={s.wall} {...off(!!current || roaming || craned)}>
+        <div className={s.wall} {...off(!!current || roaming || aloft)}>
           <h1>{name}</h1>
           <p>{intro}</p>
           <p className={s.proof}>{proof}</p>
